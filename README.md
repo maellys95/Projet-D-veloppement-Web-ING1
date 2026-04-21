@@ -1,6 +1,4 @@
-<<<<<<< HEAD
 
-=======
 # 🎓 Smart Campus — Plateforme IoT Intelligente
 
 > Projet Développement Web — ING1 2025-2026 | CY Tech  
