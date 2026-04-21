@@ -1,0 +1,12 @@
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=cytech0001
+DB_NAME=smart_campus
+DB_PORT=3306
+PORT=3000
+
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=ton_adresse_mail
+SMTP_PASS=ton_mot_de_passe_application
+SMTP_FROM=ton_adresse_mail
