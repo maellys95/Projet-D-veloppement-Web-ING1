@@ -1,0 +1,131 @@
+un module « Information », un module « Visualisation », un module « Gestion »
+chaque utilisateur aura le droit d’y accéder qu'au(x) module(s) correspondant à sa qualification
+
+4 types différents d'utilisateurs : le visiteur, le simple, le complexe et l’administrateur
+Ces utilisateurs n'auront pas tous accès aux mêmes fonctionnalités. Vous devez également prévoir de créer, générer et manipuler des données (une vrai Base des Données - BDD) sur lesquels s'appuiera la plateforme et qui seront manipulables par l’utilisateur du type complexe et l’administrateur. Ces données seront liées aux différents objets connectés prévus dans ce projet.
+
+l’utilisateur doit aussi avoir la possibilité de saisir des données si nécessaire.
+
+module “information”
+type visiteur : personne qui n’a pas le droit de se connecter à la plateforme
+peut chercher une info
+page d’accueil
+
+/!\ Attendus du module :
+Un « free tour » sur la plateforme ;
+Une recherche d’information contenant au moins deux (2) filtres ;
+La possibilité de pouvoir s’inscrire sur la plateforme.
+
+
+module “visualisation”
+inscription : seulement les personnes concernées par la plateforme. Ici, @etu.cyu.fr ? donc tous les cyu.fr vu que “etu” ça réduit aux étudiants et @cyu.fr c’est les profs. 
+l’inscription est finalisée, l’utilisateur doit recevoir un mail que lui permettra de valider son inscription.
+connexion : login/mdp
+profil : 
+public : pseudo, age, sexe/genre, date de naissance, type de membre(eleve, prof), photo. 
+privé : nom, prénom, mdp (crypté !)
+type simple : modifier son profil et consulter le profil des autres membres, mais sans pouvoir communiquer avec eux. Un utilisateur du type simple a accès au module « Information ».
+Recherche et consultation des objets et outils/services variés. En plus de la gestion de leur profil, la principale fonctionnalité accessible à tous les utilisateurs du type simple (inscrits sur la plateforme) est la possibilité de rechercher et de consulter les objets et les outils/services variés proposés par la plateforme. Quand on se connecte et qu'on atterrit sur la page d'accueil (du module en question), on peut voir les outils/services variés proposés par la plateforme (par exemple : un service que rend accessible la consommation d’énergie pour la machine à laver ou autre). Pour consulter un objet, l’utilisateur peut utiliser le moteur de recherche de la plateforme. Le plus souvent, il s'agit d'une recherche par mots-clés (par exemple Thermostat Salon pour le Nom attribué à l'objet) ; ou des mots contenus dans la description de l’objet (par exemple température pour l'objet « Thermostat Salon ») ; ou une recherche plus avancée sur : la marque (par exemple, Phillips), le type (par exemple, thermostat, caméra, montre connectée, capteur, etc.) ; l’état (par exemple, Actif/Inactif, ou Connecté/Déconnecté) ; etc. Voici, l’exemple d’un objet connecté avec quelques attributs généraux.
+Vous devez prendre en compte différents types d’attributs, comme : attributs liés à la connectivité ; attributs liés à l’énergie ; attributs liés aux capteurs, attributs liés à l’usage, etc. Utilisez votre imagination ou bien vous pouvez interroger les IAs pour avoir des idées concernant les attributs pour un objet connecté.
+• Gestion des objets et des outils/services variés
+Comme on peut le voir, un utilisateur simple n'a qu'un nombre limité de fonctionnalités. Pour les débloquer, il faut un certain niveau d’expérience et compétence concernant la manipulation des objets connectés. Voici les niveaux : débutant, intermédiaire, avancé et expert. Un utilisateur simple doit pouvoir consulter et choisir un nouveau niveau, dans le cas où il a la possibilité (avoir assez des points pour un tel niveau) de changer de niveau. Nous partons du principe qu’un utilisateur simple a le niveau débutant après son inscription sur la plateforme. Selon le thème choisi pour le projet, les utilisateurs auront des expériences et compétences différentes pour chaque niveau. Voici un exemple de description1 pour chaque niveau :
+o Débutant : Vous avez le niveau d'expérience acquis en classe et/ou dans des scénarios expérimentaux ou en tant que stagiaire sur le lieu de travail. On s'attend à ce que vous ayez besoin d'aide dans l'exercice de cette compétence.
+o Intermédiaire : Vous pouvez accomplir avec succès les tâches qui vous sont demandées dans le cadre de cette compétence. L'aide d'un expert peut s'avérer nécessaire de temps à autre, mais vous pouvez généralement exécuter cette compétence de manière autonome.
+o Avancé : Vous pouvez effectuer les actions associées à cette compétence sans assistance. Vous êtes certainement reconnu au sein de votre organisation immédiate comme "la personne à qui demander" lorsque des questions difficiles se posent au sujet de cette compétence.
+o Expert : Vous êtes reconnu comme un expert dans ce domaine. Vous pouvez fournir des conseils, résoudre des problèmes et répondre à des questions liées à ce domaine d'expertise et au domaine dans lequel la compétence est utilisée.
+Dans le cadre de votre projet vous devez définir quelles sont les expériences et compétences nécessaires pour chaque niveau. Vous devez utiliser un système de points (par exemple, débutant – 1 point, intermédiaire – 3 points, avancé – 5 points et expert – 7 points). Pour cumuler de points, l’utilisateur doit avoir un nombre x de points pour la connexion sur la plateforme, ainsi qu’un nombre x de points pour la consultation des objets et des outils/services proposés par la plateforme. Par exemple, une connexion qui implique la consultation d’un objet ou d’un outil/service, veut 0.25 points pour la connexion et 0.50 points
+1 https://www.teammeter.com/fr/choisir-echelle-competences
+
+pour la consultation. Si l’utilisateur fait deux actions il aura 2 * 0.50 = 1.00 point pour la consultation. Le nombre x de points total pour chaque niveau s’est à vous de définir. Vous voyez bien qu’il va falloir gérer le nombre d’accès à la plateforme, le nombre d’actions faites par les utilisateurs, et mettre à jour ces données à chaque accès des utilisateurs.
+Ce module est accessible à un utilisateur du type simple avec les niveaux débutant ou intermédiaire. Si l’utilisateur passe au niveau avancé, il débloque le module « Gestion », nous parlons d’un utilisateur du type complexe. S’il passe au niveau expert, il débloque le module « Administration », nous parlons d’un utilisateur type administrateur.
+Ce module est une sorte de « tableau de bord » dédié à la gestion et modification du profil utilisateur, et la recherche, consultation et gestion des objets et outils/services pour les utilisateurs du type simple.
+
+/!\ Attendus du module : 
+Inscription d’un utilisateur ;
+Vérifier que l’utilisateur est un membre de la plateforme ;
+L’envoie d’un mail à l’utilisateur ;
+La validation de l’inscription ;
+Vérifier le login/mot de passe lors de la connexion ;
+Modifier le profil ;
+Consulter le profil des autres membres ;
+Rechercher et consulter les outils/services variés proposés par la plateforme ;
+La recherche d’information doit contenir au moins deux (2) filtres.
+Rechercher et consulter les objets connectés enregistrés sur la plateforme ;
+La recherche d’information doit contenir au moins deux (2) filtres.
+La possibilité de changer le niveau du profil utilisateur ;
+Gérer le nombre d’accès des utilisateurs à la plateforme ;
+Gérer le nombre d’actions faites par les utilisateurs ;
+Mettre à jour les données précédentes (accès et actions) pour chaque utilisateur et chaque accès à la plateforme.
+
+
+module “gestion”
+
+type complexe : ayant acquis suffisamment d’expérience (niveau avancé ou expert) sur la plateforme pour accéder à des fonctionnalités de gestion des objets connectés et des outils/services. Un utilisateur du type complexe a accès aux modules « Information » et « Visualisation ».
+
+permet à l’utilisateur de gérer et superviser les objets connectés, 
+optimiser leur fonctionnement
+peuvent configurer les paramètres des objets connectés (exemple : réglage de la température d’un thermostat ou activation d’un système de sécurité), consulter des statistiques d’utilisation (exemple : consommation énergétique des appareils) et générer des rapports.
+Ce module est une sorte de « tableau de bord avancé » dédié à la gestion des objets connectés et des services pour les utilisateurs du type complexe.
+
+/!\ Attendus du module : 
+Gestion des objets connectés
+Ajouter un nouvel objet connecté sur la plateforme ;
+Solliciter (à l’administrateur) la suppression d’un objet connecté ;
+Modifier les informations et attributs d'un objet connecté (nom, description, statut, paramètres, etc.) ;
+Contrôler l'état d'un objet (activer/désactiver, mettre à jour).
+
+Configuration des services
+Associer des objets connectés à des pièces ou zones spécifiques ;
+Configurer les paramètres d'utilisation des objets connectés (par ex. température cible pour un thermostat, horaire de fonctionnement pour une lumière).
+
+Surveillance et optimisation des ressources
+Consulter et générer des rapports d'utilisation des objets (par ex. consommation énergétique quotidienne ou hebdomadaire) ;
+Identifier les objets inefficaces (selon les paramètres d'utilisation) ou nécessitant une maintenance.
+
+Rapports statistiques
+Générer des statistiques sur l'utilisation des objets et des services pour optimiser la gestion des ressources ;
+Générer des rapports sur l’utilisation des services et objets connectés ;
+Accéder aux historiques des données des objets connectés.
+
+
+
+LES ATTENDUS DU PROJET : 
+1. Rédaction d’un rapport (15 pages maximum)
+Le rapport contient :
+Introduction et Contexte : Présentation générale du projet, objectifs, enjeux, le choix du thème du projet, les outils et technologies choisis.
+Répartition des tâches entre les membres du groupe : Détaillez la répartition des responsabilités (utiliser un graphique du type Gantt) et des contributions de chaque membre dans le projet.
+Étapes réalisées : Expliquez les différentes étapes du projet (méthodologie de projet), de la phase de planification à la réalisation avec les résultats obtenus.
+Conclusion et perspectives : Rédigez une conclusion générale et montrer à la suite les différentes perspectives pouvant améliorer les résultats que vous avez obtenus.
+
+2. Gestion du projet
+Utilisez une méthode de gestion de projet (par exemple, méthode agile – SCRUM) afin de répartir et suivre les tâches de manière flexible et itérative. Cette méthode permet de :
+Organiser les tâches (graphique de Gantt), permettant une réévaluation régulière des priorités et des objectifs.
+Assurer une collaboration continue au sein du groupe, avec des réunions régulières pour suivre l’avancement et ajuster le plan de travail.
+Utiliser des outils collaboratifs (comme Trello, Jira, Notion, etc.) pour suivre l'état d'avancement des tâches et garantir la transparence dans la gestion de projet.
+
+3. Soutenance (20 minutes maximum)
+Présenter le site en direct pour démontrer ses fonctionnalités en intégrant :
+Une introduction rapide (monter le rapport : le choix de thème, le(s) Frameworks utilisés, et la répartition de tâches).
+Une démonstration en temps réel du site, en mettant en avant les aspects clés du projet.
+
+
+Utilisation d’un ou plusieurs Frameworks
+• Vous pouvez utiliser ou vous inspirer des langages vus en cours ex. HTML, CSS et JavaScript/DOM ou autres lors du développement de votre site web.
+• En plus, vous êtes obligés d’utiliser un ou plusieurs Frameworks.
+• Vous n’avez pas le droit d’utiliser les CMS (Content Management System), tels que : Webflow, Bubble, Wordpress, Squarespace, Wix, etc.
+
+Conception responsive et UX (User Experience) Design
+Vous devez créer un site web responsive et prendre en compte l’expérience utilisateur. Pour cela vous pouvez :
+Créer des maquettes simples (wireframes) pour planifier la disposition des éléments.
+Appliquer le concept Mobile-First : concevoir pour les écrans mobiles avant de penser aux écrans larges.
+Adopter des grilles flexibles (comme celles du CSS Grid).
+Minimisez les fichiers CSS, JavaScript et HTML.
+Compressez les images.
+Activez le chargement différé (lazy loading) des images et vidéos.
+Cache : utilisez des headers de cache pour éviter le rechargement inutile des fichiers statiques ; implémentez un cache serveur pour les données répétitives.
+Accessibilité
+Respectez les normes WCAG (Web Content Accessibility Guidelines).
+Ajoutez des textes alternatifs aux images et utilisez des contrastes adéquats.
+Utilisez des balises sémantiques (comme <header>, <article>, <footer>, etc.).
+Optimisez les méta-descriptions et les titres.
+
