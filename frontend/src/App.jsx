@@ -1,60 +1,43 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
-
-import Home        from './pages/Home';
-import Login       from './pages/Login';
-import Register    from './pages/Register';
-import VerifyEmail from './pages/VerifyEmail';
-import Actualites  from './pages/Actualites';
-import Devices     from './pages/Devices';
+import Footer from './components/Footer';
+import Home from './pages/Home';
+import Search from './pages/Search';
 import DeviceDetail from './pages/DeviceDetail';
-import DeviceNew   from './pages/DeviceNew';
-import Profile     from './pages/Profile';
-import Members     from './pages/Members';
-import Dashboard   from './pages/Dashboard';
-import Admin       from './pages/Admin';
+import NewsPage from './pages/News';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Profile from './pages/Profile';
+import Quiz from './pages/Quiz';
+import Room from './pages/Room';
+import Prevention from './pages/Prevention';
 
-function PrivateRoute({ children, level }) {
-  const { user, isAtLeast, loading } = useAuth();
-  if (loading) return null;
-  if (!user) return <Navigate to="/login" replace />;
-  if (level && !isAtLeast(level)) return <Navigate to="/devices" replace />;
-  return children;
-}
-
-function AppRoutes() {
+function App() {
   return (
-    <>
+    <Router>
+      <div className="app-container">
       <Navbar />
+      
+      <main className="main-content">
       <Routes>
-        <Route path="/"              element={<Home />} />
-        <Route path="/login"         element={<Login />} />
-        <Route path="/register"      element={<Register />} />
-        <Route path="/verify-email"  element={<VerifyEmail />} />
-        <Route path="/actualites"    element={<Actualites />} />
-
-        <Route path="/devices"      element={<PrivateRoute><Devices /></PrivateRoute>} />
-        <Route path="/devices/new"  element={<PrivateRoute level="avancé"><DeviceNew /></PrivateRoute>} />
-        <Route path="/devices/:id"  element={<PrivateRoute><DeviceDetail /></PrivateRoute>} />
-
-        <Route path="/profile"    element={<PrivateRoute><Profile /></PrivateRoute>} />
-        <Route path="/members"    element={<PrivateRoute><Members /></PrivateRoute>} />
-        <Route path="/dashboard"  element={<PrivateRoute level="avancé"><Dashboard /></PrivateRoute>} />
-        <Route path="/admin"      element={<PrivateRoute level="expert"><Admin /></PrivateRoute>} />
-
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/search" element={<Search />} />
+        <Route path="/device/:id" element={<DeviceDetail />} />
+        <Route path="/news" element={<NewsPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/quiz" element={<Quiz />} />
+        <Route path="/rooms" element={<Room />} />
+        <Route path="/prevention" element={<Prevention />} />
       </Routes>
-    </>
+      </main>
+
+      <Footer />
+      </div>
+    </Router>
   );
 }
 
-export default function App() {
-  return (
-    <BrowserRouter>
-      <AuthProvider>
-        <AppRoutes />
-      </AuthProvider>
-    </BrowserRouter>
-  );
-}
+export default App;
