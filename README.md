@@ -48,12 +48,12 @@ Smart Campus est une plateforme numérique intelligente pour la gestion d'une un
 ## 2️⃣ BACKEND (Le Serveur)
 * **Emplacement :** `/backend`
 * **Commande :** ```bash
-  node server.js
+  node server.js ```
 
 ## 3️⃣ FRONTEND (L'Interface)
 * **Emplacement :** /frontend
 * **Commande :** ```bash
-   npm run dev
+   npm run dev ```
 
 * **Lien :** Cliquez sur [http://localhost:5173](http://localhost:5173)
 
