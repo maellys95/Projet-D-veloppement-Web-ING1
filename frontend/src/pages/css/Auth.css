@@ -1,0 +1,223 @@
+/* Auth.css */
+.login-wrapper, .register-wrapper {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #07101f; /* Fond identique au body pour éviter les flashs */
+  padding-top: 100px; /* Pour passer SOUS la navbar */
+}
+
+.login-card, .register-card {
+  background: rgba(255, 255, 255, 0.05) !important; /* Force la visibilité */
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(83, 140, 196, 0.3);
+  padding: 40px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 450px;
+  z-index: 10; /* Assure que c'est au premier plan */
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Forcer la couleur des titres et labels */
+.login-card h2, .register-card h2, label {
+  color: #538cc4 !important;
+  display: block !important;
+}
+
+/* --- STRUCTURES DE BASE (COMMUNES) --- */
+.login-wrapper, .register-wrapper, .profile-wrapper {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #07101f; 
+  padding: 120px 20px 40px 20px; /* Espace pour la Navbar */
+}
+
+.login-card, .register-card, .profile-card-premium, .progression-box, .activity-section, .iot-activity {
+  background: rgba(255, 255, 255, 0.05) !important;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(83, 140, 196, 0.3);
+  border-radius: 16px;
+  padding: 30px;
+  color: white;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* --- TITRES ET LABELS --- */
+h2, h3, h4, label {
+  color: #538cc4 !important;
+  margin-bottom: 15px;
+  display: block;
+}
+
+/* --- SPÉCIFIQUE PROFILE (GRID SYSTEM) --- */
+.container {
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: 350px 1fr; /* Sidebar à gauche, contenu à droite */
+  gap: 20px;
+}
+
+/* Sidebar & Avatar */
+.profile-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.avatar-container {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 20px;
+}
+
+.avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  background: #538cc4;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #07101f;
+}
+
+.badge-role {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  background: #2ecc71; /* Vert pour étudiant */
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.badge-role.enseignant { background: #f1c40f; color: black; }
+
+/* Stats & Progress Bar */
+.user-stats {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0;
+  text-align: center;
+}
+
+.stat-value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+}
+
+.progress-bar {
+  background: rgba(255, 255, 255, 0.1);
+  height: 10px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.progress-bar .fill {
+  background: #538cc4;
+  height: 100%;
+  transition: width 0.5s ease-in-out;
+}
+
+/* --- LISTES ET ÉLÉMENTS D'ACTIVITÉ --- */
+.res-item {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-left: 4px solid #538cc4;
+}
+
+.res-status {
+  font-size: 0.8rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.res-status.confirmée { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+
+/* --- BUTTONS --- */
+.btn-auth, .btn-edit-profile, .btn-quiz-access, .btn-add-res {
+  background: #538cc4;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  width: 100%;
+  transition: 0.3s;
+}
+
+.btn-auth:hover, .btn-edit-profile:hover {
+  background: #3d6a96;
+  transform: translateY(-2px);
+}
+
+/* Style des inputs pour tout le système Auth (Login/Register/Profile) */
+input[type="text"], 
+input[type="email"], 
+input[type="password"], 
+select {
+  width: 100%;
+  padding: 12px;
+  margin-top: 5px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(83, 140, 196, 0.2);
+  border-radius: 8px;
+  color: white;
+  outline: none;
+  transition: 0.3s;
+}
+
+input:focus, select:focus {
+  border-color: #538cc4;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 10px rgba(83, 140, 196, 0.2);
+}
+
+.alert {
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.alert-danger {
+  background: rgba(231, 76, 60, 0.2);
+  color: #e74c3c;
+  border: 1px solid #e74c3c;
+}
+
+.alert-success {
+  background: rgba(46, 204, 113, 0.2);
+  color: #2ecc71;
+  border: 1px solid #2ecc71;
+}
+
+/* Correction pour le texte du footer */
+.auth-footer span:hover {
+  text-decoration: underline;
+}

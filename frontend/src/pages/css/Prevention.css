@@ -1,0 +1,187 @@
+/* --- CONTAINER PRINCIPAL --- */
+.prevention-wrapper {
+  padding: 120px 20px 60px; /* Plus d'espace en bas pour respirer */
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: 100vh;
+  color: white;
+}
+
+/* --- HEADER --- */
+.prevention-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.prevention-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+}
+
+.prevention-header h1 span {
+  color: #538cc4;
+}
+
+.prevention-header p {
+  font-size: 1.1rem;
+  opacity: 0.8;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* --- GRILLE DE CARTES --- */
+.prevention-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 30px;
+  margin-bottom: 60px;
+}
+
+.prevention-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px); /* Pour Safari */
+  border: 1px solid rgba(83, 140, 196, 0.3);
+  padding: 35px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.prevention-card:hover {
+  transform: translateY(-10px);
+  border-color: #538cc4;
+  background: rgba(83, 140, 196, 0.05);
+}
+
+.card-icon {
+  font-size: 3.5rem;
+  margin-bottom: 15px;
+}
+
+.prevention-card h3 {
+  color: #538cc4;
+  margin-bottom: 20px;
+  font-size: 1.4rem;
+}
+
+/* --- LISTES DE TIPS --- */
+.prevention-card ul {
+  list-style: none;
+  padding: 0;
+  text-align: left;
+}
+
+.prevention-card li {
+  color: #ecf0f1;
+  margin-bottom: 15px;
+  line-height: 1.5;
+  position: relative;
+  padding-left: 25px;
+}
+
+.prevention-card li::before {
+  content: "→"; /* Petite flèche pour faire plus technique/ingé */
+  color: #538cc4;
+  position: absolute;
+  left: 0;
+  font-weight: bold;
+}
+
+/* --- BOX IMPACT IOT --- */
+.iot-impact-box {
+  margin: 60px 0;
+  background: linear-gradient(135deg, rgba(83, 140, 196, 0.15), rgba(7, 16, 31, 0.8));
+  border: 1px dashed #538cc4; /* Bordure pointillée pour l'aspect "données" */
+  padding: 45px;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.iot-impact-box h3 {
+  color: white;
+  font-size: 1.8rem;
+  margin-bottom: 15px;
+}
+
+.btn-stats {
+  margin-top: 25px;
+  background: transparent;
+  color: #538cc4;
+  border: 2px solid #538cc4;
+  padding: 12px 35px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.btn-stats:hover {
+  background: #538cc4;
+  color: #07101f;
+}
+
+/* --- APPEL À L'ACTION QUIZ --- */
+.quiz-cta {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.cta-glass-card {
+  background: rgba(83, 140, 196, 0.15);
+  backdrop-filter: blur(15px);
+  border: 2px solid #538cc4;
+  border-radius: 24px;
+  padding: 40px;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  max-width: 900px;
+  width: 100%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.cta-icon {
+  font-size: 4rem;
+}
+
+.btn-launch-quiz {
+  background: #538cc4;
+  color: #07101f;
+  border: none;
+  padding: 18px 40px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-launch-quiz:hover {
+  background: #ffffff;
+  transform: scale(1.08);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 900px) {
+  .cta-glass-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 30px;
+  }
+  
+  .cta-icon {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .prevention-header h1 {
+    font-size: 1.8rem;
+  }
+  .prevention-card {
+    padding: 25px;
+  }
+}

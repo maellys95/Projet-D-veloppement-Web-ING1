@@ -1,0 +1,252 @@
+.navbar {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: space-between;
+  align-items: center;
+  height: 70px;
+  padding: 0 5%;
+  
+  /* Gris très léger et transparent */
+  background: rgba(30, 30, 30, 0.4) !important; 
+  backdrop-filter: blur(12px) !important;
+  
+  /* Bordure très fine */
+  border-bottom: 1px solid rgba(83, 140, 196, 0.1); 
+  
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+  box-sizing: border-box;
+}
+/* On divise la barre en 3 zones égales */
+.nav-left, .nav-right {
+  flex: 1; 
+  display: flex;
+  align-items: center;
+}
+
+.nav-center {
+  flex: 2; /* Plus large pour le menu ou le logo au milieu */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-right {
+  justify-content: flex-end;
+  gap: 15px;
+}
+
+/* Suppression du mélange Desktop/Mobile */
+@media (max-width: 850px) {
+  .desktop-only {
+    display: none !important;
+  }
+  .burger-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+  }
+}
+
+@media (min-width: 851px) {
+  .burger-menu {
+    display: none;
+  }
+  .logo {
+    display: none; /* Cache le logo central sur PC si tu préfères le menu */
+  }
+}
+
+/* --- Styles des icônes --- */
+.nav-icon-img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.navbar-logo-img {
+  height: 40px;
+  width: auto;
+}
+
+.bar {
+  width: 25px;
+  height: 3px;
+  background: #538cc4;
+  border-radius: 5px;
+}
+
+/* État de base : caché à gauche */
+
+.sidebar-menu {
+  position: fixed;
+  top: 0;
+  left: -300px;
+  width: 300px;
+  height: 100vh;
+ background: transparent; 
+ backdrop-filter: blur(20px);
+  z-index: 2000;
+  transition: all 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+  border-right: 1px solid rgba(250, 204, 21, 0.15);
+  display: flex;
+  flex-direction: column;
+  padding: 80px 30px;
+}
+
+/* État quand on clique sur le burger (isOpen devient vrai) */
+.sidebar-menu.active {
+  left: 0; /* On le ramène à sa place */
+}
+
+.icon-button {
+  background: none;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none; /* Supprime le cadre blanc au clic */
+}
+
+.icon-button:focus {
+  outline: none; /* Double sécurité pour certains navigateurs */
+}
+
+/* Si tu veux garder un indicateur d'accessibilité discret sans le cadre moche */
+.icon-button:focus-visible {
+  box-shadow: 0 0 0 2px rgba(250, 204, 21, 0.4); /* Halo jaune léger au lieu du cadre blanc */
+  border-radius: 50%;
+}
+
+/* ... */
+
+.sidebar-header {
+  padding: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-title {
+  color: #538cc4 ;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 0.9rem;
+}
+
+.close-sidebar {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 2rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.sidebar-links {
+  list-style: none;
+  padding: 40px 20px;
+  flex-grow: 1;
+}
+
+.sidebar-links li {
+  margin-bottom: 0px;
+}
+
+.sidebar-links a {
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  color: #e5e7eb;
+  text-decoration: none;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  gap: 5px;
+}
+
+.link-icon {
+  margin-right: 15px;
+  font-size: 1.2rem;
+}
+
+/* Effet au survol des liens sidebar */
+.sidebar-links a:hover {
+  color: #9fbcd9;
+  transform: translateX(8px);
+}
+
+.sidebar-footer {
+  padding: 30px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(250, 204, 21, 0.3), transparent);
+  margin: 15px 0;
+}
+
+.university-tag {
+  color: #538cc4;
+  font-weight: 600;
+  opacity: 0.8;
+}
+
+@media (min-width: 851px) {
+  .burger-menu, .logo-mobile {
+    display: none;
+  }
+
+  /* Liste de liens simple et alignée */
+  .nav-links.desktop-only {
+    display: flex;
+    gap: 30px; /* Espace généreux entre les textes */
+    list-style: none;
+    background: none; /* On enlève le fond pilule */
+    border: none;     /* On enlève la bordure */
+    padding: 0;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    color: #e5e7eb;
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 10px 0;
+    position: relative; /* Pour l'effet de soulignement */
+    transition: color 0.3s ease;
+  }
+
+  /* Effet de survol : simple changement de couleur */
+  .nav-links a:hover {
+    color: #9fbcd9;
+  }
+
+  /* Soulignement élégant pour le lien actif au lieu du fond plein */
+  .nav-links a.active-link {
+    color: #538cc4 ;
+    font-weight: 600;
+  }
+
+  .nav-links a.active-link::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #538cc4;
+    border-radius: 2px;
+  }
+}
+

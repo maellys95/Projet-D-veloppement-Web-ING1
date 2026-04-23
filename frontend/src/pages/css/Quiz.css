@@ -1,0 +1,111 @@
+.quiz-wrapper {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #07101f;
+  padding: 120px 20px 40px;
+}
+
+.quiz-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(83, 140, 196, 0.3);
+  border-radius: 20px;
+  padding: 40px;
+  width: 100%;
+  max-width: 600px;
+  color: white;
+  text-align: center;
+}
+
+.question-header h3 {
+  color: #538cc4;
+  margin-bottom: 10px;
+}
+
+.question-header span {
+  color: white;
+  font-size: 0.9rem;
+  opacity: 0.6;
+}
+
+.progress-bar-container {
+  background: rgba(255, 255, 255, 0.1);
+  height: 8px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  background: #538cc4;
+  height: 100%;
+  transition: width 0.4s ease;
+}
+
+.question-text {
+  font-size: 1.3rem;
+  font-weight: 500;
+  margin-bottom: 30px;
+  min-height: 80px;
+}
+
+.answer-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.answer-button {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(83, 140, 196, 0.2);
+  padding: 15px;
+  border-radius: 10px;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.answer-button:hover:not(:disabled) {
+  background: rgba(83, 140, 196, 0.1);
+  border-color: #538cc4;
+  transform: translateX(5px);
+}
+
+.answer-button.correct {
+  background: rgba(46, 204, 113, 0.3) !important;
+  border-color: #2ecc71 !important;
+}
+
+.answer-button.incorrect {
+  background: rgba(231, 76, 60, 0.3) !important;
+  border-color: #e74c3c !important;
+}
+
+/* --- Section Score --- */
+.score-circle {
+    width: 120px;
+    height: 120px;
+    border: 4px solid #538cc4;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 30px auto;
+}
+
+.score-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #538cc4;
+}
+
+.quiz-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}

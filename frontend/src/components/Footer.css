@@ -1,0 +1,78 @@
+/* Footer.css - Compact & Harmonisé */
+.footer-premium {
+  background: rgba(30, 30, 30, 0.4); 
+  backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(83, 140, 196, 0.1); 
+  /* Padding réduit : 40px en haut au lieu de 60px */
+  padding: 40px 0 20px 0; 
+  color: #e5e7eb;
+  margin-top: auto;
+}
+
+.footer-container {
+  width: min(1100px, 92%);
+  margin: 0 auto;
+}
+
+.footer-grid {
+  display: grid;
+  /* Grille plus équilibrée pour éviter les grands vides */
+  grid-template-columns: 1.5fr 1fr 1.2fr; 
+  gap: 30px;
+  margin-bottom: 30px;
+}
+
+.footer-column h4 {
+  color: #538cc4;
+  font-size: 1rem; /* Titres légèrement plus petits */
+  margin-bottom: 15px; /* Espace réduit sous le titre */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.footer-logo {
+  font-size: 1.3rem; /* Logo plus discret */
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.footer-column p, .footer-column li {
+  line-height: 1.4; /* Interligne plus serré */
+  font-size: 0.9rem; /* Texte plus fin */
+  opacity: 0.7;
+}
+
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-column li {
+  margin-bottom: 8px; /* Moins d'espace entre les liens */
+  transition: all 0.3s ease;
+}
+
+.footer-column li:hover {
+  color: #9fbcd9;
+  transform: translateX(4px);
+  opacity: 1;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  opacity: 0.5;
+}
+
+@media (max-width: 768px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 20px;
+  }
+}

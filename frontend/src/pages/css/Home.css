@@ -1,0 +1,198 @@
+/* Home.css - Style Premium & Mobile-First (Harmonisé) */
+.home-wrapper { width: 100%; }
+
+.container { width: min(1100px, 92%); margin-inline: auto; }
+
+/* Hero Full Screen */
+.hero-fullscreen {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+.hero-background-img {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
+  
+  transform: scale(1.1);
+  animation: slow-zoom 20s linear infinite alternate;
+}
+
+@keyframes slow-zoom { 
+  from { transform: scale(1); } 
+  to { transform: scale(1.1); } 
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  z-index: 0;
+}
+
+.hero-content { position: relative; z-index: 1; padding: 0 20px; }
+
+.hero-content h2 { 
+  font-size: clamp(1.8rem, 5vw, 3.5rem); 
+  color: #538cc4; 
+  margin-bottom: 20px; 
+  
+}
+
+/* --- STYLE DE LIEN HARMONISÉ (link-more-style) --- */
+.link-action-premium {
+  color: #538cc4;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0.9;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+}
+
+.link-action-premium:hover {
+  opacity: 1;
+  color: #9fbcd9;
+  text-underline-offset: 10px;
+}
+
+.link-action-premium .arrow {
+  transition: transform 0.3s ease;
+}
+
+.link-action-premium:hover .arrow {
+  transform: translateX(8px);
+}
+
+/* Barre de recherche Glassmorphism */
+.search-panel-premium {
+  display: flex;
+  flex-wrap: wrap;
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(15px);
+  padding: 15px;
+  border-radius: 16px;
+  border: 1px solid rgba(83, 140, 196, 0.2);
+  gap: 12px;
+  max-width: 900px;
+  margin: 30px auto 40px;
+  align-items: center;
+}
+
+.search-group { flex: 2; min-width: 200px; }
+.filter-group { flex: 2; display: flex; gap: 10px; min-width: 250px; }
+
+.search-input, .search-select {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 10px 15px;
+  color: #adb9dd;
+  font-size: 0.9rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.search-button {
+  flex: 1;
+  min-width: 120px;
+  background: #538cc4;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.section-full { padding: 80px 0; }
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+  align-items: stretch; 
+}
+
+.progress-bar {
+  background: rgba(255, 255, 255, 0.1);
+  height: 8px;
+  border-radius: 10px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.progress-bar .fill {
+  background: #538cc4;
+  height: 100%;
+  border-radius: 10px;
+}
+
+.text-center { text-align: center; width: 100%; }
+.mt-5 { margin-top: 3rem; }
+
+@media (max-width: 768px) {
+  .search-panel-premium { flex-direction: column; }
+  .hero-fullscreen { height: 100dvh; }
+}
+
+/* Home.css */
+
+/* Conteneur pour centrer les liens d'action */
+.more-info-container {
+  text-align: center;
+  margin-top: 40px;
+  width: 100%;
+}
+
+/* Style unique harmonisé pour tous les boutons d'action */
+.link-more {
+  color: #538cc4;
+  font-size: 1.1rem; /* Légèrement plus grand pour la lisibilité */
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0.9;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.link-more:hover {
+  opacity: 1;
+  color: #9fbcd9;
+  text-underline-offset: 8px;
+}
+
+/* On garde le reste de ton fichier Home.css inchangé */
+
+.section-title {
+  text-align: center; /* Force l'alignement à gauche pour tous */
+  margin-bottom: 30px;
+}
+
+.section-title h2 {
+  color: #538cc4; /* Ton bleu acier signature */
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
