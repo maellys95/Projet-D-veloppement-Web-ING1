@@ -196,3 +196,21 @@
   font-size: 2rem;
   margin-bottom: 10px;
 }
+
+.smart-badge {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.smart-badge.free {
+  background: rgba(69, 201, 120, 0.2);
+  color: #45c978;
+}
+
+.smart-badge.busy {
+  background: rgba(255, 80, 80, 0.2);
+  color: #ff5c5c;
+}

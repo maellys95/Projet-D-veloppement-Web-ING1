@@ -52,14 +52,14 @@ const Home = () => {
             <article className="smart-card">
               <div className="smart-card-icon">🏢</div>
               <h3>Amphi Condorcet</h3>
-              <p>Statut : <span className="smart-badge">Occupé</span></p>
+              <p>Statut : <span className="smart-badge busy">Occupé</span></p>
               <div className="progress-bar"><div className="fill" style={{width: '85%'}}></div></div>
             </article>
 
             <article className="smart-card">
               <div className="smart-card-icon">📖</div>
               <h3>Bibliothèque</h3>
-              <p>Statut : <span className="smart-badge">Libre</span></p>
+              <p>Statut : <span className="smart-badge free">Libre</span></p>
               <div className="progress-bar"><div className="fill" style={{width: '15%'}}></div></div>
             </article>
           </div>
