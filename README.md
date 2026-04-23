@@ -8,21 +8,7 @@
 
 Smart Campus est une plateforme numérique intelligente pour la gestion d'une université connectée. Elle centralise la surveillance des objets IoT (thermostats, caméras, éclairages, capteurs…), les actualités du campus, et les outils de gestion des ressources.
 
----
-
-## 🏗️ Stack Technique
-
-| Couche     | Technologie             |
-|------------|-------------------------|
-| Frontend   | React 18 + Vite         |
-| Backend    | Node.js + Express       |
-| Base de données | MySQL              |
-| Auth       | JWT + bcrypt            |
-| Email      | Nodemailer              |
-| Charts     | Recharts                |
-| Icons      | Lucide React            |
-
----
+--- 
 
 # ⚡ GUIDE DE LANCEMENT RAPIDE (Smart Campus)
 
@@ -66,6 +52,21 @@ Smart Campus est une plateforme numérique intelligente pour la gestion d'une un
 * **"Command not found" ?** Vérifie que tu as bien fait l'étape **0️⃣**.
 
 
+---
+
+## 🏗️ Stack Technique
+
+| Couche     | Technologie             |
+|------------|-------------------------|
+| Frontend   | React 18 + Vite         |
+| Backend    | Node.js + Express       |
+| Base de données | MySQL              |
+| Auth       | JWT + bcrypt            |
+| Email      | Nodemailer              |
+| Charts     | Recharts                |
+| Icons      | Lucide React            |
+
+---
 
 
 ## 🚀 Installation & Lancement
