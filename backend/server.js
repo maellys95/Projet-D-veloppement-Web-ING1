@@ -106,6 +106,32 @@ app.post('/login', (req, res) => {
   );
 });
 
+
+
+// Route pour l'inscription
+app.post('/register', async (req, res) => {
+  const { pseudo, email, password, first_name, last_name, member_type } = req.body;
+
+  try {
+    // On crypte le mot de passe avant de l'envoyer en base SQL
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const query = `INSERT INTO users (pseudo, email, password_hash, first_name, last_name, member_type, is_approved) 
+                   VALUES (?, ?, ?, ?, ?, ?, 0)`;
+
+    db.query(query, [pseudo, email, hashedPassword, first_name, last_name, member_type], (err, result) => {
+      if (err) {
+        if (err.code === 'ER_DUP_ENTRY') return res.status(400).json({ message: 'Cet email est déjà utilisé.' });
+        return res.status(500).json({ error: err.message });
+      }
+      res.status(201).json({ message: 'Utilisateur créé avec succès !' });
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Erreur lors du traitement.' });
+  }
+});
+
 // ── 404
 app.use((_req, res) => res.status(404).json({ message: 'Route introuvable.' }));
 
