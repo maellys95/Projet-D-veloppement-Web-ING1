@@ -84,14 +84,14 @@ const Register = () => {
 
           <div className="input-group">
             <label>Email Universitaire</label>
-            <input type="email" name="email" placeholder="prenom.nom@etu.cy-tech.fr" onChange={handleChange} required />
+            <input type="email" name="email" placeholder="prenom.nom@etu.cyu.fr" onChange={handleChange} required />
           </div>
 
           <div className="input-group">
             <label>Type de membre</label>
             <select name="memberType" value={formData.memberType} onChange={handleChange}>
-              <option value="Étudiant">Étudiant (@etu.cy-tech.fr)</option>
-              <option value="Enseignant">Enseignant (@cy-tech.fr)</option>
+              <option value="Étudiant">Étudiant (@etu.cyu.fr)</option>
+              <option value="Enseignant">Enseignant (@cyu.fr)</option>
               <option value="Administratif">Administratif</option>
             </select>
           </div>
