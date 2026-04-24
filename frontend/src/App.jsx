@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Search from './pages/Search';
 import DeviceDetail from './pages/DeviceDetail';
 import NewsPage from './pages/News';
+import Events from './pages/Events';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
@@ -25,6 +26,7 @@ function App() {
         <Route path="/search" element={<Search />} />
         <Route path="/device/:id" element={<DeviceDetail />} />
         <Route path="/news" element={<NewsPage />} />
+        <Route path="/events" element={<Events />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<Profile />} />

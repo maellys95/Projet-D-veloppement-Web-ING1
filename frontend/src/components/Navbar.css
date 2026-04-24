@@ -52,12 +52,15 @@
 }
 
 @media (min-width: 851px) {
-  .burger-menu {
-    display: none;
-  }
-  .logo {
-    display: none; /* Cache le logo central sur PC si tu préfères le menu */
-  }
+    .burger-menu {
+        display: none;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
 }
 
 /* --- Styles des icônes --- */
@@ -247,6 +250,18 @@
     height: 2px;
     background: #538cc4;
     border-radius: 2px;
+  }
+  .logo img,
+
+  .nav-left {
+      display: flex;
+      align-items: center;
+      z-index: 10;
+  }
+  .navbar-logo-img {
+      width: 140px;
+      height: auto;
+      display: block;
   }
 }
 

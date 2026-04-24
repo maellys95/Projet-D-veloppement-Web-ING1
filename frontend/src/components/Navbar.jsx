@@ -28,29 +28,24 @@ function Navbar() {
   return (
     <>
       <nav className="navbar">
-        {/* --- ZONE GAUCHE --- */}
-        <div className="nav-left">
-          <div className="burger-menu" onClick={() => setIsOpen(!isOpen)}>
-            <div className={`bar ${isOpen ? "open" : ""}`}></div>
-            <div className={`bar ${isOpen ? "open" : ""}`}></div>
-            <div className={`bar ${isOpen ? "open" : ""}`}></div>
+          {/* --- ZONE GAUCHE --- */}
+          <div className="nav-left">
+              <div className="logo desktop-only" onClick={() => navigate('/')}>
+                  <img src={logo} alt="Smart Campus" className="navbar-logo-img" />
+              </div>
           </div>
 
-          <div className="logo desktop-only" onClick={() => navigate('/')}>
-            <img src={logo} alt="Smart Campus" className="navbar-logo-img" />
-          </div>
-        </div>
 
         {/* --- ZONE CENTRE --- */}
         <div className="nav-center">
-          <div className="logo-mobile" onClick={() => navigate('/')}>
-            <img src={logo} alt="Smart Campus" className="navbar-logo-img" />
-          </div>
+
+
           
           <ul className="nav-links desktop-only">
             <li><Link to="/" className={getActiveClass("/")}>Accueil</Link></li>
             <li><Link to="/rooms" className={getActiveClass("/rooms")}>Salles</Link></li>
             <li><Link to="/news" className={getActiveClass("/news")}>Actualités</Link></li>
+            <li><Link to="/events" className={getActiveClass("/events")}>Événements</Link></li>
             <li><Link to="/prevention" className={getActiveClass("/prevention")}>Sensibilisation</Link></li>
           </ul>
         </div>
@@ -84,6 +79,7 @@ function Navbar() {
           <li><Link to="/" onClick={() => setIsOpen(false)}>🏠 Accueil</Link></li>
           <li><Link to="/rooms" onClick={() => setIsOpen(false)}>🏢 Salles</Link></li>
           <li><Link to="/news" onClick={() => setIsOpen(false)}>📰 Actualités</Link></li>
+
           <li><Link to="/prevention" onClick={() => setIsOpen(false)}>🛡️ Sensibilisation</Link></li>
           
           {/* --- NOUVEAU : LIEN PROFIL/CO DANS LA SIDEBAR --- */}
