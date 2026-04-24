@@ -27,7 +27,10 @@ const Home = () => {
     <div className="home-wrapper">
       {/* 1. HERO SECTION */}
       <section id="hero" className="hero-fullscreen">
-        <div className="hero-background-img" style={{ backgroundImage: `url(${campusImg})` }}></div>
+        <div
+          className="hero-background-img"
+          style={{ backgroundImage: `url(${campusImg})` }}
+        ></div>
         <div className="hero-overlay"></div>
         <div className="hero-content reveal">
           <h2>SMART CAMPUS : CY TECH</h2>
