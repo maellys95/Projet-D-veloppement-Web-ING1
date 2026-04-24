@@ -43,45 +43,52 @@ const Login = () => {
   };
 
   return (
-    <div className="login-wrapper">
-      <div className="login-card">
-        <h2>Connexion <span>SmartCampus</span></h2>
-        <p>Accédez aux salles et aux données IoT du campus.</p>
+      <div className="login-page">
+          <div className="login-card">
+              <div className="login-card-header">
+                  <h2>Connexion</h2>
+                  <p>SmartCampus CY Tech</p>
+              </div>
 
-        {error && <div className="error-alert">{error}</div>}
+              {error && <div className="error-alert">{error}</div>}
 
-        <form onSubmit={handleSubmit}>
-          <div className="input-group">
-            <label>Email Universitaire</label>
-            <input 
-              type="email" 
-              placeholder="prenom.nom@etu.cy-tech.fr"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required 
-            />
+              <form onSubmit={handleSubmit} className="login-form">
+                  <div className="input-group">
+                      <label>Email universitaire</label>
+                      <input
+                          type="email"
+                          placeholder="prenom.nom@etu.cy-tech.fr"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          required
+                      />
+                  </div>
+
+                  <div className="input-group">
+                      <label>Mot de passe</label>
+                      <input
+                          type="password"
+                          placeholder="••••••••"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
+                      />
+                  </div>
+
+                  <button type="submit" className="btn-login">
+                      Se connecter
+                  </button>
+              </form>
+
+              <p className="register-footer">
+                  Nouveau ?{" "}
+                  <span onClick={() => navigate("/register")}>
+                      Créer un compte
+                  </span>
+              </p>
           </div>
-
-          <div className="input-group">
-            <label>Mot de passe</label>
-            <input 
-              type="password" 
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required 
-            />
-          </div>
-
-          <button type="submit" className="btn-login">S'identifier</button>
-        </form>
-
-        <p className="register-footer">
-          Nouveau ? <span onClick={() => navigate('/register')}>Créer un compte</span>
-        </p>
       </div>
-    </div>
-  );
+    );
 };
 
 export default Login;
