@@ -5,6 +5,7 @@ const cors    = require('cors');
 const path    = require('path');
 const mysql = require('mysql2');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 
 const app = express();
 const db = mysql.createConnection({
@@ -96,8 +97,13 @@ app.post('/login', (req, res) => {
 
       const user = results[0];
 
-      const isMatch = await bcrypt.compare(password, user.password_hash);
+      if (!user.is_verified) {
+        return res.status(403).json({
+          message: 'Tu dois confirmer ton email avant de te connecter.'
+        });
+      }
 
+      const isMatch = await bcrypt.compare(password, user.password_hash);
       if (!isMatch) {
         return res.status(401).json({ message: 'Email ou mot de passe incorrect' });
       }
@@ -112,6 +118,7 @@ res.json({
     last_name: user.last_name,
     member_type: user.member_type,
     points: user.points,
+    is_verified: user.is_verified,
     is_approved: user.is_approved // Important pour savoir s'il peut agir
   }
 });
@@ -140,26 +147,47 @@ app.post('/register', async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const query = `INSERT INTO users (pseudo, email, password_hash, first_name, last_name, member_type, is_approved, points) 
-                   VALUES (?, ?, ?, ?, ?, ?, 0, 0)`;
+    const verificationToken = crypto.randomBytes(32).toString('hex');
+    const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
-    db.query(query, [pseudo, email, hashedPassword, first_name, last_name, member_type], async (err, result) => {
+    const query = `
+      INSERT INTO users 
+      (pseudo, email, password_hash, first_name, last_name, member_type, is_verified, verify_token, verify_token_expires, is_approved, points) 
+      VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?, 0, 0)
+    `;
+
+    db.query(
+      query,
+      [pseudo, email, hashedPassword, first_name, last_name, member_type, verificationToken, verificationExpires],
+      async (err, result) => {
       if (err) {
         if (err.code === 'ER_DUP_ENTRY') return res.status(400).json({ message: 'Cet email ou pseudo est déjà utilisé.' });
         return res.status(500).json({ error: err.message });
       }
 
       // --- ENVOI DU MAIL DE BIENVENUE ---
+      const confirmUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/confirm-email?token=${verificationToken}`;
       const mailOptions = {
         from: `"SmartCampus" <${process.env.SMTP_USER}>`,
         to: email,
-        subject: 'Bienvenue sur Smart Campus - Inscription reçue',
+        subject: 'Confirme ton inscription SmartCampus',
         html: `
           <div style="font-family: Arial, sans-serif; color: #1e293b;">
             <h2>Bonjour ${first_name} !</h2>
-            <p>Ton inscription sur <strong>SmartCampus</strong> a bien été enregistrée.</p>
-            <p>Ton compte est actuellement <strong>en attente d'approbation</strong> par un administrateur.</p>
-            <p>Tu recevras un nouvel email dès que tu pourras accéder aux services IoT du campus.</p>
+
+            <p>Merci pour ton inscription sur <strong>SmartCampus</strong>.</p>
+
+            <p>Pour activer ton compte, clique sur le bouton ci-dessous :</p>
+
+            <p>
+              <a href="${confirmUrl}" 
+                style="display:inline-block; padding:12px 20px; background:#2563eb; color:white; text-decoration:none; border-radius:6px;">
+                Confirmer mon inscription
+              </a>
+            </p>
+
+            <p>Ce lien expire dans 24 heures.</p>
+
             <br>
             <p>L'équipe SmartCampus.</p>
           </div>
@@ -287,6 +315,50 @@ app.get('/news', (req, res) => {
 
 // ── HEALTH CHECK
 app.get('/api/health', (_req, res) => res.json({ status: 'ok', timestamp: new Date() }));
+
+// ── CONFIRMATION EMAIL
+app.get('/confirm-email', (req, res) => {
+  const { token } = req.query;
+
+  if (!token) {
+    return res.status(400).json({ message: 'Token manquant.' });
+  }
+
+  const query = `
+    SELECT * FROM users 
+    WHERE verify_token = ? 
+    AND verify_token_expires > NOW()
+    LIMIT 1
+  `;
+
+  db.query(query, [token], (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+
+    if (results.length === 0) {
+      return res.status(400).json({ message: 'Lien invalide ou expiré.' });
+    }
+
+    const user = results[0];
+
+    const updateQuery = `
+      UPDATE users 
+      SET is_verified = 1,
+          verify_token = NULL,
+          verify_token_expires = NULL
+      WHERE id = ?
+    `;
+
+    db.query(updateQuery, [user.id], (err) => {
+      if (err) return res.status(500).json({ error: err.message });
+
+      res.json({
+        message: 'Email confirmé avec succès. Tu peux maintenant te connecter.'
+      });
+    });
+  });
+});
+
+
 
 // ── 404
 app.use((_req, res) => res.status(404).json({ message: 'Route introuvable.' }));

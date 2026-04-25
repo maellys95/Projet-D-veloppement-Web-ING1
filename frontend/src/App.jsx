@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
 import Home from "./pages/Home";
+import ConfirmEmail from "./pages/ConfirmEmail";
 
 import News from "./pages/News";
 
@@ -46,6 +47,7 @@ function App() {
 
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/confirm-email" element={<ConfirmEmail />} />
             <Route path="/profile" element={<Profile />} />
             
             <Route path="/quiz" element={<Quiz />} />

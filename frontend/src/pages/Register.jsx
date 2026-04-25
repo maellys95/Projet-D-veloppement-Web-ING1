@@ -101,7 +101,7 @@ const Register = () => {
 
       const data = await response.json();
       if (response.ok) {
-        setMessage({ type: 'success', text: 'Inscription réussie ! En attente d\'approbation.' });
+        setMessage({ type: 'success', text: 'Inscription réussie ! Vérifie ton email pour confirmer ton compte.'});
         setTimeout(() => navigate('/login'), 3000);
       } else {
         setMessage({ type: 'error', text: data.message || 'Erreur lors de l\'inscription.' });
