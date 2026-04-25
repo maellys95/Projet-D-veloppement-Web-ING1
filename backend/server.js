@@ -358,6 +358,87 @@ app.get('/confirm-email', (req, res) => {
   });
 });
 
+// ── MOT DE PASSE OUBLIÉ
+app.post('/forgot-password', (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: 'Email requis.' });
+  }
+
+  const resetToken = crypto.randomBytes(32).toString('hex');
+  const resetExpires = new Date(Date.now() + 15 * 60 * 1000);
+
+  db.query(
+    'UPDATE users SET reset_token = ?, reset_token_expires = ? WHERE email = ?',
+    [resetToken, resetExpires, email],
+    async (err, result) => {
+      if (err) return res.status(500).json({ error: err.message });
+
+      const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password?token=${resetToken}`;
+
+      const mailOptions = {
+        from: `"SmartCampus" <${process.env.SMTP_USER}>`,
+        to: email,
+        subject: 'Réinitialisation de ton mot de passe SmartCampus',
+        html: `
+          <div style="font-family: Arial, sans-serif; color: #1e293b;">
+            <h2>Réinitialisation du mot de passe</h2>
+            <p>Tu as demandé à réinitialiser ton mot de passe.</p>
+            <p>
+              <a href="${resetUrl}" style="display:inline-block; padding:12px 20px; background:#2563eb; color:white; text-decoration:none; border-radius:6px;">
+                Réinitialiser mon mot de passe
+              </a>
+            </p>
+            <p>Ce lien expire dans 15 minutes.</p>
+            <p>Si tu n'es pas à l'origine de cette demande, ignore cet email.</p>
+          </div>
+        `
+      };
+
+      try {
+        await transporter.sendMail(mailOptions);
+        res.json({ message: 'Un email de réinitialisation a été envoyé.' });
+      } catch (mailError) {
+        res.status(500).json({ message: 'Erreur lors de l’envoi de l’email.' });
+      }
+    }
+  );
+});
+
+// ── RÉINITIALISER LE MOT DE PASSE
+app.post('/reset-password', async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  if (!token || !newPassword) {
+    return res.status(400).json({ message: 'Token et nouveau mot de passe requis.' });
+  }
+
+  db.query(
+    'SELECT * FROM users WHERE reset_token = ? AND reset_token_expires > NOW() LIMIT 1',
+    [token],
+    async (err, results) => {
+      if (err) return res.status(500).json({ error: err.message });
+
+      if (results.length === 0) {
+        return res.status(400).json({ message: 'Lien invalide ou expiré.' });
+      }
+
+      const user = results[0];
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+      db.query(
+        'UPDATE users SET password_hash = ?, reset_token = NULL, reset_token_expires = NULL WHERE id = ?',
+        [hashedPassword, user.id],
+        (err) => {
+          if (err) return res.status(500).json({ error: err.message });
+
+          res.json({ message: 'Mot de passe modifié avec succès.' });
+        }
+      );
+    }
+  );
+});
 
 
 // ── 404

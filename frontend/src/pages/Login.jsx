@@ -83,6 +83,9 @@ const Login = () => {
             </div>
 
             <button type="submit" className="btn-login">S'identifier</button>
+            <p>
+              <a href="/forgot-password">Mot de passe oublié ?</a>
+            </p>
           </form>
 
           <p className="register-footer">
