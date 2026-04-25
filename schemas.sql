@@ -4,21 +4,21 @@
 -- ============================================================
 
 DROP DATABASE IF EXISTS smart_campus;
-DROP TABLE IF EXISTS notifications;
-DROP TABLE IF EXISTS news;
-DROP TABLE IF EXISTS room_presence_logs;
-DROP TABLE IF EXISTS room_occupancy;
-DROP TABLE IF EXISTS room_reservations;
-DROP TABLE IF EXISTS device_data;
-DROP TABLE IF EXISTS device_attributes;
-DROP TABLE IF EXISTS devices;
-DROP TABLE IF EXISTS services;
-DROP TABLE IF EXISTS events;
-DROP TABLE IF EXISTS connection_logs;
-DROP TABLE IF EXISTS user_actions;
-DROP TABLE IF EXISTS rooms;
-DROP TABLE IF EXISTS device_categories;
-DROP TABLE IF EXISTS users;
+-- DROP TABLE IF EXISTS notifications;
+-- DROP TABLE IF EXISTS news;
+-- DROP TABLE IF EXISTS room_presence_logs;
+-- DROP TABLE IF EXISTS room_occupancy;
+-- TABLE IF EXISTS room_reservations;
+-- DROP TABLE IF EXISTS device_data;
+-- DROP TABLE IF EXISTS device_attributes;
+-- DROP TABLE IF EXISTS devices;
+-- DROP TABLE IF EXISTS services;
+-- DROP TABLE IF EXISTS events;
+-- DROP TABLE IF EXISTS connection_logs;
+-- DROP TABLE IF EXISTS user_actions;
+-- DROP TABLE IF EXISTS rooms;
+-- DROP TABLE IF EXISTS device_categories;
+-- DROP TABLE IF EXISTS users;
 -- Crée la base de données smart_campus si elle n'existe pas
 CREATE DATABASE IF NOT EXISTS smart_campus
 -- Définit l'encodage pour gérer accents, caractères spéciaux, etc.
@@ -73,12 +73,30 @@ CREATE TABLE users (
 
   -- Niveau d'expérience de l'utilisateur
   experience_level  ENUM('débutant','intermédiaire','avancé','expert') DEFAULT 'débutant',
+-- Nombre de points accumulés
+points            DECIMAL(10,2) DEFAULT 0.00,
 
-  -- Nombre de points accumulés
-  points            DECIMAL(10,2) DEFAULT 0.00,
+-- Indique si l'utilisateur a confirmé son email
+is_verified       TINYINT(1) DEFAULT 0,
 
-  -- Date de création du compte
-  created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+-- Token utilisé pour confirmer l'email
+verify_token      VARCHAR(255) DEFAULT NULL,
+
+-- Date d'expiration du token de confirmation
+verify_token_expires DATETIME DEFAULT NULL,
+
+-- Indique si l'utilisateur est autorisé à utiliser la plateforme
+is_approved       TINYINT(1) DEFAULT 1,
+
+-- Token utilisé pour réinitialiser le mot de passe
+reset_token       VARCHAR(255) DEFAULT NULL,
+
+-- Date d'expiration du token de réinitialisation
+reset_token_expires DATETIME DEFAULT NULL,
+
+-- Date de création du compte
+created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ 
 
   -- Date de dernière mise à jour du compte
   updated_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
