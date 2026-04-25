@@ -1,3 +1,4 @@
+const transporter = require('./mailer');
 require('dotenv').config();
 const express = require('express');
 const cors    = require('cors');
@@ -101,41 +102,82 @@ app.post('/login', (req, res) => {
         return res.status(401).json({ message: 'Email ou mot de passe incorrect' });
       }
 
-      res.json({
-        message: 'Connexion réussie',
-        user: {
-          id: user.id,
-          pseudo: user.pseudo,
-          email: user.email
-        }
-      });
+res.json({
+  message: 'Connexion réussie',
+  user: {
+    id: user.id,
+    pseudo: user.pseudo,
+    email: user.email,
+    first_name: user.first_name,
+    last_name: user.last_name,
+    member_type: user.member_type,
+    points: user.points,
+    is_approved: user.is_approved // Important pour savoir s'il peut agir
+  }
+});
     }
   );
 });
 
 
 
-// Route pour l'inscription
 app.post('/register', async (req, res) => {
+  // On récupère TOUS les champs nécessaires pour ta table SQL
   const { pseudo, email, password, first_name, last_name, member_type } = req.body;
 
+  // --- VERIFICATION SERVEUR (Double sécurité) ---
+  if (!first_name || !last_name || !email || !password) {
+    return res.status(400).json({ message: 'Tous les champs obligatoires doivent être remplis.' });
+  }
+
+  // Regex pour n'accepter que des lettres (comme dans ton projet PHP)
+  const nameRegex = /^[A-Za-zÀ-ÿ\s\-']+$/;
+  if (!nameRegex.test(first_name) || !nameRegex.test(last_name)) {
+    return res.status(400).json({ message: 'Le nom et le prénom ne doivent contenir que des lettres.' });
+  }
+
   try {
-    // On crypte le mot de passe avant de l'envoyer en base SQL
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const query = `INSERT INTO users (pseudo, email, password_hash, first_name, last_name, member_type, is_approved) 
-                   VALUES (?, ?, ?, ?, ?, ?, 0)`;
+    const query = `INSERT INTO users (pseudo, email, password_hash, first_name, last_name, member_type, is_approved, points) 
+                   VALUES (?, ?, ?, ?, ?, ?, 0, 0)`;
 
-    db.query(query, [pseudo, email, hashedPassword, first_name, last_name, member_type], (err, result) => {
+    db.query(query, [pseudo, email, hashedPassword, first_name, last_name, member_type], async (err, result) => {
       if (err) {
-        if (err.code === 'ER_DUP_ENTRY') return res.status(400).json({ message: 'Cet email est déjà utilisé.' });
+        if (err.code === 'ER_DUP_ENTRY') return res.status(400).json({ message: 'Cet email ou pseudo est déjà utilisé.' });
         return res.status(500).json({ error: err.message });
       }
-      res.status(201).json({ message: 'Utilisateur créé avec succès !' });
+
+      // --- ENVOI DU MAIL DE BIENVENUE ---
+      const mailOptions = {
+        from: `"SmartCampus" <${process.env.SMTP_USER}>`,
+        to: email,
+        subject: 'Bienvenue sur Smart Campus - Inscription reçue',
+        html: `
+          <div style="font-family: Arial, sans-serif; color: #1e293b;">
+            <h2>Bonjour ${first_name} !</h2>
+            <p>Ton inscription sur <strong>SmartCampus</strong> a bien été enregistrée.</p>
+            <p>Ton compte est actuellement <strong>en attente d'approbation</strong> par un administrateur.</p>
+            <p>Tu recevras un nouvel email dès que tu pourras accéder aux services IoT du campus.</p>
+            <br>
+            <p>L'équipe SmartCampus.</p>
+          </div>
+        `
+      };
+
+      try {
+        await transporter.sendMail(mailOptions);
+        console.log(`✅ Mail de confirmation envoyé à ${email}`);
+        res.status(201).json({ message: 'Utilisateur créé et mail de confirmation envoyé !' });
+      } catch (mailError) {
+        console.error('❌ Erreur lors de l\'envoi du mail :', mailError);
+        // On renvoie quand même 201 car l'utilisateur EST créé en base
+        res.status(201).json({ message: 'Utilisateur créé, mais l\'envoi du mail a échoué.' });
+      }
     });
   } catch (error) {
-    res.status(500).json({ message: 'Erreur lors du traitement.' });
+    res.status(500).json({ message: 'Erreur lors du traitement du compte.' });
   }
 });
 

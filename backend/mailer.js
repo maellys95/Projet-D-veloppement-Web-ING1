@@ -12,3 +12,6 @@ const transporter = nodemailer.createTransport({
 });
 
 module.exports = transporter;
+
+// mailer.js
+console.log("Tentative de connexion SMTP sur :", process.env.SMTP_HOST);

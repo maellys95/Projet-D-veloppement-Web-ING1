@@ -1,0 +1,76 @@
+.room-detail-page {
+  min-height: 100vh;
+  padding: 40px 6%;
+  background: #f6f8fc;
+}
+
+.back-button {
+  margin-bottom: 24px;
+  border: none;
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 10px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.room-detail-card {
+  background: white;
+  border-radius: 24px;
+  padding: 30px;
+  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.1);
+  max-width: 900px;
+}
+
+.room-detail-top {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.room-status {
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+.room-detail-card h1 {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.room-description {
+  color: #64748b;
+  margin-bottom: 28px;
+}
+
+.room-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.room-info-grid div {
+  background: #f8fafc;
+  border-radius: 18px;
+  padding: 18px;
+}
+
+.room-info-grid h3 {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin-bottom: 6px;
+}
+
+.room-detail-loading {
+  padding: 40px;
+}
+
+@media (max-width: 700px) {
+  .room-info-grid {
+    grid-template-columns: 1fr;
+  }
+}
