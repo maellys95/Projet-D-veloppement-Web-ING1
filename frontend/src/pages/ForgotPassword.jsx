@@ -27,7 +27,7 @@ const ForgotPassword = () => {
         <h2>Mot de passe <span>oublié</span></h2>
 
         {message && (
-          <div className="error-alert">
+          <div className="success-alert">
             {message}
           </div>
         )}

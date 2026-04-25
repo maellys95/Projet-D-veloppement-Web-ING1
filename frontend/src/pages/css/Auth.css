@@ -127,6 +127,17 @@
   font-size: 0.9rem;
   text-align: center;
 }
+/* --- Success Messages --- */
+.success-alert {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  text-align: center;
+} 
 
 /* --- Footer Links --- */
 .register-footer,
