@@ -1,0 +1,128 @@
+.device-detail-page {
+  min-height: 100vh;
+  padding: 40px 6%;
+  background: #f6f8fc;
+}
+
+.back-button {
+  margin-bottom: 24px;
+  border: none;
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 10px 16px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.device-detail-card {
+  background: white;
+  border-radius: 24px;
+  padding: 30px;
+  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.1);
+  max-width: 900px;
+}
+
+.device-detail-top {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.device-category {
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+.device-status {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+.device-status.actif {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.device-status.inactif {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.device-status.maintenance {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.device-detail-card h1 {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.device-uid {
+  color: #64748b;
+  margin-bottom: 28px;
+}
+
+.device-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.device-info-grid div {
+  background: #f8fafc;
+  border-radius: 18px;
+  padding: 18px;
+}
+
+.device-info-grid h3 {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin-bottom: 6px;
+}
+
+.device-actions {
+  margin-top: 30px;
+  padding-top: 24px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.device-actions h2 {
+  margin-bottom: 8px;
+}
+
+.device-actions p {
+  color: #64748b;
+  margin-bottom: 16px;
+}
+
+.device-actions button {
+  margin-right: 10px;
+  margin-bottom: 10px;
+  border: none;
+  background: #0f172a;
+  color: white;
+  padding: 10px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.device-actions button:disabled {
+  background: #cbd5e1;
+  cursor: not-allowed;
+}
+
+.device-detail-loading {
+  padding: 40px;
+}
+
+@media (max-width: 700px) {
+  .device-info-grid {
+    grid-template-columns: 1fr;
+  }
+}

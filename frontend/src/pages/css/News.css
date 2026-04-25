@@ -1,169 +1,173 @@
 .news-page {
     min-height: 100vh;
-    background: linear-gradient(180deg, #050b14 0%, #0b1831 100%);
-    color: white;
-    padding: 70px 8%;
+    /* Harmonisation avec le thème global plus clair et bleuté */
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #f8fafc;
+    padding: 100px 8% 60px;
 }
 
 .news-header {
-    margin-bottom: 45px;
+    margin-bottom: 50px;
+    text-align: left;
 }
 
 .news-header h1 {
-    font-size: 58px;
+    font-size: 52px;
+    font-weight: 800;
+    background: linear-gradient(to right, #60a5fa, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     margin-bottom: 16px;
 }
 
 .news-header p {
-    color: #c7d1e3;
-    font-size: 19px;
-    max-width: 850px;
-    line-height: 1.7;
-    margin-bottom: 24px;
+    color: #94a3b8;
+    font-size: 1.1rem;
+    max-width: 700px;
+    line-height: 1.6;
+    margin-bottom: 30px;
 }
 
 .news-search {
     width: 100%;
-    max-width: 520px;
-    padding: 15px 18px;
-    border-radius: 14px;
+    max-width: 500px;
+    padding: 14px 20px;
+    border-radius: 12px;
+    /* Bordure subtile et fond moins étouffant */
     border: 1px solid rgba(255, 255, 255, 0.1);
-    outline: none;
-    background: #101b2e;
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(10px);
     color: white;
     font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.news-search:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    outline: none;
 }
 
 .news-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 30px;
 }
 
 .news-card {
-    background: #101b2e;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 22px;
+    /* Fond plus clair et effet de verre (glassmorphism) */
+    background: rgba(30, 41, 59, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25);
-    animation: fadeUp 0.4s ease both;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.news-card:hover {
+    transform: translateY(-8px);
+    background: rgba(30, 41, 59, 0.8);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border-color: rgba(96, 165, 250, 0.3);
 }
 
 .news-image {
     width: 100%;
-    height: 230px;
+    height: 220px;
     object-fit: cover;
-    display: block;
+    /* Ajout d'un léger voile pour adoucir */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .news-content {
     padding: 24px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .news-top {
     display: flex;
     justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 18px;
+    align-items: center;
+    margin-bottom: 15px;
 }
 
 .news-category {
-    padding: 7px 13px;
-    border-radius: 999px;
-    font-size: 13px;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 11px;
     font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.news-category.research {
-    background: rgba(69, 201, 120, 0.18);
-    color: #45c978;
-}
-
-.news-category.event {
-    background: rgba(90, 167, 255, 0.18);
-    color: #5aa7ff;
-}
-
-.news-category.campus {
-    background: rgba(166, 120, 255, 0.18);
-    color: #a678ff;
-}
-
-.news-category.maintenance {
-    background: rgba(255, 80, 80, 0.18);
-    color: #ff5c5c;
-}
+/* Couleurs de catégories basées sur tes sources news.csv */
+.news-category.infrastructure { background: rgba(34, 197, 94, 0.15); color: #4ade80; }
+.news-category.événement { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+.news-category.académique { background: rgba(168, 85, 247, 0.15); color: #c084fc; }
+.news-category.partenariat { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+.news-category.maintenance { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+.news-category.conférence { background: rgba(6, 182, 212, 0.15); color: #22d3ee; }
 
 .news-date {
-    color: #c7d1e3;
-    font-size: 14px;
+    color: #64748b;
+    font-size: 13px;
 }
 
 .news-content h3 {
-    font-size: 24px;
-    color: #5aa7ff;
-    margin-bottom: 14px;
+    font-size: 22px;
+    color: #f1f5f9;
+    margin-bottom: 12px;
+    line-height: 1.4;
 }
 
 .news-content p {
-    color: #dbe7ff;
-    line-height: 1.7;
+    color: #94a3b8;
+    line-height: 1.6;
+    font-size: 15px;
+    margin-bottom: 20px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .read-more {
-    display: inline-block;
-    margin-top: 16px;
-    color: #5aa7ff;
+    margin-top: auto;
+    color: #60a5fa;
     text-decoration: none;
-    font-weight: 700;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    transition: color 0.2s;
+}
+
+.read-more:hover {
+    color: #93c5fd;
 }
 
 .news-action {
     text-align: center;
-    margin-top: 38px;
+    margin-top: 50px;
 }
 
 .news-action button {
-    border: none;
-    background: #4ea1ff;
+    background: #3b82f6;
     color: white;
-    padding: 13px 22px;
+    padding: 14px 32px;
     border-radius: 12px;
+    border: none;
     font-weight: 700;
     cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .news-action button:hover {
-    background: #3f93f0;
-}
-
-@keyframes fadeUp {
-    from {
-        opacity: 0;
-        transform: translateY(18px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@media (max-width: 1100px) {
-    .news-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 750px) {
-    .news-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .news-page {
-        padding: 40px 20px;
-    }
-
-    .news-header h1 {
-        font-size: 40px;
-    }
+    background: #2563eb;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
 }

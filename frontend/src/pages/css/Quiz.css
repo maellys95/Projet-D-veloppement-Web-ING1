@@ -1,37 +1,30 @@
+/* ============================================================
+   Quiz SmartCampus - Design Harmonisé & Épuré
+   ============================================================ */
+
 .quiz-wrapper {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #07101f;
-  padding: 120px 20px 40px;
+  background-color: #f9fafb; /* Fond gris très clair comme le Profil */
+  padding: 100px 20px 40px;
 }
 
 .quiz-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(15px);
-  border: 1px solid rgba(83, 140, 196, 0.3);
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
   border-radius: 20px;
   padding: 40px;
   width: 100%;
   max-width: 600px;
-  color: white;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
   text-align: center;
 }
 
-.question-header h3 {
-  color: #538cc4;
-  margin-bottom: 10px;
-}
-
-.question-header span {
-  color: white;
-  font-size: 0.9rem;
-  opacity: 0.6;
-}
-
+/* --- BARRE DE PROGRESSION --- */
 .progress-bar-container {
-  background: rgba(255, 255, 255, 0.1);
+  background: #f3f4f6;
   height: 8px;
   border-radius: 10px;
   margin-bottom: 30px;
@@ -39,73 +32,92 @@
 }
 
 .progress-bar-fill {
-  background: #538cc4;
+  background: #1e3a8a; /* Bleu profond */
   height: 100%;
-  transition: width 0.4s ease;
+  transition: width 0.4s ease-out;
+}
+
+/* --- TEXTES --- */
+.question-header h3 {
+  color: #6b7280;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
 }
 
 .question-text {
-  font-size: 1.3rem;
-  font-weight: 500;
+  color: #1f2937;
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.4;
   margin-bottom: 30px;
-  min-height: 80px;
 }
 
+/* --- BOUTONS DE RÉPONSE --- */
 .answer-section {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
 }
 
 .answer-button {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(83, 140, 196, 0.2);
-  padding: 15px;
-  border-radius: 10px;
-  color: white;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  padding: 16px 20px;
+  border-radius: 12px;
+  color: #374151;
   font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   text-align: left;
 }
 
 .answer-button:hover:not(:disabled) {
-  background: rgba(83, 140, 196, 0.1);
-  border-color: #538cc4;
+  border-color: #1e3a8a;
+  background-color: #eff6ff;
+  color: #1e3a8a;
   transform: translateX(5px);
 }
 
+/* États de validation */
 .answer-button.correct {
-  background: rgba(46, 204, 113, 0.3) !important;
-  border-color: #2ecc71 !important;
+  background-color: #dcfce7 !important; /* Vert pâle */
+  border-color: #22c55e !important;
+  color: #166534 !important;
 }
 
 .answer-button.incorrect {
-  background: rgba(231, 76, 60, 0.3) !important;
-  border-color: #e74c3c !important;
+  background-color: #fee2e2 !important; /* Rouge pâle */
+  border-color: #ef4444 !important;
+  color: #991b1b !important;
 }
 
-/* --- Section Score --- */
-.score-circle {
-    width: 120px;
-    height: 120px;
-    border: 4px solid #538cc4;
-    border-radius: 50%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin: 30px auto;
+/* --- SCORE FINAL --- */
+.score-section h2 {
+  color: #1e3a8a;
+  font-size: 2rem;
+  margin-bottom: 10px;
 }
 
-.score-number {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #538cc4;
+.score-text {
+  font-size: 1.1rem;
+  color: #4b5563;
+  margin-bottom: 25px;
 }
 
-.quiz-actions {
-    display: flex;
-    gap: 15px;
-    margin-top: 30px;
+.btn-auth { /* On réutilise ta classe de bouton globale si possible */
+  background-color: #1e3a8a;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-auth:hover {
+  opacity: 0.9;
 }

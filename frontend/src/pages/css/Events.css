@@ -1,149 +1,169 @@
+/* ============================================================
+   Page Événements - Harmonisation SmartCampus
+   ============================================================ */
+
 .events-page {
     min-height: 100vh;
-    background: linear-gradient(180deg, #050b14 0%, #0b1831 100%);
-    color: white;
-    padding: 70px 8%;
+    background-color: #f9fafb; /* Gris très clair identique au reste du site */
+    color: #1f2937; /* Texte gris sombre pour la lisibilité */
+    padding: 100px 8% 60px; /* Aligné avec tes autres pages */
 }
 
 .events-header {
-    margin-bottom: 45px;
+    text-align: center; /* Centré pour plus de propreté */
+    margin-bottom: 50px;
 }
 
 .events-header h1 {
-    font-size: 58px;
+    font-size: 42px; /* Taille plus cohérente avec tes H1 */
+    font-weight: 800;
     margin-bottom: 16px;
-    color: #5aa7ff;
+    color: #1e3a8a; /* Ton bleu de référence */
 }
 
 .events-header p {
-    color: #c7d1e3;
-    font-size: 19px;
-    max-width: 850px;
+    color: #6b7280; /* Gris moyen pour le sous-titre */
+    font-size: 1.1rem;
+    max-width: 750px;
+    margin: 0 auto;
     line-height: 1.7;
 }
 
 .events-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 25px;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); /* Responsive auto */
+    gap: 30px;
 }
 
 .event-card {
-    background: #101b2e;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 22px;
+    background: #ffffff; /* Cartes blanches */
+    border: 1px solid #e5e7eb; /* Bordure discrète */
+    border-radius: 16px; /* Arrondis cohérents avec RoomCard */
     padding: 26px;
-    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25);
-    animation: fadeUp 0.35s ease both;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* Ombre légère et pro */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.event-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
 .event-top {
     display: flex;
     justify-content: space-between;
-    gap: 12px;
+    align-items: center;
     margin-bottom: 20px;
 }
 
 .event-category {
-    background: rgba(90, 167, 255, 0.18);
-    color: #5aa7ff;
-    padding: 7px 13px;
+    background: #eff6ff; /* Bleu très clair */
+    color: #1e40af; /* Bleu vif pour le badge */
+    padding: 5px 14px;
     border-radius: 999px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
+    text-transform: uppercase;
 }
 
 .event-date {
-    color: #c7d1e3;
+    color: #9ca3af;
     font-size: 14px;
+    font-weight: 500;
 }
 
 .event-card h3 {
-    font-size: 24px;
-    margin-bottom: 14px;
+    font-size: 22px;
+    color: #111827;
+    margin-bottom: 12px;
+    font-weight: 700;
 }
 
 .event-card p {
-    color: #dbe7ff;
-    line-height: 1.7;
+    color: #4b5563; /* Texte de description */
+    line-height: 1.6;
+    font-size: 0.95rem;
+    flex-grow: 1; /* Pousse les boutons vers le bas */
 }
 
 .event-info {
-    color: #c7d1e3;
+    color: #1e3a8a;
     margin-top: 18px;
+    font-size: 0.9rem;
     font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 
 .event-actions {
     display: flex;
     gap: 12px;
     margin-top: 24px;
-    flex-wrap: wrap;
 }
 
+/* Boutons harmonisés avec btn-auth */
 .details-btn,
-.register-btn,
-.events-more button {
+.register-btn {
+    flex: 1;
     border: none;
-    border-radius: 12px;
-    padding: 11px 16px;
-    font-weight: 700;
+    border-radius: 10px;
+    padding: 12px;
+    font-weight: 600;
+    font-size: 0.9rem;
     cursor: pointer;
+    transition: all 0.2s;
 }
 
 .details-btn {
-    background: rgba(255, 255, 255, 0.08);
-    color: white;
+    background: #f3f4f6;
+    color: #374151;
 }
 
-.register-btn,
-.events-more button {
-    background: #4ea1ff;
+.register-btn {
+    background: #1e3a8a;
     color: white;
 }
 
 .details-btn:hover {
-    background: rgba(255, 255, 255, 0.14);
+    background: #e5e7eb;
 }
 
-.register-btn:hover,
-.events-more button:hover {
-    background: #3f93f0;
+.register-btn:hover {
+    background: #1e40af;
+    transform: scale(1.02);
 }
 
 .events-more {
     text-align: center;
-    margin-top: 38px;
+    margin-top: 50px;
 }
 
-@keyframes fadeUp {
-    from {
-        opacity: 0;
-        transform: translateY(18px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.events-more button {
+    background: transparent;
+    border: 2px solid #1e3a8a;
+    color: #1e3a8a;
+    padding: 12px 30px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-@media (max-width: 1100px) {
-    .events-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+.events-more button:hover {
+    background: #1e3a8a;
+    color: white;
 }
 
+/* --- Responsive --- */
 @media (max-width: 750px) {
-    .events-grid {
-        grid-template-columns: 1fr;
-    }
-
     .events-page {
         padding: 40px 20px;
     }
 
     .events-header h1 {
-        font-size: 40px;
+        font-size: 32px;
     }
 }

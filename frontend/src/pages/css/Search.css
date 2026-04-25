@@ -1,95 +1,186 @@
-/* Styles pour la page de recherche Smart Campus */
+/* ───────────────────────────── Page Search ───────────────────────────── */
+
+/* Conteneur principal de la page de recherche */
 .search-page {
-  padding: 40px;
-  max-width: 1200px;
-  margin: 0 auto;
-  color: #1e293b;
-  min-height: 80vh;
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  margin: 30px;
+  flex-wrap: wrap; /* Permet aux éléments de se réorganiser en fonction de la taille de l'écran */
 }
 
-.search-header {
-  margin-bottom: 30px;
-  border-bottom: 2px solid #e2e8f0;
-  padding-bottom: 20px;
+/* Section des filtres */
+.search-filters {
+  width: 25%;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.search-header h1 {
-  font-size: 2rem;
-  color: #0f172a;
+/* Titre de la section des filtres */
+.search-filters h2 {
+  margin-bottom: 20px;
 }
 
-.search-query-info {
-  color: #64748b;
+/* Eléments de chaque filtre */
+.filter-item {
+  margin-bottom: 15px;
+}
+
+.filter-item label {
+  font-weight: bold;
+}
+
+.filter-item input,
+.filter-item select,
+.filter-item button {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.filter-item button {
+  background-color: #1E40AF; /* Bleu pour le bouton appliquer */
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.filter-item button:hover {
+  background-color: #3b82f6;
+}
+
+/* Filtres appliqués */
+.filters-applied {
+  color: green;
+  font-size: 14px;
   margin-top: 10px;
 }
 
-.search-query-info strong {
-  color: #3b82f6;
+/* Section des résultats */
+.search-results {
+  width: 70%;
 }
 
-.results-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-  margin-top: 30px;
+/* Carte des résultats */
+.results-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: flex-start;
 }
 
-.result-card {
-  background: white;
-  border-radius: 12px;
+.results-cards .room-card,
+.results-cards .device-card {
+  background-color: #ffffff;
+  border-radius: 16px;
   padding: 20px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e2e8f0;
-  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   cursor: pointer;
+  transition: transform 0.3s ease;
+  width: 30%; /* La largeur des cartes est définie à 30% */
+  max-width: 300px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.result-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+.results-cards .room-card:hover,
+.results-cards .device-card:hover {
+  transform: translateY(-5px); /* Effet de déplacement sur hover */
 }
 
-.result-card h3 {
-  margin-top: 0;
-  color: #1e293b;
-  font-size: 1.25rem;
+.room-card h2,
+.device-card h2 {
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.room-card p,
+.device-card p {
+  font-size: 1rem;
+  color: #64748b;
   margin-bottom: 10px;
 }
 
-.result-card p {
-  margin: 5px 0;
-  color: #64748b;
-  font-size: 0.95rem;
-}
-
-.status-badge {
+/* Boutons et badges de statut */
+.room-card .room-badge,
+.device-card .device-status {
+  font-size: 0.9rem;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 16px;
+  background-color: #1E40AF; /* Bleu pour le badge */
+  margin-bottom: 12px;
   display: inline-block;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: bold;
-  text-transform: uppercase;
 }
 
-.status-active {
-  background-color: #dcfce7;
-  color: #166534;
+/* Progress bar pour les cartes */
+.room-card .room-progress-bar,
+.device-card .device-progress-bar {
+  background: rgba(0, 0, 0, 0.1);
+  height: 5px;
+  border-radius: 10px;
+  margin-bottom: 10px;
 }
 
-.status-inactive {
-  background-color: #fee2e2;
-  color: #991b1b;
+.room-card .room-progress-fill,
+.device-card .device-progress-fill {
+  height: 100%;
+  border-radius: 10px;
+  background-color: #1E40AF; /* Bleu pour la barre de progression*/
 }
 
-.no-results {
-  text-align: center;
-  padding: 60px;
-  background: #f8fafc;
-  border-radius: 12px;
-  grid-column: 1 / -1;
+/* Media Queries pour les écrans plus petits */
+
+/* Sur les écrans plus petits, on place les filtres au-dessus des résultats */
+@media (max-width: 1024px) {
+  .search-page {
+    flex-direction: column;
+  }
+
+  .search-filters {
+    width: 100%;
+    margin-bottom: 20px; /* Ajoute un espacement sous les filtres */
+  }
+
+  .search-results {
+    width: 100%;
+  }
 }
 
-.no-results p {
-  color: #64748b;
-  font-size: 1.1rem;
+/* Sur les écrans mobiles, on ajuste également la taille des cartes */
+@media (max-width: 640px) {
+  .results-cards .room-card,
+  .results-cards .device-card {
+    width: 100%; /* Les cartes prennent toute la largeur sur mobile */
+  }
+}
+
+/* Remplace les définitions de .room-card par celle-ci */
+.results-cards .room-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  
+  /* Largeur fixe pour 3 colonnes avec gap */
+  width: calc(33.33% - 20px); 
+  min-width: 250px;
+  
+  /* IMPORTANT : Reset de la hauteur et alignement */
+  height: auto; 
+  min-height: 200px; /* Donne une base de hauteur */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch; /* Permet au contenu de prendre toute la largeur */
+  overflow: hidden;
 }

@@ -1,0 +1,133 @@
+.devices-page {
+  padding: 40px 6%;
+  background: #f6f8fc;
+  min-height: 100vh;
+}
+
+.devices-header {
+  margin-bottom: 30px;
+}
+
+.devices-header h1 {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.devices-header p {
+  color: #64748b;
+}
+
+.devices-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 24px;
+}
+
+.devices-filters {
+  background: white;
+  border-radius: 18px;
+  padding: 20px;
+  height: fit-content;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+}
+
+.devices-filters h2 {
+  margin-bottom: 16px;
+}
+
+.devices-filters input,
+.devices-filters select {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 11px 12px;
+  border: 1px solid #dbe3ef;
+  border-radius: 12px;
+  outline: none;
+}
+
+.devices-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.device-card {
+  background: white;
+  border-radius: 18px;
+  padding: 20px;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.device-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 35px rgba(15, 23, 42, 0.14);
+}
+
+.device-card-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.device-category {
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+}
+
+.device-status {
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+}
+
+.device-status.actif {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.device-status.inactif {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.device-status.maintenance {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.device-card h2 {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.device-uid,
+.device-room {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.no-result {
+  color: #64748b;
+}
+
+@media (max-width: 1000px) {
+  .devices-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .devices-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .devices-grid {
+    grid-template-columns: 1fr;
+  }
+}
