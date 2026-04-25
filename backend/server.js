@@ -22,7 +22,14 @@ db.connect(err => {
 });
 
 // ── Middleware
-app.use(cors({ origin: process.env.FRONTEND_URL || 'http://localhost:5173', credentials: true }));
+app.use(cors({ 
+  origin: [
+    'http://localhost:5173', 
+    'http://localhost:5174', // Ajoute ce port
+    process.env.FRONTEND_URL
+  ].filter(Boolean), 
+  credentials: true 
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -132,9 +139,118 @@ app.post('/register', async (req, res) => {
   }
 });
 
+// ── ROUTE POUR RECUPERER LES SALLES
+app.get('/rooms', (req, res) => {
+  const sql = 'SELECT * FROM rooms'; // Tu récupères toutes les salles de la table rooms
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Erreur rooms:', err);
+      return res.status(500).json({ message: 'Erreur serveur' });
+    }
+
+    res.json(results); // Envoie les résultats sous forme de JSON
+  });
+});
+
+// ── ROUTE POUR RECUPERER LES OBJETS CONNECTES
+app.get('/devices', (req, res) => {
+  const sql = `
+    SELECT 
+      d.id,
+      d.uid,
+      d.name,
+      d.status,
+      r.name AS room_name,
+      c.name AS category_name
+    FROM devices d
+    LEFT JOIN rooms r ON d.room_id = r.id
+    LEFT JOIN device_categories c ON d.category_id = c.id
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Erreur devices :', err);
+      return res.status(500).json({ message: 'Erreur devices' });
+    }
+
+    res.json(results); // Retourne les résultats des objets connectés et les salles associées
+  });
+});
+
+
+app.get('/rooms/:id', (req, res) => {
+  const roomId = req.params.id;
+
+  const sql = `
+    SELECT 
+      r.id,
+      r.name,
+      r.building,
+      r.floor,
+      r.capacity,
+      r.description,
+      d.id AS device_id,
+      d.name AS device_name,
+      d.status AS device_status,
+      c.name AS category_name
+    FROM rooms r
+    LEFT JOIN devices d ON d.room_id = r.id
+    LEFT JOIN device_categories c ON d.category_id = c.id
+    WHERE r.id = ?
+  `;
+
+  db.query(sql, [roomId], (err, results) => {
+    if (err) {
+      console.error('Erreur pour récupérer les détails de la salle :', err);
+      return res.status(500).json({ message: 'Erreur serveur' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'Salle non trouvée' });
+    }
+
+    res.json(results);  // Renvoie la salle et les objets associés
+  });
+});
+
+// ── ROUTE POUR RÉCUPÉRER LES ÉVÉNEMENTS
+
+app.get('/events', (req, res) => {
+  // On utilise event_date car c'est le nom dans ton fichier/base
+  const sql = 'SELECT id, title, description, location, event_date, category FROM events ORDER BY event_date ASC';
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('❌ Erreur SQL détaillée :', err); // Regarde ton terminal Node pour voir l'erreur précise
+      return res.status(500).json({ error: err.message });
+    }
+    res.json(results);
+  });
+});
+
+// ── ROUTE POUR RÉCUPÉRER LES ACTUALITÉS
+app.get('/news', (req, res) => {
+  // On filtre par 'published = 1' pour ne montrer que ce qui est prêt
+  const sql = 'SELECT id, title, content, category, image_url, created_at FROM news WHERE published = 1 ORDER BY created_at DESC';
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('❌ Erreur SQL News :', err);
+      return res.status(500).json({ error: err.message });
+    }
+    res.json(results);
+  });
+});
+
+// ── HEALTH CHECK
+app.get('/api/health', (_req, res) => res.json({ status: 'ok', timestamp: new Date() }));
+
 // ── 404
 app.use((_req, res) => res.status(404).json({ message: 'Route introuvable.' }));
 
-// ── Start
+// ── Démarrage du serveur
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`✅  Smart Campus API running on http://localhost:${PORT}`));
+app.listen(PORT, () => {
+  console.log(`✅  Smart Campus API running on http://localhost:${PORT}`);
+});
