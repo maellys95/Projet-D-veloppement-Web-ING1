@@ -23,7 +23,7 @@ const Footer = () => {
             <ul>
               <li onClick={() => navigate('/')}>Accueil</li>
               <li onClick={() => navigate('/rooms')}>Flux des Salles</li>
-              <li onClick={() => navigate('/actualites')}>Actualités</li>
+              <li onClick={() => navigate('/news')}>Actualités</li>
               <li onClick={() => navigate('/quiz')}>Sensibilisation</li>
             </ul>
           </div>
@@ -31,9 +31,11 @@ const Footer = () => {
           {/* Colonne 3 : Contact & Localisation */}
           <div className="footer-column">
             <h4>Contact</h4>
-            <p>📧 support@cytech.fr</p>
-            <p>📍 Avenue du Parc, Cergy</p>
-            <p>🏫 Site du Parc, Cauchy 307</p>
+            <ul onClick={() => navigate('/contact')}>
+              <li>Nous contacter</li>
+            </ul>
+            <p>support@cytech.fr</p>
+            <p>Avenue du Parc, Cergy</p>
           </div>
         </div>
 

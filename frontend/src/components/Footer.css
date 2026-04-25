@@ -1,11 +1,12 @@
-/* Footer.css - Compact & Harmonisé */
+/* ================================================
+   Footer — Clean Minimal
+   ================================================ */
+
 .footer-premium {
-  background: rgba(30, 30, 30, 0.4); 
-  backdrop-filter: blur(12px);
-  border-top: 1px solid rgba(83, 140, 196, 0.1); 
-  /* Padding réduit : 40px en haut au lieu de 60px */
-  padding: 40px 0 20px 0; 
-  color: #e5e7eb;
+  background: var(--c-surface);
+  border-top: 1px solid var(--c-border);
+  padding: 48px 0 24px;
+  color: var(--c-text-2);
   margin-top: auto;
 }
 
@@ -16,63 +17,73 @@
 
 .footer-grid {
   display: grid;
-  /* Grille plus équilibrée pour éviter les grands vides */
-  grid-template-columns: 1.5fr 1fr 1.2fr; 
-  gap: 30px;
-  margin-bottom: 30px;
-}
-
-.footer-column h4 {
-  color: #538cc4;
-  font-size: 1rem; /* Titres légèrement plus petits */
-  margin-bottom: 15px; /* Espace réduit sous le titre */
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  grid-template-columns: 1.5fr 1fr 1.2fr;
+  gap: 40px;
+  margin-bottom: 40px;
 }
 
 .footer-logo {
-  font-size: 1.3rem; /* Logo plus discret */
-  font-weight: bold;
+  font-size: 1.15rem;
+  font-weight: 700;
   cursor: pointer;
   margin-bottom: 10px;
+  color: var(--c-text);
 }
 
-.footer-column p, .footer-column li {
-  line-height: 1.4; /* Interligne plus serré */
-  font-size: 0.9rem; /* Texte plus fin */
-  opacity: 0.7;
+.footer-logo span {
+  color: var(--c-primary);
+}
+
+.footer-column p {
+  font-size: 0.875rem;
+  color: var(--c-text-muted);
+  line-height: 1.65;
+  margin: 0;
+}
+
+.footer-column h4 {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--c-text);
+  margin-bottom: 16px;
 }
 
 .footer-column ul {
   list-style: none;
   padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .footer-column li {
-  margin-bottom: 8px; /* Moins d'espace entre les liens */
-  transition: all 0.3s ease;
+  font-size: 0.875rem;
+  color: var(--c-text-muted);
+  cursor: pointer;
+  transition: color 0.15s;
 }
 
 .footer-column li:hover {
-  color: #9fbcd9;
-  transform: translateX(4px);
-  opacity: 1;
+  color: var(--c-primary);
 }
 
 .footer-bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  padding-top: 15px;
+  border-top: 1px solid var(--c-border);
+  padding-top: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.8rem;
-  opacity: 0.5;
+  font-size: 0.78rem;
+  color: var(--c-text-faint);
 }
 
 @media (max-width: 768px) {
   .footer-grid {
     grid-template-columns: 1fr;
+    gap: 28px;
     text-align: center;
-    gap: 20px;
   }
 }
