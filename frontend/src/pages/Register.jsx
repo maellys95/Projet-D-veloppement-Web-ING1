@@ -77,7 +77,16 @@ const Register = () => {
       setMessage({ type: 'error', text: 'Veuillez corriger les erreurs avant de continuer.' });
       return;
     }
+    const email = formData.email.trim().toLowerCase();
 
+    if (!email.endsWith('@etu.cyu.fr') && !email.endsWith('@cyu.fr')) {
+      setMessage({
+        type: 'error',
+        text: 'Veuillez utiliser votre adresse mail fournie par votre établissement.'
+      });
+      return;
+    }
+    
     const cleanFirstName = formData.firstName.trim().charAt(0).toUpperCase() + formData.firstName.trim().slice(1).toLowerCase();
     const cleanLastName = formData.lastName.trim().toUpperCase();
 
@@ -140,7 +149,7 @@ const Register = () => {
 
           <div className="input-group">
             <label>Email Universitaire</label>
-            <input type="email" name="email" placeholder="prenom.nom@etu.cyu.fr" onChange={handleChange} required />
+            <input type="email" name="email" placeholder="prenom.nom@etu.cyu.fr ou prenom.nom@cyu.fr" onChange={handleChange} required />
             {errors.email && <span className="error-text">{errors.email}</span>}
           </div>
 
