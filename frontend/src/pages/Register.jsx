@@ -1,9 +1,7 @@
-// Formulaire d'inscription avec des champs pour le nom, prénom, email, mot de passe, et type d'utilisateur (étudiant/professeur).
-// Envoie une demande au backend pour créer un nouvel utilisateur dans la base de données.
-// L'utilisateur doit recevoir un email de validation pour compléter l'inscription (validation via le backend).
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './css/Auth.css'; // Vérifie bien que le fichier est dans frontend/src/pages/css/Auth.css
+import './css/Auth.css'; 
+import bgLogin from '../assets/background-login.png';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -35,83 +33,119 @@ const Register = () => {
       const response = await fetch('http://localhost:5000/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          // On génère un pseudo simple à partir du nom/prénom pour SQL
-          pseudo: (formData.firstName + formData.lastName).toLowerCase().replace(/\s/g, ''),
-          email: formData.email,
-          password: formData.password,
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          member_type: formData.memberType
-        }),
+        body: JSON.stringify(formData),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        setMessage({ type: 'success', text: 'Inscription réussie ! Redirection...' });
-        setTimeout(() => navigate('/login'), 2000);
+        setMessage({ type: 'success', text: 'Inscription réussie ! Votre compte est en attente d\'approbation.' });
+        setTimeout(() => navigate('/login'), 3000);
       } else {
-        setMessage({ type: 'error', text: data.message || "Erreur lors de l'inscription." });
+        setMessage({ type: 'error', text: data.message || 'Erreur lors de l\'inscription.' });
       }
     } catch (err) {
-      setMessage({ type: 'error', text: "Le serveur backend ne répond pas. Vérifiez s'il est lancé." });
+      setMessage({ type: 'error', text: 'Erreur serveur. Veuillez réessayer plus tard.' });
     }
   };
 
   return (
-    <div className="register-wrapper"> {/* CHANGE ICI (était auth-container) */}
-      <div className="register-card">  {/* CHANGE ICI (était auth-card) */}
-        <h2>Inscription <span>SmartCampus</span></h2>
-        
-        {message.text && (
-          <div className={`alert ${message.type === 'error' ? 'alert-danger' : 'alert-success'}`}>
-            {message.text}
-          </div>
-        )}
+    <div 
+  className="register-page" 
+  style={{ 
+    backgroundImage: `linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)), url(${bgLogin})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundAttachment: 'fixed',
+    minHeight: '100vh',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }}
+>
+      <div className="register-wrapper">
+        <div className="register-card">
+          <h2>Inscription <span>SmartCampus</span></h2>
+          <p>Rejoignez la communauté et accédez aux services connectés.</p>
 
-        <form onSubmit={handleSubmit}>
-          <div className="form-row">
-            <div className="input-group">
-              <label>Prénom</label>
-              <input type="text" name="firstName" onChange={handleChange} required />
+          {message.text && (
+            <div className={message.type === 'error' ? "error-alert" : "success-alert"}>
+              {message.text}
             </div>
-            <div className="input-group">
-              <label>Nom</label>
-              <input type="text" name="lastName" onChange={handleChange} required />
+          )}
+
+          <form onSubmit={handleSubmit}>
+            <div style={{ display: 'flex', gap: '15px' }}>
+              <div className="input-group" style={{ flex: 1 }}>
+                <label>Prénom</label>
+                <input 
+                  type="text" 
+                  name="firstName" 
+                  placeholder="Prénom" 
+                  onChange={handleChange} 
+                  required 
+                />
+              </div>
+              <div className="input-group" style={{ flex: 1 }}>
+                <label>Nom</label>
+                <input 
+                  type="text" 
+                  name="lastName" 
+                  placeholder="Nom" 
+                  onChange={handleChange} 
+                  required 
+                />
+              </div>
             </div>
-          </div>
 
-          <div className="input-group">
-            <label>Email Universitaire</label>
-            <input type="email" name="email" placeholder="prenom.nom@etu.cyu.fr" onChange={handleChange} required />
-          </div>
+            <div className="input-group">
+              <label>Email Universitaire</label>
+              <input 
+                type="email" 
+                name="email" 
+                placeholder="prenom.nom@etu.cyu.fr" 
+                onChange={handleChange} 
+                required 
+              />
+            </div>
 
-          <div className="input-group">
-            <label>Type de membre</label>
-            <select name="memberType" value={formData.memberType} onChange={handleChange}>
-              <option value="Étudiant">Étudiant (@etu.cyu.fr)</option>
-              <option value="Enseignant">Enseignant (@cyu.fr)</option>
-              <option value="Administratif">Administratif</option>
-            </select>
-          </div>
+            <div className="input-group">
+              <label>Type de membre</label>
+              <select name="memberType" value={formData.memberType} onChange={handleChange}>
+                <option value="Étudiant">Étudiant (@etu.cyu.fr)</option>
+                <option value="Enseignant">Enseignant (@cyu.fr)</option>
+              </select>
+            </div>
 
-          <div className="input-group">
-            <label>Mot de passe</label>
-            <input type="password" name="password" onChange={handleChange} required />
-          </div>
+            <div className="input-group">
+              <label>Mot de passe</label>
+              <input 
+                type="password" 
+                name="password" 
+                placeholder="••••••••" 
+                onChange={handleChange} 
+                required 
+              />
+            </div>
 
-          <div className="input-group">
-            <label>Confirmation</label>
-            <input type="password" name="confirmPassword" onChange={handleChange} required />
-          </div>
+            <div className="input-group">
+              <label>Confirmation</label>
+              <input 
+                type="password" 
+                name="confirmPassword" 
+                placeholder="••••••••" 
+                onChange={handleChange} 
+                required 
+              />
+            </div>
 
-          <button type="submit" className="btn-auth">Créer mon compte</button>
-        </form>
+            <button type="submit" className="btn-register">Créer mon compte</button>
+          </form>
 
-        <p className="auth-footer">
-          Déjà un compte ? <span onClick={() => navigate('/login')}>Se connecter</span>
-        </p>
+          <p className="login-footer">
+            Déjà un compte ? <span onClick={() => navigate('/login')}>Se connecter</span>
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -2,118 +2,116 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './css/Auth.css';
 
+// Importation du background pour l'harmonisation visuelle
+import bgLogin from '../assets/background-login.png';
+
 const Profile = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
-  const [reservations, setReservations] = useState([]);
 
   useEffect(() => {
-    // 1. Récupérer l'utilisateur stocké dans le navigateur après le Login
+    // Récupération de l'utilisateur après la connexion
     const savedUser = localStorage.getItem('user');
     
     if (!savedUser) {
-      // Si personne n'est connecté, on renvoie vers le login
       navigate('/login');
     } else {
       setUser(JSON.parse(savedUser));
     }
-
-    // 2. Ici, on pourrait faire un fetch pour récupérer les vraies réservations SQL
-    // fetch(`http://localhost:5000/api/reservations/${JSON.parse(savedUser).id}`)
-    setReservations([
-      { id: 1, room: 'Amphi A', date: '2026-04-25', time: '14:00', status: 'Confirmée' }
-    ]);
   }, [navigate]);
 
-  if (!user) return <div className="loader">Chargement...</div>;
+  if (!user) return <div className="profile-page">Chargement...</div>;
 
   return (
-    <div className="profile-wrapper">
-      <div className="container">
-        <div className="profile-grid">
-          
-          <aside className="profile-sidebar">
-            <div className="profile-card-premium">
-              <div className="avatar-container">
-                <div className="avatar-placeholder">
-                  {user.first_name ? user.first_name[0] : 'U'}{user.last_name ? user.last_name[0] : ''}
-                </div>
-                <span className={`badge-role ${user.member_type?.toLowerCase() || 'étudiant'}`}>
-                  {user.member_type || 'Étudiant'}
+    <div 
+      className="profile-page" 
+      style={{ 
+        backgroundImage: `linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)), url(${bgLogin})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed',
+        minHeight: '100vh',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '40px 20px'
+      }}
+    >
+      <div className="profile-wrapper">
+        <div className="profile-card" style={{ maxWidth: '600px' }}>
+          <h2>Mon Profil <span>SmartCampus</span></h2>
+          <p>Gérez vos informations et suivez votre impact écologique.</p>
+
+          <div className="profile-info-display" style={{ textAlign: 'left' }}>
+            
+            {/* Section Informations personnelles */}
+            <div className="input-group">
+              <label>Identité</label>
+              <div className="info-box" style={{ padding: '14px', background: 'rgba(15, 23, 42, 0.5)', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.1)', color: '#fff' }}>
+                <strong style={{ fontSize: '1.1rem' }}>{user.first_name} {user.last_name}</strong> 
+                <span style={{ color: '#60a5fa', marginLeft: '10px' }}>({user.member_type})</span>
+              </div>
+            </div>
+
+            <div className="input-group" style={{ marginTop: '20px' }}>
+              <label>Email Universitaire</label>
+              <div className="info-box" style={{ padding: '14px', background: 'rgba(15, 23, 42, 0.5)', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.1)', color: '#cbd5e1' }}>
+                {user.email}
+              </div>
+            </div>
+
+            {/* Section TRACKING & POINTS */}
+            <div className="user-stats" style={{ display: 'flex', gap: '15px', margin: '25px 0' }}>
+              <div className="stat-card" style={{ flex: 1, textAlign: 'center', padding: '15px', background: 'rgba(96, 165, 250, 0.1)', borderRadius: '16px', border: '1px solid rgba(96, 165, 250, 0.2)' }}>
+                <span style={{ display: 'block', fontSize: '1.6rem', fontWeight: 'bold', color: '#60a5fa' }}>
+                  {user.points || 0}
                 </span>
+                <small style={{ color: '#93c5fd', fontWeight: '600', textTransform: 'uppercase', fontSize: '0.75rem' }}>Points Eco-Score</small>
               </div>
               
-              <h3>{user.first_name} {user.last_name}</h3>
-              <p className="user-email">{user.email}</p>
-              
-              <div className="user-stats">
-                <div className="stat-item">
-                  <span className="stat-value">{user.points || 0}</span>
-                  <span className="stat-label">Points XP</span>
-                </div>
-                <div className="stat-item">
-                  <span className="stat-value">{user.level || 'Débutant'}</span>
-                  <span className="stat-label">Niveau</span>
-                </div>
+              <div className="stat-card" style={{ flex: 1, textAlign: 'center', padding: '15px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '16px', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                <span style={{ display: 'block', fontSize: '1.6rem', fontWeight: 'bold', color: '#fff' }}>
+                  {user.login_count || 1}
+                </span>
+                <small style={{ color: '#94a3b8', fontWeight: '600', textTransform: 'uppercase', fontSize: '0.75rem' }}>Connexions</small>
               </div>
-
-              <button className="btn-edit-profile">Modifier le profil</button>
-              <button 
-                className="btn-logout" 
-                onClick={() => { localStorage.removeItem('user'); navigate('/login'); }}
-                style={{marginTop: '10px', background: '#e74c3c', color: 'white', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer'}}
-              >
-                Déconnexion
-              </button>
             </div>
 
-            <div className="progression-box">
-              <h4>Objectif : Utilisateur Complexe</h4>
-              <div className="progress-bar">
-                <div className="fill" style={{ width: `${(user.points / 200) * 100}%` }}></div>
+            {/* Historique utilisateur */}
+            <div className="input-group">
+              <label>Historique des actions (Tracking)</label>
+              <div className="info-box" style={{ padding: '15px', background: 'rgba(255, 255, 255, 0.03)', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.1)', fontSize: '0.9rem' }}>
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                  <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'center', color: '#4ade80' }}>
+                    <span style={{ marginRight: '10px' }}>✅</span> Inscription validée
+                  </li>
+                  <li style={{ marginBottom: '10px', display: 'flex', alignItems: 'center', color: '#4ade80' }}>
+                    <span style={{ marginRight: '10px' }}>✅</span> Première connexion au Smart Campus
+                  </li>
+                  <li style={{ color: '#64748b', fontStyle: 'italic', marginTop: '10px', paddingLeft: '28px' }}>
+                    Aucune autre action trackée pour le moment.
+                  </li>
+                </ul>
               </div>
-              <p>Continuez vos efforts pour débloquer plus d'options IoT !</p>
-              <button className="btn-quiz-access" onClick={() => navigate('/quiz')}>Passer un Quiz</button>
             </div>
-          </aside>
+          </div>
 
-          <main className="profile-main">
-            <section className="activity-section">
-              <div className="section-header">
-                <h3>Mes Réservations en cours</h3>
-                {user.member_type === 'Enseignant' && (
-                   <button className="btn-add-res" onClick={() => navigate('/rooms')}>+ Nouvelle</button>
-                )}
-              </div>
-
-              <div className="reservations-list">
-                {reservations.length > 0 ? (
-                  reservations.map(res => (
-                    <div key={res.id} className="res-item">
-                      <div className="res-info">
-                        <span className="res-room">{res.room}</span>
-                        <span className="res-time">{res.date} à {res.time}</span>
-                      </div>
-                      <span className={`res-status ${res.status.toLowerCase()}`}>
-                        {res.status}
-                      </span>
-                    </div>
-                  ))
-                ) : (
-                  <p className="empty-msg">Aucune réservation active.</p>
-                )}
-              </div>
-            </section>
-
-            <section className="iot-activity">
-              <h3>Historique de Sensibilisation</h3>
-              <div className="history-card">
-                <p>✅ Bienvenue sur la plateforme Smart Campus !</p>
-                {user.points > 0 && <p>✅ Points accumulés grâce à vos actions.</p>}
-              </div>
-            </section>
-          </main>
-
+          {/* Actions de navigation */}
+          <div style={{ display: 'flex', gap: '12px', marginTop: '35px' }}>
+            <button className="btn-login" onClick={() => navigate('/rooms')}>
+              Accéder aux salles
+            </button>
+            <button 
+              className="btn-login" 
+              style={{ backgroundColor: '#ef4444', boxShadow: '0 4px 12px rgba(239, 68, 68, 0.2)' }} 
+              onClick={() => {
+                localStorage.removeItem('user');
+                navigate('/login');
+              }}
+            >
+              Déconnexion
+            </button>
+          </div>
         </div>
       </div>
     </div>
