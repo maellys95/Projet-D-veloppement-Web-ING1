@@ -317,14 +317,15 @@ FRONTEND_URL=http://localhost:5173
 
 ---
 
-## 👥 Répartition des tâches (exemple — à adapter)
+## 👥 Répartition des tâches 
 
 | Membre | Tâches |
 |--------|--------|
-| Membre 1 | Base de données, backend Auth, déploiement |
-| Membre 2 | Backend devices/content, API REST |
-| Membre 3 | Frontend pages publiques (Home, Actualités) |
-| Membre 4 | Frontend dashboard, admin, profil |
+| Maellys| Base de données |
+| Malak | Backend  |
+| Samia | Backend  |
+| Mohamed Lemine | Frontend  |
+| Bayane| Frontend |
 
 ---
 
