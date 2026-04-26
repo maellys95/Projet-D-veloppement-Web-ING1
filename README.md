@@ -17,11 +17,21 @@ Smart Campus est une plateforme numérique intelligente pour la gestion d'une un
 ---
 
 ## 0️⃣ PREMIÈRE FOIS ? (Installation)
-*À ne faire qu'une seule fois après avoir téléchargé le projet pour créer les dossiers `node_modules`.*
 
-1. Télécharger le dossier
-2. Ouvrir un terminal dans `/backend` ➔ taper : `npm install`
-3. Ouvrir un terminal dans `/frontend` ➔ taper : `npm install`
+Avant de lancer le projet, assurez-vous d’avoir installé les outils suivants :
+
+- **Node.js** (version 18 ou plus)
+- **npm** (installé avec Node.js)
+- **WampServer** (Apache + MySQL en local)
+- **MySQL Workbench** (pour gérer et importer la base de données)
+
+---
+
+### ⚙️ Configuration requise
+
+- Activer **Apache** et **MySQL** via WampServer (icône verte)
+- Avoir un serveur MySQL accessible en local 
+- Configurer le fichier `.env` dans le dossier `/backend` avec vos identifiants MySQL
 
 ---
 
