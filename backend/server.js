@@ -457,7 +457,44 @@ app.post('/reset-password', async (req, res) => {
   );
 });
 
+// ── UPDATE PROFILE
+app.put('/users/:id/profile', upload.single('photo'), (req, res) => {
+  const { id } = req.params;
+  const { gender, birth_date, age } = req.body;
 
+  const photo_url = req.file ? `/uploads/${req.file.filename}` : req.body.photo_url || null;
+
+  const query = `
+    UPDATE users
+    SET gender = ?, birth_date = ?, age = ?, photo_url = ?
+    WHERE id = ?
+  `;
+
+  db.query(
+    query,
+    [
+      gender || 'Non précisé',
+      birth_date || null,
+      age || null,
+      photo_url,
+      id
+    ],
+    (err) => {
+      if (err) return res.status(500).json({ error: err.message });
+
+      res.json({
+        message: 'Profil mis à jour avec succès.',
+        user: {
+          id,
+          gender,
+          birth_date,
+          age,
+          photo_url
+        }
+      });
+    }
+  );
+});
 // ── 404
 app.use((_req, res) => res.status(404).json({ message: 'Route introuvable.' }));
 

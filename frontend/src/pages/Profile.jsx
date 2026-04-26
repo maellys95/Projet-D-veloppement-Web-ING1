@@ -9,6 +9,80 @@ const Profile = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
 
+  const [editMode, setEditMode] = useState(false);
+  const [editData, setEditData] = useState({
+    gender: 'Non précisé',
+    birthDate: '',
+    age: '',
+    photo: null
+  });
+  const handleEditChange = (e) => {
+    const { name, value, files } = e.target;
+
+    // 🔥 si on change la date → recalcul âge
+    if (name === 'birthDate') {
+      const today = new Date();
+      const birth = new Date(value);
+
+      let age = today.getFullYear() - birth.getFullYear();
+      const monthDiff = today.getMonth() - birth.getMonth();
+
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+        age--;
+      }
+
+      setEditData(prev => ({
+        ...prev,
+        birthDate: value,
+        age: age
+      }));
+
+      return;
+    }
+
+    // 🔥 autres champs (genre + photo)
+    setEditData(prev => ({
+      ...prev,
+      [name]: name === 'photo' ? files[0] : value
+    }));
+  };
+
+  const handleSaveProfile = async () => {
+  const data = new FormData();
+
+  data.append('gender', editData.gender);
+  data.append('birth_date', editData.birthDate);
+  data.append('age', editData.age);
+  data.append('photo_url', user.photo_url || '');
+
+  if (editData.photo) {
+    data.append('photo', editData.photo);
+  }
+
+  const response = await fetch(`http://localhost:5000/users/${user.id}/profile`, {
+    method: 'PUT',
+    body: data
+  });
+
+  const result = await response.json();
+
+  if (response.ok) {
+    const updatedUser = {
+      ...user,
+      gender: editData.gender,
+      birth_date: editData.birthDate,
+      age: editData.age,
+      photo_url: result.user.photo_url
+    };
+
+    setUser(updatedUser);
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+    setEditMode(false);
+  } else {
+    alert(result.message || 'Erreur lors de la mise à jour.');
+  }
+};
+
   useEffect(() => {
     // Récupération de l'utilisateur après la connexion
     const savedUser = localStorage.getItem('user');
@@ -16,7 +90,15 @@ const Profile = () => {
     if (!savedUser) {
       navigate('/login');
     } else {
-      setUser(JSON.parse(savedUser));
+      const parsedUser = JSON.parse(savedUser);
+      setUser(parsedUser);
+
+      setEditData({
+        gender: parsedUser.gender || 'Non précisé',
+        birthDate: parsedUser.birth_date ? parsedUser.birth_date.slice(0, 10) : '',
+        age: parsedUser.age || '',
+        photo: null
+      });
     }
   }, [navigate]);
 
@@ -74,26 +156,59 @@ const Profile = () => {
               </div>
             </div>
             
-
             <div className="input-group" style={{ marginTop: '20px' }}>
               <label>Informations complémentaires</label>
-              <div
-                className="info-box"
-                style={{
-                  padding: '14px',
-                  background: 'rgba(15, 23, 42, 0.5)',
-                  borderRadius: '12px',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  color: '#cbd5e1'
-                }}
-              >
-                <p>Âge : {user.age || 'Non renseigné'}</p>
-                <p>Genre : {user.gender || 'Non précisé'}</p>
-                <p>
-                  Date de naissance :{' '}
-                  {user.birth_date ? user.birth_date.slice(0, 10) : 'Non renseignée'}
-                </p>
-              </div>
+
+              {!editMode ? (
+                <div
+                  className="info-box"
+                  style={{
+                    padding: '14px',
+                    background: 'rgba(15, 23, 42, 0.5)',
+                    borderRadius: '12px',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    color: '#cbd5e1'
+                  }}
+                >
+                  <p>Âge : {user.age || 'Non renseigné'}</p>
+                  <p>Genre : {user.gender || 'Non précisé'}</p>
+                  <p>
+                    Date de naissance : {user.birth_date ? user.birth_date.slice(0, 10) : 'Non renseignée'}
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <div className="input-group">
+                    <label>Genre</label>
+                    <select name="gender" value={editData.gender} onChange={handleEditChange}>
+                      <option value="Non précisé">Non précisé</option>
+                      <option value="Homme">Homme</option>
+                      <option value="Femme">Femme</option>
+                      <option value="Autre">Autre</option>
+                    </select>
+                  </div>
+
+                  <div className="input-group">
+                    <label>Date de naissance</label>
+                    <input
+                      type="date"
+                      name="birthDate"
+                      value={editData.birthDate}
+                      onChange={handleEditChange}
+                    />
+                  </div>
+
+                  <div className="input-group">
+                    <label>Âge</label>
+                    <input type="number" value={editData.age || ''} readOnly />
+                  </div>
+
+                  <div className="input-group">
+                    <label>Photo de profil</label>
+                    <input type="file" name="photo" onChange={handleEditChange} />
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Section TRACKING & POINTS */}
@@ -134,6 +249,15 @@ const Profile = () => {
 
           {/* Actions de navigation */}
           <div style={{ display: 'flex', gap: '12px', marginTop: '35px' }}>
+            {!editMode ? (
+                <button className="btn-login" onClick={() => setEditMode(true)}>
+                  Modifier mon profil
+                </button>
+              ) : (
+                <button className="btn-login" onClick={handleSaveProfile}>
+                  Enregistrer
+                </button>
+              )}
             <button className="btn-login" onClick={() => navigate('/rooms')}>
               Accéder aux salles
             </button>
