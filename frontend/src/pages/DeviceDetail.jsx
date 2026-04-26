@@ -8,6 +8,15 @@ function DeviceDetail() {
   const [device, setDevice] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  
+    // ── PROTECTION: Vérifier si l'utilisateur est connecté ──
+    useEffect(() => {
+      const user = localStorage.getItem('user');
+      if (!user) {
+        navigate('/login'); // Redirect to login if not authenticated
+      }
+    }, [navigate]);
+
   useEffect(() => {
     fetch("http://localhost:5000/devices")
       .then((res) => res.json())

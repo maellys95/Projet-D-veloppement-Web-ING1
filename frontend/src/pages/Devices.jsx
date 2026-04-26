@@ -17,6 +17,14 @@ function Devices() {
       .catch((err) => console.error("Erreur chargement devices :", err));
   }, []);
 
+  
+    // ── PROTECTION: Vérifier si l'utilisateur est connecté ──
+    useEffect(() => {
+      const user = localStorage.getItem('user');
+      if (!user) {
+        navigate('/login'); // Redirect to login if not authenticated
+      }
+    }, [navigate]);
   const categories = [...new Set(devices.map((d) => d.category_name).filter(Boolean))];
 
   const filteredDevices = devices.filter((device) => {

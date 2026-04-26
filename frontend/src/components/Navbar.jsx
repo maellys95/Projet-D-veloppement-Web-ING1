@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './Navbar.css';
 import logo from '../assets/logo_navbar_SC.png';
@@ -7,15 +7,17 @@ import avatarIcon from '../assets/avatar.png';
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchMenuOpen, setSearchMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const searchMenuRef = useRef(null);
 
-  // --- NOUVEAU : ON RÉCUPÈRE L'UTILISATEUR ---
+  // --- RÉCUPÈRE L'UTILISATEUR ---
   const user = JSON.parse(localStorage.getItem('user'));
 
   const getActiveClass = (path) => location.pathname === path ? "active-link" : "";
 
-  // --- NOUVEAU : FONCTION DE CLIC INTELLIGENTE ---
+  // --- FONCTION DE CLIC INTELLIGENTE POUR LE PROFIL ---
   const handleUserClick = () => {
     if (user) {
       navigate('/profile'); // Si connecté -> Page Profil
@@ -24,6 +26,34 @@ function Navbar() {
     }
     setIsOpen(false); 
   };
+
+  // --- GESTION DU MENU DE RECHERCHE ---
+  const handleSearchClick = () => {
+    setSearchMenuOpen(!searchMenuOpen);
+  };
+
+  const handleSearchOption = (type) => {
+    setSearchMenuOpen(false);
+    if (type === 'members') {
+      navigate('/members');
+    } else if (type === 'devices') {
+      navigate('/search');
+    }
+  };
+
+  // --- FERME LE MENU SI ON CLIQUE AILLEURS ---
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchMenuRef.current && !searchMenuRef.current.contains(event.target)) {
+        setSearchMenuOpen(false);
+      }
+    };
+
+    if (searchMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [searchMenuOpen]);
 
   return (
     <>
@@ -52,18 +82,55 @@ function Navbar() {
             <li><Link to="/rooms" className={getActiveClass("/rooms")}>Salles</Link></li>
             <li><Link to="/news" className={getActiveClass("/news")}>Actualités</Link></li>
             <li><Link to="/events" className={getActiveClass("/events")}>Événements</Link></li>
-
             <li><Link to="/prevention" className={getActiveClass("/prevention")}>Sensibilisation</Link></li>
           </ul>
         </div>
 
         {/* --- ZONE DROITE --- */}
         <div className="nav-right">
-          <button className="icon-button" onClick={() => navigate('/search')}>
-            <img src={searchIcon} alt="Recherche" className="nav-icon-img" />
-          </button>
+          {/* --- BOUTON RECHERCHE AVEC MENU --- */}
+          <div className="search-menu-wrapper" ref={searchMenuRef}>
+            <button 
+              className={`icon-button ${searchMenuOpen ? 'active' : ''}`}
+              onClick={handleSearchClick}
+              title="Rechercher"
+            >
+              <img src={searchIcon} alt="Recherche" className="nav-icon-img" />
+            </button>
 
-          {/* --- MODIFIÉ : BOUTON AVATAR INTELLIGENT --- */}
+            {/* --- MENU DÉROULANT DE RECHERCHE --- */}
+            {searchMenuOpen && (
+              <div className="search-menu-dropdown">
+                <div className="search-menu-header">
+                  <p className="search-menu-title">Qu'est-ce que tu cherches?</p>
+                </div>
+
+                <button 
+                  className="search-menu-option"
+                  onClick={() => handleSearchOption('members')}
+                >
+                  <span className="search-menu-icon">👥</span>
+                  <div className="search-menu-option-text">
+                    <strong>Chercher un membre</strong>
+                    <small>Découvre les autres utilisateurs</small>
+                  </div>
+                </button>
+
+                <button 
+                  className="search-menu-option"
+                  onClick={() => handleSearchOption('devices')}
+                >
+                  <span className="search-menu-icon">🔍</span>
+                  <div className="search-menu-option-text">
+                    <strong>Chercher salles & objets</strong>
+                    <small>Équipements IoT du campus</small>
+                  </div>
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* --- BOUTON PROFIL --- */}
           <button className="icon-button" onClick={handleUserClick}>
             {user && <span className="nav-user-pseudo">{user.pseudo}</span>}
             {user?.photo_url ? (
@@ -93,11 +160,13 @@ function Navbar() {
         <ul className="sidebar-links">
           <li><Link to="/" onClick={() => setIsOpen(false)}>🏠 Accueil</Link></li>
           <li><Link to="/rooms" onClick={() => setIsOpen(false)}>🏢 Salles</Link></li>
+          <li><Link to="/devices" onClick={() => setIsOpen(false)}>🔌 Objets connectés</Link></li>
+          <li><Link to="/members" onClick={() => setIsOpen(false)}>👥 Communauté</Link></li>
           <li><Link to="/news" onClick={() => setIsOpen(false)}>📰 Actualités</Link></li>
           <li><Link to="/events" onClick={() => setIsOpen(false)}>🎉 Événements</Link></li>
           <li><Link to="/prevention" onClick={() => setIsOpen(false)}>🛡️ Sensibilisation</Link></li>
           
-          {/* --- NOUVEAU : LIEN PROFIL/CO DANS LA SIDEBAR --- */}
+          {/* --- LIEN PROFIL/CO DANS LA SIDEBAR --- */}
           <hr style={{ border: '0.5px solid rgba(255,255,255,0.1)', margin: '10px 0' }} />
           <li>
             <Link to={user ? "/profile" : "/login"} onClick={() => setIsOpen(false)}>
