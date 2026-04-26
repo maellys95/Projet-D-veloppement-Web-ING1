@@ -120,10 +120,16 @@
   gap: 6px;
   color: var(--c-text-muted);
   transition: background 0.15s;
+  position: relative;
 }
 
 .icon-button:hover {
   background: var(--c-surface-2);
+}
+
+.icon-button.active {
+  background: var(--c-primary-light);
+  color: var(--c-primary);
 }
 
 .icon-button:focus-visible {
@@ -144,10 +150,122 @@
   opacity: 0.9;
 }
 
+.icon-button.active .nav-icon-img {
+  opacity: 1;
+}
+
 .nav-user-pseudo {
   font-size: 0.82rem;
   font-weight: 500;
   color: var(--c-text-2);
+}
+
+/* ════════════════════════════════════════════════
+   SEARCH MENU DROPDOWN
+   ════════════════════════════════════════════════ */
+
+.search-menu-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.search-menu-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: white;
+  border: 1px solid var(--c-border);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 1000;
+  min-width: 320px;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.search-menu-header {
+  padding: 1rem;
+  border-bottom: 1px solid var(--c-border);
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+  border-radius: 12px 12px 0 0;
+}
+
+.search-menu-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0;
+}
+
+.search-menu-option {
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-align: left;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid var(--c-border);
+}
+
+.search-menu-option:last-child {
+  border-bottom: none;
+  border-radius: 0 0 12px 12px;
+}
+
+.search-menu-option:hover {
+  background: var(--c-surface-2);
+}
+
+.search-menu-option:active {
+  background: var(--c-primary-light);
+}
+
+.search-menu-icon {
+  font-size: 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--c-surface-2);
+  border-radius: 8px;
+}
+
+.search-menu-option:hover .search-menu-icon {
+  background: var(--c-primary-light);
+}
+
+.search-menu-option-text {
+  flex: 1;
+}
+
+.search-menu-option-text strong {
+  display: block;
+  font-size: 0.95rem;
+  color: #2d3748;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.search-menu-option-text small {
+  display: block;
+  font-size: 0.8rem;
+  color: #718096;
+  font-weight: 400;
 }
 
 /* --- Burger (Mobile) --- */
@@ -222,6 +340,7 @@
   padding: 4px;
   display: flex;
   align-items: center;
+  transition: color 0.15s;
 }
 
 .close-sidebar:hover {
@@ -285,4 +404,21 @@
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid rgba(96, 165, 250, 0.5);
+  transition: border-color 0.15s;
+}
+
+.icon-button:hover .nav-profile-photo {
+  border-color: rgba(96, 165, 250, 0.8);
+}
+
+/* --- Responsive --- */
+@media (max-width: 600px) {
+  .search-menu-dropdown {
+    min-width: 280px;
+    right: -20px;
+  }
+
+  .nav-user-pseudo {
+    display: none;
+  }
 }

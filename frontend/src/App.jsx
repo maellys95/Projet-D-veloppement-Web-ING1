@@ -29,6 +29,9 @@ import Search from "./pages/Search";
 
 import Events from "./pages/Events";
 
+import Member from "./pages/Member";
+import Members from "./pages/Members";
+
 function App() {
   return (
     <Router>
@@ -59,6 +62,9 @@ function App() {
             <Route path="/prevention" element={<Prevention />} />
 
             <Route path="/events" element={<Events />} />
+
+            <Route path="/member/:id" element={<Member />} />
+            <Route path="/members" element={<Members />} />
           </Routes>
         </main>
 

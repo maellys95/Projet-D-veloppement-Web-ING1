@@ -301,6 +301,42 @@ app.get('/rooms/:id', (req, res) => {
   });
 });
 
+// ── ROUTE POUR RÉCUPÉRER LES MEMBRES
+app.get('/members', (req, res) => {
+  //const sql = 'SELECT id, pseudo, first_name, last_name, member_type FROM users WHERE is_verified = 1 AND is_approved = 1';
+const sql = 'SELECT id, pseudo, first_name, last_name, email, age, gender, birth_date, photo_url, member_type, experience_level, points FROM users WHERE is_verified = 1 AND is_approved = 1';
+  //   
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Erreur members :', err);
+      return res.status(500).json({ message: 'Erreur serveur' });
+    }
+
+    res.json(results); // Retourne les membres vérifiés et approuvés
+  });
+});
+
+// ── ROUTE POUR RÉCUPÉRER UN MEMBRE PAR ID
+app.get('/members/:id', (req, res) => {
+  const memberId = req.params.id;
+
+  const sql = 'SELECT id, pseudo, first_name, last_name, member_type, age, gender, birth_date, photo_url, experience_level, points FROM users WHERE id = ? AND is_verified = 1 AND is_approved = 1';
+
+  db.query(sql, [memberId], (err, results) => {
+    if (err) {
+      console.error('Erreur pour récupérer le membre :', err);
+      return res.status(500).json({ message: 'Erreur serveur' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ message: 'Membre non trouvé' });
+    }
+
+    res.json(results[0]); // Retourne les détails du membre
+  });
+});
+
+
 // ── ROUTE POUR RÉCUPÉRER LES ÉVÉNEMENTS
 
 app.get('/events', (req, res) => {

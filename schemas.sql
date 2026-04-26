@@ -578,14 +578,28 @@ CREATE INDEX idx_notifications_user_id ON notifications(user_id);
 -- ============================================================
 
 -- Données de test pour les utilisateurs
-INSERT INTO users
+/*INSERT INTO users
 (pseudo, email, password_hash, first_name, last_name, age, gender, birth_date, member_type, user_level, photo_url, experience_level, points)
 VALUES
 ('alice', 'alice@campus.fr', 'hash1', 'Alice', 'Martin', 20, 'Femme', '2005-03-14', 'Étudiant', 'simple', NULL, 'débutant', 2.00),
 ('yasmine', 'yasmine@campus.fr', 'hash2', 'Yasmine', 'Benali', 21, 'Femme', '2004-08-09', 'Étudiant', 'simple', NULL, 'intermédiaire', 4.50),
 ('pauldurand', 'durand@campus.fr', 'hash3', 'Paul', 'Durand', 42, 'Homme', '1983-01-20', 'Enseignant', 'complexe', NULL, 'avancé', 8.00),
-('nadialeroy', 'nadia@campus.fr', 'hash4', 'Nadia', 'Leroy', 35, 'Femme', '1990-06-12', 'Chercheur', 'complexe', NULL, 'avancé', 10.00),
+('nadialeroy', 'nadia@campus.fr', 'hash4', 'Nadia', 'Leroy', 35, 'Femme', '1990-06-12', 'Enseignant', 'complexe', NULL, 'avancé', 10.00),
+
 ('samir', 'samir@campus.fr', 'hash5', 'Samir', 'Ait', 22, 'Homme', '2003-11-02', 'Étudiant', 'simple', NULL, 'débutant', 1.50);
+*/
+INSERT INTO users 
+(pseudo, email, password_hash, first_name, last_name, age, gender, birth_date, member_type, user_level, photo_url, experience_level, points) 
+VALUES 
+-- ÉTUDIANTS (Niveau Simple)
+('alice_m', 'alice.martin@etu.cyu.fr', '$2a$10$rY3O.8G1/YvT2Z.E1B.oUeXpW9vR', 'Alice', 'Martin', 20, 'Femme', '2005-03-14', 'Étudiant', 'simple', '/uploads/pp_oiseau.png', 'débutant', 2.00),
+('yasmine_b', 'yasmine.benali@etu.cyu.fr', '$2a$10$rY3O.8G1/YvT2Z.E1B.oUeXpW9vR', 'Yasmine', 'Benali', 21, 'Femme', '2004-08-09', 'Étudiant', 'simple', '/uploads/pp_lavande.png', 'intermédiaire', 4.50),
+('samir_a', 'samir.ait@etu.cyu.fr', '$2a$10$rY3O.8G1/YvT2Z.E1B.oUeXpW9vR', 'Samir', 'Ait', 22, 'Homme', '2003-11-02', 'Étudiant', 'simple', '/uploads/pp_chat.png', 'débutant', 1.50),
+
+-- ENSEIGNANTS (Niveau Complexe / Expert)
+('pauldurand', 'paul.durand@cyu.fr', '$2a$10$rY3O.8G1/YvT2Z.E1B.oUeXpW9vR', 'Paul', 'Durand', 42, 'Homme', '1983-01-20', 'Enseignant', 'complexe', NULL, 'avancé', 8.00),
+('nadialeroy', 'nadia.leroy@cyu.fr', '$2a$10$rY3O.8G1/YvT2Z.E1B.oUeXpW9vR', 'Nadia', 'Leroy', 35, 'Femme', '1990-06-12', 'Enseignant', 'expert', NULL, 'expert', 15.75);
+
 
 -- Données de test pour les catégories d'appareils
 INSERT INTO device_categories (name, description, icon) VALUES
