@@ -162,12 +162,7 @@ Ce fichier contient :
 - MySQL ≥ 8
 - npm
 
-### 1. Base de données
 
-```bash
-# Créer la base et importer le schéma
-mysql -u root -p < database/schema.sql
-```
 
 ### 2. Backend
 
