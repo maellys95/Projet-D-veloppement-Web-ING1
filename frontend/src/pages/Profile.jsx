@@ -78,6 +78,7 @@ const Profile = () => {
     setUser(updatedUser);
     localStorage.setItem('user', JSON.stringify(updatedUser));
     setEditMode(false);
+    window.location.reload();
   } else {
     alert(result.message || 'Erreur lors de la mise à jour.');
   }
