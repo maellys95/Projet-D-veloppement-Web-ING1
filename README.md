@@ -25,9 +25,96 @@ Smart Campus est une plateforme numérique intelligente pour la gestion d'une un
 
 ---
 
-## 1️⃣ SQL (La Base)
-* **Action :** Ouvrir **WampServer** ou **XAMPP**.
-* **Base :** `smart_campus` doit être présente.
+## 1️⃣ SQL (La Base de données)
+
+### 📌 Action
+
+* Ouvrir **WampServer**
+* Vérifier que MySQL est actif (icône verte)
+
+---
+
+### 📌 Base
+
+La base de données utilisée dans le projet est :
+
+```sql
+smart_campus
+```
+
+Elle doit être créée avant de lancer le backend.
+
+---
+
+### 📂 Fichiers SQL
+
+La base de données est composée de **deux fichiers principaux** :
+
+#### 🔹 `schemas.sql`
+
+Ce fichier permet :
+
+* de créer la base de données `smart_campus`
+* de créer toutes les tables du projet (`users`, `rooms`, `devices`, etc.)
+* de définir les relations entre les tables (clés étrangères)
+
+👉 Il sert à **initialiser complètement la base de données**
+
+---
+
+#### 🔹 `requetes.sql`
+
+Ce fichier contient :
+
+* des requêtes SQL (SELECT, INSERT, UPDATE)
+* des données de test
+* des exemples de requêtes pour vérifier le bon fonctionnement
+
+👉 Il sert à **tester et manipuler la base de données**
+
+---
+
+### ⚙️ Installation avec MySQL Workbench
+
+#### 1. Ouvrir MySQL Workbench
+
+* Se connecter à **localhost**
+
+---
+
+#### 2. Importer la base
+
+1. Ouvrir le fichier `schemas.sql`
+2. Cliquer sur le bouton **⚡ Execute**
+
+👉 Cela crée :
+
+* la base `smart_campus`
+* toutes les tables nécessaires
+
+---
+
+#### 3. Tester la base
+
+1. Ouvrir le fichier `requetes.sql`
+2. Cliquer sur **⚡ Execute**
+
+👉 Cela permet de :
+
+* vérifier que les tables fonctionnent
+* afficher des données
+* tester les requêtes SQL
+
+---
+
+### ✅ Résultat attendu
+
+* La base `smart_campus` est créée
+* Toutes les tables sont présentes
+* Les données peuvent être utilisées par le backend
+
+---
+
 
 ---
 
