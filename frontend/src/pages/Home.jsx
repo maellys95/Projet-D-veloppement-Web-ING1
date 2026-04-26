@@ -2,51 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './css/Home.css';
 import RoomCard from '../components/RoomCard';
+import { getRoomImage, getDeviceImage } from '../utils/imageUtils';
 
 import campusImg from '../assets/background.png';
-
-// Room images
-import imgAmphi1     from '../assets/amphi1.png';
-import imgAmphi2     from '../assets/amphi2.png';
-import imgAmphi3     from '../assets/amphi3.png';
-import imgSalleInfo1 from '../assets/salle_info1.png';
-import imgSalleInfo2 from '../assets/salle_info2.png';
-import imgSalle1     from '../assets/salle1.png';
-import imgSalle2     from '../assets/salle2.png';
-import imgSalle3     from '../assets/salle3.png';
-
-// Device images
-import imgTemperature   from '../assets/temp.png';
-import imgCamera        from '../assets/camera.png';
-import imgEclairage     from '../assets/eclairage.png';
-import imgCapteurAir    from '../assets/capteur_qualite_air.png';
-import imgCompteurElec  from '../assets/compteur_electrique.png';
-import imgControleAcces from '../assets/controle_acces.png';
-import imgWifi          from '../assets/point_acces_wifi.png';
-import imgProjecteur    from '../assets/projecteur.png';
-
-const CATEGORY_IMAGES = {
-  'Thermostat':      imgTemperature,
-  'Caméra':          imgCamera,
-  'Éclairage':       imgEclairage,
-  'Capteur qualité': imgCapteurAir,
-  'Consommation':    imgCompteurElec,
-  'Accès':           imgControleAcces,
-  'Réseau':          imgWifi,
-  'Multimédia':      imgProjecteur,
-};
-
-const getRoomImage = (room) => {
-  const name = (room.name || '').toLowerCase();
-  if (name.includes('amphi a'))  return imgAmphi1;
-  if (name.includes('amphi b'))  return imgAmphi2;
-  if (name.includes('amphi'))    return imgAmphi3;
-  if (name.includes('tp 101'))   return imgSalleInfo1;
-  if (name.includes('tp 102'))   return imgSalleInfo2;
-  if (name.includes('labo'))     return imgSalle2;
-  if (name.includes('biblio'))   return imgSalle3;
-  return imgSalle1;
-};
+import imgTemperature from '../assets/temp.png';
 
 const Home = () => {
   const [rooms, setRooms] = useState([]);
@@ -110,7 +69,7 @@ const Home = () => {
             {rooms.map((room) => (
               <RoomCard
                 key={room.id}
-                image={getRoomImage(room)}
+                image={getRoomImage(room.name)}
                 name={room.name}
                 status="Libre"
                 onClick={() => navigate(`/room/${room.id}`)}
@@ -143,7 +102,7 @@ const Home = () => {
               >
                 <div className="smart-card-img-wrap">
                   <img
-                    src={CATEGORY_IMAGES[device.category_name] || imgTemperature}
+                    src={getDeviceImage(device.category_name)}
                     alt={device.name}
                     className="smart-card-img"
                   />

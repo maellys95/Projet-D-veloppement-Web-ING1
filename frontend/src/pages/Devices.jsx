@@ -1,9 +1,6 @@
-// Liste des objets IoT (thermostats, caméras, capteurs, etc.) disponibles dans les salles.
-// Filtres pour rechercher des objets par type, état (actif/inactif), et autres critères.
-// Les utilisateurs simples peuvent consulter les objets mais pas les modifier.
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getDeviceImage } from "../utils/imageUtils";
 import "./css/Devices.css";
 
 function Devices() {
@@ -35,7 +32,7 @@ function Devices() {
   return (
     <main className="devices-page">
       <section className="devices-header">
-        <h1>Objets connectés</h1>
+        <h1>Objets Connectés</h1>
         <p>Consultez les équipements IoT du campus en temps réel.</p>
       </section>
 
@@ -55,6 +52,7 @@ function Devices() {
             <option value="Actif">Actif</option>
             <option value="Inactif">Inactif</option>
             <option value="Maintenance">Maintenance</option>
+            <option value="Erreur">Erreur</option>
           </select>
 
           <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
@@ -74,6 +72,14 @@ function Devices() {
               className="device-card"
               onClick={() => navigate(`/device/${device.id}`)}
             >
+              <div className="device-card-image">
+                <img
+                  src={getDeviceImage(device.category_name)}
+                  alt={device.name}
+                  className="device-image"
+                />
+              </div>
+
               <div className="device-card-top">
                 <span className="device-category">{device.category_name}</span>
                 <span className={`device-status ${device.status.toLowerCase()}`}>
@@ -84,13 +90,13 @@ function Devices() {
               <h2>{device.name}</h2>
               <p className="device-uid">{device.uid}</p>
               <p className="device-room">
-                Salle : {device.room_name || "Non assignée"}
+                🏠 {device.room_name || "Non assignée"}
               </p>
             </article>
           ))}
 
           {filteredDevices.length === 0 && (
-            <p className="no-result">Aucun objet trouvé.</p>
+            <p className="no-result">❌ Aucun objet trouvé.</p>
           )}
         </section>
       </section>

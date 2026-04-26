@@ -1,18 +1,19 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import RoomCard from "../components/RoomCard"; // Import du composant RoomCard
-import "./css/Rooms.css"; // CSS pour la page Rooms
-import carte from "../assets/carte.png"; // Image de la carte du campus
+import RoomCard from "../components/RoomCard";
+import { getRoomImage } from "../utils/imageUtils";
+import "./css/Rooms.css";
+import carte from "../assets/carte.png";
 
 function Rooms() {
   const [rooms, setRooms] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:5000/rooms")  // Récupère les salles depuis le backend
+    fetch("http://localhost:5000/rooms")
       .then((res) => res.json())
       .then((data) => setRooms(data))
-      .catch((err) => console.error("Erreur rooms :", err));  // Gestion des erreurs
+      .catch((err) => console.error("Erreur rooms :", err));
   }, []);
 
   return (
@@ -35,11 +36,11 @@ function Rooms() {
         {rooms.map((room) => (
           <RoomCard
             key={room.id}
-            image={`../assets/${room.name}.png`} // Ajoute une image par défaut ou à personnaliser
+            image={getRoomImage(room.name)}
             name={room.name}
-            status={room.status} // Actif ou Inactif
-            fill={(room.capacity / 1000) * 100} // Calcul de l'occupation de la salle
-            onClick={() => navigate(`/room/${room.id}`)}  // Redirige vers la page de détail de la salle
+            status={room.status || "Libre"}
+            fill={(room.capacity / 1000) * 100}
+            onClick={() => navigate(`/room/${room.id}`)}
           />
         ))}
       </div>

@@ -1,186 +1,405 @@
-/* ───────────────────────────── Page Search ───────────────────────────── */
+/* ============================================================
+   SEARCH PAGE CSS
+   ============================================================ */
 
-/* Conteneur principal de la page de recherche */
 .search-page {
-  display: flex;
-  justify-content: space-between;
-  gap: 30px;
-  margin: 30px;
-  flex-wrap: wrap; /* Permet aux éléments de se réorganiser en fonction de la taille de l'écran */
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 0;
 }
 
-/* Section des filtres */
+/* ── SEARCH HEADER ── */
+.search-header {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  margin-bottom: 2rem;
+}
+
+.search-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -0.5px;
+}
+
+.search-header p {
+  font-size: 1.1rem;
+  margin: 0;
+  opacity: 0.95;
+  font-weight: 300;
+}
+
+/* ── SEARCH LAYOUT ── */
+.search-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem 2rem 2rem;
+}
+
+/* ── FILTERS SIDEBAR ── */
 .search-filters {
-  width: 25%;
-  background: #ffffff;
-  padding: 20px;
+  background: white;
+  padding: 1.5rem;
   border-radius: 12px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  height: fit-content;
+  position: sticky;
+  top: 2rem;
 }
 
-/* Titre de la section des filtres */
 .search-filters h2 {
-  margin-bottom: 20px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0 0 1.5rem 0;
+  color: #2d3748;
+  border-bottom: 2px solid #667eea;
+  padding-bottom: 0.75rem;
 }
 
-/* Eléments de chaque filtre */
+/* ── FILTER ITEMS ── */
 .filter-item {
-  margin-bottom: 15px;
+  margin-bottom: 1.5rem;
 }
 
 .filter-item label {
-  font-weight: bold;
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
 }
 
-.filter-item input,
-.filter-item select,
-.filter-item button {
+.search-input,
+.filter-select {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
+  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
   border-radius: 8px;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  background-color: #f8fafc;
 }
 
-.filter-item button {
-  background-color: #1E40AF; /* Bleu pour le bouton appliquer */
-  color: white;
+.search-input:focus,
+.filter-select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  background-color: white;
+}
+
+.search-input::placeholder {
+  color: #a0aec0;
+}
+
+/* ── ACTION BUTTONS ── */
+.btn-apply,
+.btn-reset {
+  width: 100%;
+  padding: 0.75rem;
   border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 16px;
+  transition: all 0.2s ease;
+  margin-bottom: 0.75rem;
 }
 
-.filter-item button:hover {
-  background-color: #3b82f6;
+.btn-apply {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
 }
 
-/* Filtres appliqués */
-.filters-applied {
-  color: green;
-  font-size: 14px;
-  margin-top: 10px;
+.btn-apply:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
 }
 
-/* Section des résultats */
+.btn-apply:active {
+  transform: translateY(0);
+}
+
+.btn-reset {
+  background: #e2e8f0;
+  color: #2d3748;
+}
+
+.btn-reset:hover {
+  background: #cbd5e0;
+  transform: translateY(-2px);
+}
+
+/* ── SEARCH RESULTS ── */
 .search-results {
-  width: 70%;
+  background: transparent;
 }
 
-/* Carte des résultats */
-.results-cards {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 30px;
-  justify-content: flex-start;
+.results-header {
+  margin-bottom: 2rem;
 }
 
-.results-cards .room-card,
-.results-cards .device-card {
-  background-color: #ffffff;
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+.results-header h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0 0 0.5rem 0;
+}
+
+.result-count {
+  font-size: 1rem;
+  color: #718096;
+  margin: 0;
+}
+
+/* ── RESULTS GRID ── */
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+/* ── DEVICE RESULT CARD ── */
+.device-result-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
   cursor: pointer;
-  transition: transform 0.3s ease;
-  width: 30%; /* La largeur des cartes est définie à 30% */
-  max-width: 300px;
-  height: auto;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-}
-
-.results-cards .room-card:hover,
-.results-cards .device-card:hover {
-  transform: translateY(-5px); /* Effet de déplacement sur hover */
-}
-
-.room-card h2,
-.device-card h2 {
-  font-size: 1.2rem;
-  margin-bottom: 12px;
-  color: #333;
-}
-
-.room-card p,
-.device-card p {
-  font-size: 1rem;
-  color: #64748b;
-  margin-bottom: 10px;
-}
-
-/* Boutons et badges de statut */
-.room-card .room-badge,
-.device-card .device-status {
-  font-size: 0.9rem;
-  color: white;
-  padding: 4px 8px;
-  border-radius: 16px;
-  background-color: #1E40AF; /* Bleu pour le badge */
-  margin-bottom: 12px;
-  display: inline-block;
-}
-
-/* Progress bar pour les cartes */
-.room-card .room-progress-bar,
-.device-card .device-progress-bar {
-  background: rgba(0, 0, 0, 0.1);
-  height: 5px;
-  border-radius: 10px;
-  margin-bottom: 10px;
-}
-
-.room-card .room-progress-fill,
-.device-card .device-progress-fill {
   height: 100%;
-  border-radius: 10px;
-  background-color: #1E40AF; /* Bleu pour la barre de progression*/
 }
 
-/* Media Queries pour les écrans plus petits */
+.device-result-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
 
-/* Sur les écrans plus petits, on place les filtres au-dessus des résultats */
+/* ── RESULT CARD IMAGE ── */
+.result-card-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.result-card-image {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.result-card-status {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(4px);
+}
+
+.result-card-status.actif {
+  background: rgba(198, 246, 213, 0.95);
+  color: #22543d;
+}
+
+.result-card-status.inactif {
+  background: rgba(254, 215, 215, 0.95);
+  color: #742a2a;
+}
+
+.result-card-status.maintenance {
+  background: rgba(254, 235, 200, 0.95);
+  color: #7c2d12;
+}
+
+.result-card-status.erreur {
+  background: rgba(254, 215, 215, 0.95);
+  color: #742a2a;
+}
+
+/* ── RESULT CARD CONTENT ── */
+.result-card-content {
+  padding: 1.25rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.result-card-content h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.4;
+}
+
+.result-card-uid {
+  font-size: 0.8rem;
+  color: #718096;
+  font-family: 'Courier New', monospace;
+  margin: 0 0 0.75rem 0;
+  word-break: break-all;
+}
+
+.result-card-category,
+.result-card-room,
+.result-card-battery,
+.result-card-signal {
+  font-size: 0.9rem;
+  color: #4a5568;
+  margin: 0.3rem 0;
+  font-weight: 500;
+}
+
+.result-card-category {
+  color: #667eea;
+  font-weight: 600;
+}
+
+.result-card-room {
+  margin-top: 0.75rem;
+}
+
+/* ── NO RESULTS ── */
+.no-results {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 3rem 2rem;
+  background: white;
+  border-radius: 12px;
+  border: 2px dashed #cbd5e0;
+}
+
+.no-results p {
+  font-size: 1.1rem;
+  color: #718096;
+  margin: 0.5rem 0;
+}
+
+.no-results-hint {
+  font-size: 0.95rem;
+  color: #a0aec0 !important;
+}
+
+/* ── RESPONSIVE ── */
 @media (max-width: 1024px) {
-  .search-page {
-    flex-direction: column;
+  .search-layout {
+    grid-template-columns: 1fr;
+    padding: 0 1.5rem 1.5rem 1.5rem;
   }
 
   .search-filters {
-    width: 100%;
-    margin-bottom: 20px; /* Ajoute un espacement sous les filtres */
+    position: relative;
+    top: 0;
   }
 
-  .search-results {
-    width: 100%;
-  }
-}
-
-/* Sur les écrans mobiles, on ajuste également la taille des cartes */
-@media (max-width: 640px) {
-  .results-cards .room-card,
-  .results-cards .device-card {
-    width: 100%; /* Les cartes prennent toute la largeur sur mobile */
+  .results-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   }
 }
 
-/* Remplace les définitions de .room-card par celle-ci */
-.results-cards .room-card {
-  background-color: #ffffff;
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  transition: transform 0.3s ease;
-  
-  /* Largeur fixe pour 3 colonnes avec gap */
-  width: calc(33.33% - 20px); 
-  min-width: 250px;
-  
-  /* IMPORTANT : Reset de la hauteur et alignement */
-  height: auto; 
-  min-height: 200px; /* Donne une base de hauteur */
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: stretch; /* Permet au contenu de prendre toute la largeur */
-  overflow: hidden;
+@media (max-width: 768px) {
+  .search-page {
+    padding: 0;
+  }
+
+  .search-header {
+    padding: 2rem 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .search-header h1 {
+    font-size: 2rem;
+  }
+
+  .search-header p {
+    font-size: 1rem;
+  }
+
+  .search-layout {
+    padding: 0 1rem 1rem 1rem;
+  }
+
+  .search-filters {
+    padding: 1rem;
+  }
+
+  .results-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+
+  .result-card-image-wrapper {
+    height: 160px;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .search-header p {
+    font-size: 0.95rem;
+  }
+
+  .search-layout {
+    grid-template-columns: 1fr;
+    padding: 0 1rem 1rem 1rem;
+    gap: 1rem;
+  }
+
+  .results-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .result-card-content {
+    padding: 1rem;
+  }
+
+  .result-card-content h3 {
+    font-size: 1rem;
+  }
+
+  .result-card-image-wrapper {
+    height: 140px;
+  }
+}
+
+/* ── ANIMATIONS ── */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.device-result-card {
+  animation: slideInUp 0.4s ease forwards;
+}
+
+.device-result-card:nth-child(n) {
+  animation-delay: calc(0.05s * var(--index, 0));
 }
