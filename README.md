@@ -10,7 +10,7 @@ Smart Campus est une plateforme numérique intelligente pour la gestion d'une un
 
 --- 
 
-# ⚡ GUIDE DE LANCEMENT RAPIDE (Smart Campus)
+# ⚡ GUIDE DE LANCEMENT Smart Campus
 ## ⚡ LANCEMENT RAPIDE
 
 1️⃣ Installation (une seule fois)  
