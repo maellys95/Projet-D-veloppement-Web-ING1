@@ -1,67 +1,7 @@
 /* ================================================
    Home — Page Styles (Unified)
    ================================================ */
-.rooms-gallery-section {
-    width: 100%;
-    padding: 40px 5%;
-    background: #f4f6f9;
-}
 
-.gallery-container {
-    position: relative;
-    width: 100%;
-    max-width: 1250px;
-    height: 430px;
-    margin: 0 auto;
-    border-radius: 18px;
-    overflow: hidden;
-    background: #0b1831;
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
-}
-
-.gallery-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-
-.gallery-buttons {
-    position: absolute;
-    bottom: 18px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 22px;
-}
-
-.gallery-buttons button {
-    width: 58px;
-    height: 58px;
-    border: none;
-    border-radius: 12px;
-    background: #17285f;
-    color: white;
-    font-size: 30px;
-    cursor: pointer;
-    transition: 0.25s;
-}
-
-.gallery-buttons button:hover {
-    background: #538cc4;
-}
-.gallery-title {
-    position: absolute;
-    bottom: 90px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: white;
-    font-size: 28px;
-    font-weight: bold;
-    background: rgba(0,0,0,0.4);
-    padding: 10px 25px;
-    border-radius: 10px;
-}
 .home-wrapper { width: 100%; }
 
 /* --- Hero --- */

@@ -13,8 +13,16 @@ function Navbar() {
   const searchMenuRef = useRef(null);
 
   // --- RÉCUPÈRE L'UTILISATEUR ---
-  const user = JSON.parse(localStorage.getItem('user'));
-
+let user = null;
+try {
+  const userStr = localStorage.getItem('user');
+  if (userStr) {
+    user = JSON.parse(userStr);
+  }
+} catch (err) {
+  console.error('Error parsing user:', err);
+  localStorage.removeItem('user');
+}
   const getActiveClass = (path) => location.pathname === path ? "active-link" : "";
 
   // --- FONCTION DE CLIC INTELLIGENTE POUR LE PROFIL ---

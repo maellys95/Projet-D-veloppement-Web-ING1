@@ -18,6 +18,7 @@ import ResetPassword from "./pages/ResetPassword";
 
 import Prevention from "./pages/Prevention";
 import Quiz from "./pages/Quiz";
+import Quizzes from "./pages/Quizzes";
 
 import Rooms from "./pages/Rooms";
 import RoomDetail from "./pages/RoomDetail";
@@ -31,7 +32,7 @@ import Events from "./pages/Events";
 
 import Member from "./pages/Member";
 import Members from "./pages/Members";
-import Contact from "./pages/Contact";
+
 function App() {
   return (
     <Router>
@@ -58,11 +59,11 @@ function App() {
             <Route path="/confirm-email" element={<ConfirmEmail />} />
             <Route path="/profile" element={<Profile />} />
             
-            <Route path="/quiz" element={<Quiz />} />
+            <Route path="/quizzes" element={<Quizzes />} />
+            <Route path="/quiz/:quizId" element={<Quiz />} />
             <Route path="/prevention" element={<Prevention />} />
 
             <Route path="/events" element={<Events />} />
-            <Route path="/contact" element={<Contact />} />
 
             <Route path="/member/:id" element={<Member />} />
             <Route path="/members" element={<Members />} />

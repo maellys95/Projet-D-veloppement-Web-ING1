@@ -2,6 +2,9 @@
 -- SMART CAMPUS IOT PLATFORM — DATABASE SCHEMA
 -- Version finale sans administration, avec authentification
 -- ============================================================
+-- select * from users ; 
+-- delete from users where pseudo='prof_test_jean' or pseudo='prof_test_marie' ;
+-- $2b$10$XrZK01yiqUNTMUl5CztTkuyk9mdqPIzmrwqTWm3ofrsljyOtuN4Cu Test_123
 
 DROP DATABASE IF EXISTS smart_campus;
 -- DROP TABLE IF EXISTS notifications;
@@ -101,6 +104,19 @@ created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   -- Date de dernière mise à jour du compte
   updated_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+
+-- ============================================================
+-- MIGRATION: Add chosen_level column to users table
+-- ============================================================
+
+-- Ajoute une colonne pour le niveau choisi par l'utilisateur
+ALTER TABLE users ADD COLUMN chosen_level ENUM('débutant','intermédiaire','avancé','expert') DEFAULT 'débutant' AFTER experience_level;
+
+-- Met à jour chosen_level avec la valeur actuelle d'experience_level pour tous les utilisateurs existants
+UPDATE users SET chosen_level = experience_level WHERE chosen_level IS NULL OR chosen_level = 'débutant';
+
+-- Vérifie que la migration s'est bien passée
+SELECT id, pseudo, experience_level, chosen_level, points FROM users;
 
 -- ============================================================
 -- CONNECTION LOGS
@@ -576,31 +592,47 @@ CREATE INDEX idx_notifications_user_id ON notifications(user_id);
 -- ============================================================
 -- SEED DATA
 -- ============================================================
+-- ============================================================
+-- INSERT COMPLETE USERS WITH TEST PROFESSORS
+-- ============================================================
 
--- Données de test pour les utilisateurs
-/*INSERT INTO users
-(pseudo, email, password_hash, first_name, last_name, age, gender, birth_date, member_type, user_level, photo_url, experience_level, points)
-VALUES
-('alice', 'alice@campus.fr', 'hash1', 'Alice', 'Martin', 20, 'Femme', '2005-03-14', 'Étudiant', 'simple', NULL, 'débutant', 2.00),
-('yasmine', 'yasmine@campus.fr', 'hash2', 'Yasmine', 'Benali', 21, 'Femme', '2004-08-09', 'Étudiant', 'simple', NULL, 'intermédiaire', 4.50),
-('pauldurand', 'durand@campus.fr', 'hash3', 'Paul', 'Durand', 42, 'Homme', '1983-01-20', 'Enseignant', 'complexe', NULL, 'avancé', 8.00),
-('nadialeroy', 'nadia@campus.fr', 'hash4', 'Nadia', 'Leroy', 35, 'Femme', '1990-06-12', 'Enseignant', 'complexe', NULL, 'avancé', 10.00),
-
-('samir', 'samir@campus.fr', 'hash5', 'Samir', 'Ait', 22, 'Homme', '2003-11-02', 'Étudiant', 'simple', NULL, 'débutant', 1.50);
-*/
 INSERT INTO users 
-(pseudo, email, password_hash, first_name, last_name, age, gender, birth_date, member_type, user_level, photo_url, experience_level, points) 
+(pseudo, email, password_hash, first_name, last_name, age, gender, birth_date, member_type, user_level, photo_url, experience_level, chosen_level, points, is_verified, is_approved) 
 VALUES 
 -- ÉTUDIANTS (Niveau Simple)
-('alice_m', 'alice.martin@etu.cyu.fr', '$2a$10$rY3O.8G1/YvT2Z.E1B.oUeXpW9vR', 'Alice', 'Martin', 20, 'Femme', '2005-03-14', 'Étudiant', 'simple', '/uploads/pp_oiseau.png', 'débutant', 2.00),
-('yasmine_b', 'yasmine.benali@etu.cyu.fr', '$2a$10$rY3O.8G1/YvT2Z.E1B.oUeXpW9vR', 'Yasmine', 'Benali', 21, 'Femme', '2004-08-09', 'Étudiant', 'simple', '/uploads/pp_lavande.png', 'intermédiaire', 4.50),
-('samir_a', 'samir.ait@etu.cyu.fr', '$2a$10$rY3O.8G1/YvT2Z.E1B.oUeXpW9vR', 'Samir', 'Ait', 22, 'Homme', '2003-11-02', 'Étudiant', 'simple', '/uploads/pp_chat.png', 'débutant', 1.50),
+('alice_m', 'alice.martin@etu.cyu.fr', '$2a$10$rY3O.8G1/YvT2Z.E1B.oUeXpW9vR', 'Alice', 'Martin', 20, 'Femme', '2005-03-14', 'Étudiant', 'simple', '/uploads/pp_oiseau.png', 'débutant', 'débutant', 2.00, 1, 1),
+('yasmine_b', 'yasmine.benali@etu.cyu.fr', '$2a$10$rY3O.8G1/YvT2Z.E1B.oUeXpW9vR', 'Yasmine', 'Benali', 21, 'Femme', '2004-08-09', 'Étudiant', 'simple', '/uploads/pp_lavande.png', 'intermédiaire', 'intermédiaire', 4.50, 1, 1),
+('samir_a', 'samir.ait@etu.cyu.fr', '$2a$10$rY3O.8G1/YvT2Z.E1B.oUeXpW9vR', 'Samir', 'Ait', 22, 'Homme', '2003-11-02', 'Étudiant', 'simple', '/uploads/pp_chat.png', 'débutant', 'débutant', 1.50, 1, 1),
 
--- ENSEIGNANTS (Niveau Complexe / Expert)
-('pauldurand', 'paul.durand@cyu.fr', '$2a$10$rY3O.8G1/YvT2Z.E1B.oUeXpW9vR', 'Paul', 'Durand', 42, 'Homme', '1983-01-20', 'Enseignant', 'complexe', NULL, 'avancé', 8.00),
-('nadialeroy', 'nadia.leroy@cyu.fr', '$2a$10$rY3O.8G1/YvT2Z.E1B.oUeXpW9vR', 'Nadia', 'Leroy', 35, 'Femme', '1990-06-12', 'Enseignant', 'expert', NULL, 'expert', 15.75);
+-- ENSEIGNANTS (Niveau Complexe / Expert) - Existing
+('pauldurand', 'paul.durand@cyu.fr', '$2a$10$rY3O.8G1/YvT2Z.E1B.oUeXpW9vR', 'Paul', 'Durand', 42, 'Homme', '1983-01-20', 'Enseignant', 'complexe', NULL, 'avancé', 'avancé', 8.00, 1, 1),
+('nadialeroy', 'nadia.leroy@cyu.fr', '$2a$10$rY3O.8G1/YvT2Z.E1B.oUeXpW9vR', 'Nadia', 'Leroy', 35, 'Femme', '1990-06-12', 'Enseignant', 'complexe', NULL, 'expert', 'expert', 15.75, 1, 1),
 
+-- TEST PROFESSORS (NEW) - Pour tester
+-- $2b$10$XrZK01yiqUNTMUl5CztTkuyk9mdqPIzmrwqTWm3ofrsljyOtuN4Cu Test_123
+('prof_test_jean', 'jean.test@cyu.fr', '$2b$10$XrZK01yiqUNTMUl5CztTkuyk9mdqPIzmrwqTWm3ofrsljyOtuN4Cu', 'Jean', 'Test', 45, 'Homme', '1980-05-15', 'Enseignant', 'complexe', '/uploads/pp_lavande.png', 'débutant', 'débutant', 10.00, 1, 1),
+('prof_test_marie', 'marie.test@cyu.fr', '$2b$10$XrZK01yiqUNTMUl5CztTkuyk9mdqPIzmrwqTWm3ofrsljyOtuN4Cu', 'Marie', 'Test', 38, 'Femme', '1987-08-22', 'Enseignant', 'complexe', '/uploads/pp_oiseau.png', 'débutant', 'débutant', 10.00, 1, 1);
 
+-- ============================================================
+-- VERIFY INSERTION
+-- ============================================================
+
+SELECT id, pseudo, email, member_type, experience_level, chosen_level, points 
+FROM users 
+ORDER BY id;
+
+-- ============================================================
+-- PASSWORD REMINDER
+-- ============================================================
+-- All users use password: test123 (hashed with bcrypt)
+-- Hash: $2a$10$rY3O.8G1/YvT2Z.E1B.oUeXpW9vR
+
+-- Test Professors can login with:
+-- Email: jean.test@cyu.fr
+-- Password: Test_123
+
+-- Email: marie.test@cyu.fr
+-- Password: Test_123
 -- Données de test pour les catégories d'appareils
 INSERT INTO device_categories (name, description, icon) VALUES
 ('Thermostat', 'Régulation de la température', 'thermometer'),
@@ -787,3 +819,313 @@ INSERT INTO notifications (user_id, message, is_read) VALUES
 (3, 'Votre réunion pédagogique a bien été enregistrée.', 1),
 (4, 'Nouvelle statistique disponible sur les salles les plus utilisées.', 0),
 (5, 'Pensez à compléter votre profil utilisateur.', 0);
+
+
+-- ================================================================
+-- QUIZ SYSTEM TABLES
+-- ================================================================
+ 
+-- ----------------------------------------------------------------
+-- QUIZZES (Quiz Definitions)
+-- ----------------------------------------------------------------
+CREATE TABLE quizzes (
+  id                INT AUTO_INCREMENT PRIMARY KEY,
+  title             VARCHAR(255) NOT NULL,
+  description       TEXT,
+  difficulty_level  ENUM('débutant', 'intermédiaire', 'avancé', 'expert') DEFAULT 'débutant',
+  category          VARCHAR(100),
+  points_reward     INT DEFAULT 5,
+  is_active         TINYINT(1) DEFAULT 1,
+  created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+ 
+-- ----------------------------------------------------------------
+-- QUIZ QUESTIONS
+-- ----------------------------------------------------------------
+CREATE TABLE quiz_questions (
+  id               INT AUTO_INCREMENT PRIMARY KEY,
+  quiz_id          INT NOT NULL,
+  question_text    TEXT NOT NULL,
+  question_order   INT,
+  created_at       TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (quiz_id) REFERENCES quizzes(id) ON DELETE CASCADE
+);
+ 
+-- ----------------------------------------------------------------
+-- QUIZ ANSWERS
+-- ----------------------------------------------------------------
+CREATE TABLE quiz_answers (
+  id             INT AUTO_INCREMENT PRIMARY KEY,
+  question_id    INT NOT NULL,
+  answer_text    TEXT NOT NULL,
+  is_correct     TINYINT(1) DEFAULT 0,
+  answer_order   INT,
+  created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (question_id) REFERENCES quiz_questions(id) ON DELETE CASCADE
+);
+ 
+-- ----------------------------------------------------------------
+-- QUIZ RESULTS (User Quiz Completions)
+-- ----------------------------------------------------------------
+CREATE TABLE quiz_results (
+  id               INT AUTO_INCREMENT PRIMARY KEY,
+  user_id          INT NOT NULL,
+  quiz_id          INT NOT NULL,
+  score            INT,
+  total_questions  INT,
+  is_passed        TINYINT(1) DEFAULT 0,
+  points_earned    INT DEFAULT 0,
+  completed_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (quiz_id) REFERENCES quizzes(id) ON DELETE CASCADE
+);
+ 
+-- ----------------------------------------------------------------
+-- USER QUIZ PROGRESS
+-- ----------------------------------------------------------------
+CREATE TABLE user_quiz_progress (
+  id             INT AUTO_INCREMENT PRIMARY KEY,
+  user_id        INT NOT NULL,
+  quiz_id        INT NOT NULL,
+  is_completed   TINYINT(1) DEFAULT 0,
+  is_passed      TINYINT(1) DEFAULT 0,
+  attempts       INT DEFAULT 0,
+  best_score     INT,
+  unlocked_at    TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (quiz_id) REFERENCES quizzes(id) ON DELETE CASCADE,
+  UNIQUE KEY (user_id, quiz_id)
+);
+
+
+-- ============================================================
+-- QUIZ 1: DÉBUTANT - Chauffage et Température
+-- ============================================================
+ 
+INSERT INTO quizzes (title, description, difficulty_level, category, points_reward, is_active) 
+VALUES ('Chauffage et Température', 'Comprendre l\'impact du chauffage sur la consommation énergétique', 'débutant', 'Énergie', 5, 1);
+ 
+SET @quiz1 = LAST_INSERT_ID();
+ 
+-- Questions
+INSERT INTO quiz_questions (quiz_id, question_text, question_order) VALUES
+(@quiz1, 'Réduire le chauffage de 1°C dans une salle permet d\'économiser environ :', 1),
+(@quiz1, 'À quelle température devrait-on garder une salle sans occupation ?', 2),
+(@quiz1, 'Quel est l\'équipement le plus gourmand en énergie au campus ?', 3);
+ 
+-- Question 1 Answers
+INSERT INTO quiz_answers (question_id, answer_text, is_correct, answer_order) VALUES
+(1, '2%', 0, 1),
+(1, '7%', 1, 2),
+(1, '12%', 0, 3),
+(1, '20%', 0, 4);
+ 
+-- Question 2 Answers
+INSERT INTO quiz_answers (question_id, answer_text, is_correct, answer_order) VALUES
+(2, '20°C', 1, 1),
+(2, '22°C', 0, 2),
+(2, '25°C', 0, 3),
+(2, '28°C', 0, 4);
+ 
+-- Question 3 Answers
+INSERT INTO quiz_answers (question_id, answer_text, is_correct, answer_order) VALUES
+(3, 'Les ordinateurs', 0, 1),
+(3, 'Le chauffage', 1, 2),
+(3, 'L\'éclairage', 0, 3),
+(3, 'Les climatiseurs', 0, 4);
+ 
+-- ============================================================
+-- QUIZ 2: DÉBUTANT - Gestes Numériques
+-- ============================================================
+ 
+INSERT INTO quizzes (title, description, difficulty_level, category, points_reward, is_active) 
+VALUES ('Gestes Numériques', 'Réduire l\'impact digital au campus', 'débutant', 'Numérique', 5, 1);
+ 
+SET @quiz2 = LAST_INSERT_ID();
+ 
+INSERT INTO quiz_questions (quiz_id, question_text, question_order) VALUES
+(@quiz2, 'Quel geste numérique a le plus d\'impact immédiat sur la consommation du campus ?', 1),
+(@quiz2, 'À quelle fréquence devriez-vous vider votre corbeille e-mail ?', 2);
+ 
+-- Question 1 Answers
+INSERT INTO quiz_answers (question_id, answer_text, is_correct, answer_order) VALUES
+(4, 'Supprimer 10 e-mails', 0, 1),
+(4, 'Utiliser le mode sombre', 0, 2),
+(4, 'Éteindre complètement son écran de PC', 1, 3),
+(4, 'Vider sa corbeille', 0, 4);
+ 
+-- Question 2 Answers
+INSERT INTO quiz_answers (question_id, answer_text, is_correct, answer_order) VALUES
+(5, 'Une fois par mois', 0, 1),
+(5, 'Une fois par semaine', 1, 2),
+(5, 'Jamais', 0, 3),
+(5, 'Tous les jours', 0, 4);
+ 
+-- ============================================================
+-- QUIZ 3: DÉBUTANT - Plastique & Déchets
+-- ============================================================
+ 
+INSERT INTO quizzes (title, description, difficulty_level, category, points_reward, is_active) 
+VALUES ('Plastique & Déchets', 'Éviter les déchets à usage unique', 'débutant', 'Recyclage', 5, 1);
+ 
+SET @quiz3 = LAST_INSERT_ID();
+ 
+INSERT INTO quiz_questions (quiz_id, question_text, question_order) VALUES
+(@quiz3, 'Pourquoi privilégier une gourde aux bouteilles en plastique à la cafétéria ?', 1),
+(@quiz3, 'Combien de temps faut-il pour qu\'une bouteille en plastique se décompose ?', 2);
+ 
+-- Question 1 Answers
+INSERT INTO quiz_answers (question_id, answer_text, is_correct, answer_order) VALUES
+(6, 'Pour le style', 0, 1),
+(6, 'L\'eau est plus froide', 0, 2),
+(6, 'Réduire les déchets plastiques à usage unique', 1, 3),
+(6, 'C\'est obligatoire', 0, 4);
+ 
+-- Question 2 Answers
+INSERT INTO quiz_answers (question_id, answer_text, is_correct, answer_order) VALUES
+(7, 'Entre 5 et 10 ans', 0, 1),
+(7, 'Entre 50 et 100 ans', 0, 2),
+(7, 'Entre 400 et 1000 ans', 1, 3),
+(7, 'Elle ne se décompose jamais', 0, 4);
+ 
+-- ============================================================
+-- QUIZ 4: DÉBUTANT - Capteurs IoT
+-- ============================================================
+ 
+INSERT INTO quizzes (title, description, difficulty_level, category, points_reward, is_active) 
+VALUES ('Capteurs IoT', 'Comment utiliser les capteurs IoT du campus', 'débutant', 'IoT', 5, 1);
+ 
+SET @quiz4 = LAST_INSERT_ID();
+ 
+INSERT INTO quiz_questions (quiz_id, question_text, question_order) VALUES
+(@quiz4, 'Que faire si vous détectez une anomalie sur un capteur IoT via l\'app ?', 1),
+(@quiz4, 'Quel type de données peuvent transmettre les capteurs de qualité de l\'air ?', 2);
+ 
+-- Question 1 Answers
+INSERT INTO quiz_answers (question_id, answer_text, is_correct, answer_order) VALUES
+(8, 'Ignorer le problème', 0, 1),
+(8, 'Le signaler via l\'onglet dédié', 1, 2),
+(8, 'Essayer de le réparer soi-même', 0, 3),
+(8, 'Attendre la fin du semestre', 0, 4);
+ 
+-- Question 2 Answers
+INSERT INTO quiz_answers (question_id, answer_text, is_correct, answer_order) VALUES
+(9, 'Uniquement la température', 0, 1),
+(9, 'Température, humidité et CO2', 1, 2),
+(9, 'Uniquement le CO2', 0, 3),
+(9, 'Données de localisation GPS', 0, 4);
+ 
+-- ============================================================
+-- QUIZ 5: INTERMÉDIAIRE - Optimisation Énergétique
+-- ============================================================
+ 
+INSERT INTO quizzes (title, description, difficulty_level, category, points_reward, is_active) 
+VALUES ('Optimisation Énergétique', 'Gérer activement la consommation énergétique', 'intermédiaire', 'Énergie', 10, 1);
+ 
+SET @quiz5 = LAST_INSERT_ID();
+ 
+INSERT INTO quiz_questions (quiz_id, question_text, question_order) VALUES
+(@quiz5, 'Quel est le principal consommateur d\'énergie dans un bâtiment universitaire ?', 1),
+(@quiz5, 'Quel pourcentage d\'économies peut-on réaliser avec une gestion intelligente du chauffage ?', 2),
+(@quiz5, 'Quel est l\'impact d\'une isolation thermique correcte sur la consommation ?', 3);
+ 
+-- Question 1 Answers
+INSERT INTO quiz_answers (question_id, answer_text, is_correct, answer_order) VALUES
+(10, 'L\'éclairage', 0, 1),
+(10, 'Le chauffage/climatisation', 1, 2),
+(10, 'Les appareils informatiques', 0, 3),
+(10, 'Les ascenseurs', 0, 4);
+ 
+-- Question 2 Answers
+INSERT INTO quiz_answers (question_id, answer_text, is_correct, answer_order) VALUES
+(11, 'Moins de 5%', 0, 1),
+(11, 'Entre 15 et 30%', 1, 2),
+(11, 'Entre 40 et 50%', 0, 3),
+(11, 'Plus de 60%', 0, 4);
+ 
+-- Question 3 Answers
+INSERT INTO quiz_answers (question_id, answer_text, is_correct, answer_order) VALUES
+(12, 'Réduit la consommation de 10%', 0, 1),
+(12, 'Réduit la consommation de 20 à 40%', 1, 2),
+(12, 'N\'a aucun impact', 0, 3),
+(12, 'Augmente la consommation', 0, 4);
+ 
+-- ============================================================
+-- QUIZ 6: INTERMÉDIAIRE - Qualité de l'Air
+-- ============================================================
+ 
+INSERT INTO quizzes (title, description, difficulty_level, category, points_reward, is_active) 
+VALUES ('Qualité de l\'Air', 'Monitorer et améliorer la qualité de l\'air intérieur', 'intermédiaire', 'Environnement', 10, 1);
+ 
+SET @quiz6 = LAST_INSERT_ID();
+ 
+INSERT INTO quiz_questions (quiz_id, question_text, question_order) VALUES
+(@quiz6, 'À quel niveau de CO2 commence-t-on à sentir une baisse de concentration ?', 1),
+(@quiz6, 'Quel est le meilleur moyen de réduire le CO2 dans une salle ?', 2),
+(@quiz6, 'Quelle est la norme de CO2 idéale dans un bâtiment ?', 3);
+ 
+-- Question 1 Answers
+INSERT INTO quiz_answers (question_id, answer_text, is_correct, answer_order) VALUES
+(13, '400 ppm', 0, 1),
+(13, '800 ppm', 1, 2),
+(13, '1200 ppm', 0, 3),
+(13, '2000 ppm', 0, 4);
+ 
+-- Question 2 Answers
+INSERT INTO quiz_answers (question_id, answer_text, is_correct, answer_order) VALUES
+(14, 'Aérer régulièrement les salles', 1, 1),
+(14, 'Fermer toutes les fenêtres', 0, 2),
+(14, 'Allumer la climatisation au maximum', 0, 3),
+(14, 'Rien, c\'est naturel', 0, 4);
+ 
+-- Question 3 Answers
+INSERT INTO quiz_answers (question_id, answer_text, is_correct, answer_order) VALUES
+(15, 'Moins de 500 ppm', 0, 1),
+(15, 'Entre 400 et 600 ppm', 1, 2),
+(15, 'Entre 1000 et 1200 ppm', 0, 3),
+(15, 'Plus de 2000 ppm', 0, 4);
+ 
+-- ============================================================
+-- QUIZ 7: AVANCÉ - Durabilité Stratégique
+-- ============================================================
+ 
+INSERT INTO quizzes (title, description, difficulty_level, category, points_reward, is_active) 
+VALUES ('Durabilité Stratégique', 'Planifier pour la durabilité du campus', 'avancé', 'Stratégie', 15, 1);
+ 
+SET @quiz7 = LAST_INSERT_ID();
+ 
+INSERT INTO quiz_questions (quiz_id, question_text, question_order) VALUES
+(@quiz7, 'Qu\'est-ce que l\'empreinte carbone d\'un bâtiment ?', 1),
+(@quiz7, 'Quel est l\'objectif de réduction carbone du campus pour 2030 ?', 2),
+(@quiz7, 'Quel est le rôle des données IoT dans la durabilité ?', 3);
+ 
+-- Question 1 Answers
+INSERT INTO quiz_answers (question_id, answer_text, is_correct, answer_order) VALUES
+(16, 'Uniquement la consommation électrique', 0, 1),
+(16, 'Les émissions totales de gaz à effet de serre liées au bâtiment', 1, 2),
+(16, 'Le coût de la construction', 0, 3),
+(16, 'La taille du bâtiment', 0, 4);
+ 
+-- Question 2 Answers
+INSERT INTO quiz_answers (question_id, answer_text, is_correct, answer_order) VALUES
+(17, 'Réduire de 10%', 0, 1),
+(17, 'Réduire de 30%', 0, 2),
+(17, 'Réduire de 50%', 1, 3),
+(17, 'Zéro carbone', 0, 4);
+ 
+-- Question 3 Answers
+INSERT INTO quiz_answers (question_id, answer_text, is_correct, answer_order) VALUES
+(18, 'Permettre la surveillance et l\'optimisation en temps réel', 1, 1),
+(18, 'Augmenter la consommation d\'énergie', 0, 2),
+(18, 'Remplacer les humains dans la gestion', 0, 3),
+(18, 'N\'a aucun rôle', 0, 4);
+ 
+-- ============================================================
+-- VERIFICATION
+-- ============================================================
+ 
+SELECT COUNT(*) as total_quizzes FROM quizzes;
+SELECT COUNT(*) as total_questions FROM quiz_questions;
+SELECT COUNT(*) as total_answers FROM quiz_answers;
+ 
+SELECT id, title, difficulty_level, points_reward FROM quizzes ORDER BY difficulty_level;

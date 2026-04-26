@@ -79,7 +79,7 @@ const Prevention = () => {
             <h3>Es-tu un expert en éco-responsabilité ?</h3>
             <p>Relève le défi, teste tes connaissances et booste ton score de citoyen du campus !</p>
           </div>
-          <button className="btn-launch-quiz" onClick={() => navigate('/quiz')}>
+          <button className="btn-launch-quiz" onClick={() => navigate('/quizzes')}>
             Lancer le défi
           </button>
         </div>

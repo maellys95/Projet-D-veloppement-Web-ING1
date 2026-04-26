@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './css/Auth.css';
 
-
-// Importation du background depuis le dossier assets
 import bgLogin from '../assets/background-login.png';
 
 const Login = () => {
@@ -17,7 +15,6 @@ const Login = () => {
     setError('');
 
     try {
-      // Connexion au serveur Node (Backend)
       const response = await fetch('http://localhost:5000/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -27,9 +24,30 @@ const Login = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // Enregistrement des infos utilisateur et redirection
         localStorage.setItem('user', JSON.stringify(data.user));
         
+        // ── LOG CONNECTION (+0.25 pts) ──
+        try {
+          await fetch('http://localhost:5000/log-connection', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: data.user.id })
+          });
+        } catch (err) {
+          console.error('Error logging connection:', err);
+        }
+
+        // ── UPDATE USER LEVEL ──
+        try {
+          await fetch('http://localhost:5000/update-user-level', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: data.user.id })
+          });
+        } catch (err) {
+          console.error('Error updating level:', err);
+        }
+
         if (email.endsWith('@cyu.fr')) {
           navigate('/dashboard-admin');
         } else {

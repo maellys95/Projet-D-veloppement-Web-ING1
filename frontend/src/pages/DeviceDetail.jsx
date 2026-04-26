@@ -9,13 +9,13 @@ function DeviceDetail() {
   const [loading, setLoading] = useState(true);
 
   
-    // ── PROTECTION: Vérifier si l'utilisateur est connecté ──
-    useEffect(() => {
-      const user = localStorage.getItem('user');
-      if (!user) {
-        navigate('/login'); // Redirect to login if not authenticated
-      }
-    }, [navigate]);
+  // ── PROTECTION: Vérifier si l'utilisateur est connecté ──
+  useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (!user) {
+      navigate('/login'); // Redirect to login if not authenticated
+    }
+  }, [navigate]);
 
   useEffect(() => {
     fetch("http://localhost:5000/devices")
@@ -23,6 +23,29 @@ function DeviceDetail() {
       .then((data) => {
         const foundDevice = data.find((item) => String(item.id) === String(id));
         setDevice(foundDevice || null);
+
+        // ── LOG DEVICE VIEW (0.50 pts) ──
+        if (foundDevice) {
+          const user = JSON.parse(localStorage.getItem('user'));
+          if (user) {
+            fetch('http://localhost:5000/log-device-view', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ 
+                userId: user.id, 
+                deviceId: foundDevice.id, 
+                deviceName: foundDevice.name 
+              })
+            }).catch(err => console.error('Error logging device view:', err));
+
+            // ── UPDATE USER LEVEL ──
+            fetch('http://localhost:5000/update-user-level', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ userId: user.id })
+            }).catch(err => console.error('Error updating level:', err));
+          }
+        }
       })
       .catch((err) => console.error("Erreur chargement device :", err))
       .finally(() => setLoading(false));
@@ -81,8 +104,8 @@ function DeviceDetail() {
         <section className="device-actions">
           <h2>Actions disponibles</h2>
           <p>
-            Cette zone servira plus tard à modifier l’état de l’objet selon le
-            niveau de l’utilisateur.
+            Cette zone servira plus tard à modifier l'état de l'objet selon le
+            niveau de l'utilisateur.
           </p>
 
           <button disabled={device.status === "Actif"}>
