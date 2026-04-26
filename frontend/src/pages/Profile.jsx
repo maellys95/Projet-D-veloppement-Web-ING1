@@ -43,7 +43,21 @@ const Profile = () => {
           <p>Gérez vos informations et suivez votre impact écologique.</p>
 
           <div className="profile-info-display" style={{ textAlign: 'left' }}>
-            
+            {user.photo_url && (
+            <div className="input-group" style={{ textAlign: 'center', marginTop: '20px' }}>
+              <img
+                src={`http://localhost:5000${user.photo_url}`}
+                alt="Photo de profil"
+                style={{
+                  width: '120px',
+                  height: '120px',
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                  border: '3px solid rgba(96, 165, 250, 0.4)'
+                }}
+              />
+            </div>
+            )}
             {/* Section Informations personnelles */}
             <div className="input-group">
               <label>Identité</label>
@@ -57,6 +71,28 @@ const Profile = () => {
               <label>Email Universitaire</label>
               <div className="info-box" style={{ padding: '14px', background: 'rgba(15, 23, 42, 0.5)', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.1)', color: '#cbd5e1' }}>
                 {user.email}
+              </div>
+            </div>
+            
+
+            <div className="input-group" style={{ marginTop: '20px' }}>
+              <label>Informations complémentaires</label>
+              <div
+                className="info-box"
+                style={{
+                  padding: '14px',
+                  background: 'rgba(15, 23, 42, 0.5)',
+                  borderRadius: '12px',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  color: '#cbd5e1'
+                }}
+              >
+                <p>Âge : {user.age || 'Non renseigné'}</p>
+                <p>Genre : {user.gender || 'Non précisé'}</p>
+                <p>
+                  Date de naissance :{' '}
+                  {user.birth_date ? user.birth_date.slice(0, 10) : 'Non renseignée'}
+                </p>
               </div>
             </div>
 

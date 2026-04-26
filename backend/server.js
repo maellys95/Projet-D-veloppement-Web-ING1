@@ -6,6 +6,19 @@ const path    = require('path');
 const mysql = require('mysql2');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
+const multer = require('multer');
+
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + '-' + file.originalname);
+  }
+});
+
+const upload = multer({ storage });
 
 const app = express();
 const db = mysql.createConnection({
@@ -117,6 +130,10 @@ res.json({
     first_name: user.first_name,
     last_name: user.last_name,
     member_type: user.member_type,
+    age: user.age,
+    gender: user.gender,
+    birth_date: user.birth_date,
+    photo_url: user.photo_url,
     points: user.points,
     is_verified: user.is_verified,
     is_approved: user.is_approved // Important pour savoir s'il peut agir
@@ -128,10 +145,9 @@ res.json({
 
 
 
-app.post('/register', async (req, res) => {
+app.post('/register', upload.single('photo'), async (req, res) => {
   // On récupère TOUS les champs nécessaires pour ta table SQL
-  const { pseudo, email, password, first_name, last_name, member_type } = req.body;
-
+  const {  pseudo,  email,  password,  first_name,  last_name,  member_type,  age,  gender,  birth_date} = req.body;
   // --- VERIFICATION SERVEUR (Double sécurité) ---
   if (!first_name || !last_name || !email || !password) {
     return res.status(400).json({ message: 'Tous les champs obligatoires doivent être remplis.' });
@@ -146,19 +162,20 @@ app.post('/register', async (req, res) => {
   try {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
+    const photo_url = req.file ? `/uploads/${req.file.filename}` : null;
 
     const verificationToken = crypto.randomBytes(32).toString('hex');
     const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
     const query = `
       INSERT INTO users 
-      (pseudo, email, password_hash, first_name, last_name, member_type, is_verified, verify_token, verify_token_expires, is_approved, points) 
-      VALUES (?, ?, ?, ?, ?, ?, 0, ?, ?, 0, 0)
+      (pseudo, email, password_hash, first_name, last_name, member_type, age, gender, birth_date, photo_url, is_verified, verify_token, verify_token_expires, is_approved, points) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, 0, 0)
     `;
 
     db.query(
       query,
-      [pseudo, email, hashedPassword, first_name, last_name, member_type, verificationToken, verificationExpires],
+      [pseudo,  email,  hashedPassword,  first_name,  last_name,  member_type,  age || null,  gender || 'Non précisé',  birth_date || null,  photo_url || null,  verificationToken,  verificationExpires],
       async (err, result) => {
       if (err) {
         if (err.code === 'ER_DUP_ENTRY') return res.status(400).json({ message: 'Cet email ou pseudo est déjà utilisé.' });

@@ -6,7 +6,16 @@ import bgLogin from '../assets/background-login.png';
 const Register = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    firstName: '', lastName: '', email: '', password: '', confirmPassword: '', memberType: 'Étudiant'
+  firstName: '',
+  lastName: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
+  memberType: 'Étudiant',
+  age: '',
+  gender: 'Non précisé',
+  birthDate: '',
+  photoUrl: ''
   });
 
   const [errors, setErrors] = useState({});
@@ -14,8 +23,36 @@ const Register = () => {
   const [message, setMessage] = useState({ type: '', text: '' });
 
   const handleChange = (e) => {
-  const { name, value } = e.target;
-  const newFormData = { ...formData, [name]: value };
+  const { name, value, files } = e.target;
+  //  CAS SPÉCIAL : date de naissance
+  if (name === 'birthDate') {
+  const today = new Date();
+  const birth = new Date(value);
+
+  let age = today.getFullYear() - birth.getFullYear();
+  const monthDiff = today.getMonth() - birth.getMonth();
+
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+    age--;
+  }
+
+  setFormData(prev => ({
+    ...prev,
+    birthDate: value,
+    age: age
+  }));
+
+  return;
+}
+
+
+  const newFormData = {
+    ...formData,
+    [name]: name === 'photo' ? files[0] : value
+
+    
+  };
+
   setFormData(newFormData);
   
   // Réinitialiser l'erreur spécifique au champ
@@ -39,6 +76,20 @@ const Register = () => {
       }
     }
   }
+
+  const calculateAge = (birthDate) => {
+  const today = new Date();
+  const birth = new Date(birthDate);
+
+  let age = today.getFullYear() - birth.getFullYear();
+  const monthDiff = today.getMonth() - birth.getMonth();
+
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+    age--;
+  }
+
+  return age;
+};
 
   // Tes autres validations (regex, etc.) restent ici...
 };
@@ -90,27 +141,36 @@ const Register = () => {
     const cleanFirstName = formData.firstName.trim().charAt(0).toUpperCase() + formData.firstName.trim().slice(1).toLowerCase();
     const cleanLastName = formData.lastName.trim().toUpperCase();
 
-    const payload = {
-      first_name: cleanFirstName,
-      last_name: cleanLastName,
-      email: formData.email.trim().toLowerCase(),
-      password: formData.password, 
-      member_type: formData.memberType,
-      pseudo: (cleanFirstName[0] + cleanLastName).toLowerCase().substring(0, 15),
-      is_approved: 0,
-      points: 0
-    };
+    const formDataToSend = new FormData();
+
+    formDataToSend.append("first_name", cleanFirstName);
+    formDataToSend.append("last_name", cleanLastName);
+    formDataToSend.append("email", formData.email.trim().toLowerCase());
+    formDataToSend.append("password", formData.password);
+    formDataToSend.append("member_type", formData.memberType);
+    formDataToSend.append("pseudo", (cleanFirstName[0] + cleanLastName).toLowerCase().substring(0, 15));
+
+    formDataToSend.append("age", formData.age);
+    formDataToSend.append("gender", formData.gender);
+    formDataToSend.append("birth_date", formData.birthDate);
+
+    if (formData.photo) {
+      formDataToSend.append("photo", formData.photo);
+    }
 
     try {
       const response = await fetch('http://localhost:5000/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
+        body: formDataToSend,
       });
 
       const data = await response.json();
+
       if (response.ok) {
-        setMessage({ type: 'success', text: 'Inscription réussie ! Vérifie ton email pour confirmer ton compte.'});
+        setMessage({
+          type: 'success',
+          text: 'Inscription réussie ! Vérifie ton email pour confirmer ton compte.'
+        });
         setTimeout(() => navigate('/login'), 3000);
       } else {
         setMessage({ type: 'error', text: data.message || 'Erreur lors de l\'inscription.' });
@@ -119,7 +179,6 @@ const Register = () => {
       setMessage({ type: 'error', text: 'Le serveur ne répond pas.' });
     }
   };
-
   return (
     <div className="register-page" style={{ 
       backgroundImage: `linear-gradient(rgba(15, 23, 42, 0.75), rgba(15, 23, 42, 0.85)), url(${bgLogin})`,
@@ -159,6 +218,43 @@ const Register = () => {
               <option value="Étudiant">Étudiant (Détecté)</option>
               <option value="Enseignant">Enseignant (Détecté)</option>
             </select>
+          </div>
+
+          <div className="input-group">
+            <label>Genre</label>
+            <select name="gender" onChange={handleChange}>
+              <option value="Non précisé">Non précisé</option>
+              <option value="Homme">Homme</option>
+              <option value="Femme">Femme</option>
+              <option value="Autre">Autre</option>
+            </select>
+          </div>
+          
+          
+          <div className="input-group">
+            <label>Date de naissance</label>
+            <input
+              type="date"
+              name="birthDate"
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="input-group">
+            <label>Âge</label>
+            <input
+              type="number"
+              name="age"
+              value={formData.age || ''}
+              readOnly
+            />
+          </div>
+
+                   
+
+          <div className="input-group">
+            <label>Photo de profil</label>
+            <input type="file" name="photo" accept="image/*" onChange={handleChange}/>
           </div>
 
           <div className="input-group">
