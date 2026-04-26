@@ -66,11 +66,19 @@ function Navbar() {
           {/* --- MODIFIÉ : BOUTON AVATAR INTELLIGENT --- */}
           <button className="icon-button" onClick={handleUserClick}>
             {user && <span className="nav-user-pseudo">{user.pseudo}</span>}
-            <img 
-              src={avatarIcon} 
-              alt="Profil" 
-              className={`nav-icon-img ${user ? 'icon-logged' : ''}`} 
-            />
+            {user?.photo_url ? (
+              <img
+                src={`http://localhost:5000${user.photo_url}`}
+                alt="Profil"
+                className="nav-profile-photo"
+              />
+            ) : (
+              <img 
+                src={avatarIcon} 
+                alt="Profil" 
+                className={`nav-icon-img ${user ? 'icon-logged' : ''}`} 
+              />
+            )}
           </button>
         </div>
       </nav>

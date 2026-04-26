@@ -278,3 +278,11 @@
   color: var(--c-primary);
   font-weight: 600;
 }
+
+.nav-profile-photo {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(96, 165, 250, 0.5);
+}
