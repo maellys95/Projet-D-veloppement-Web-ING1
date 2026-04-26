@@ -11,8 +11,24 @@ Smart Campus est une plateforme numérique intelligente pour la gestion d'une un
 --- 
 
 # ⚡ GUIDE DE LANCEMENT RAPIDE (Smart Campus)
+## ⚡ LANCEMENT RAPIDE
 
-> **IMPORTANT :** Respectez l'ordre 0 ➔ 1 ➔ 2 ➔ 3.
+1️⃣ Installation (une seule fois)  
+- Terminal dans `/backend` → `npm install`  
+- Terminal dans `/frontend` → `npm install`  
+
+2️⃣ Base de données  
+- Lancer WampServer (MySQL actif)  
+- Importer `SQL/schemas.sql` (obligatoire)  
+- Importer `SQL/requetes.sql` (optionnel)  
+
+3️⃣ Backend  
+- Terminal dans `/backend` → `node server.js`  
+
+4️⃣ Frontend  
+- Terminal dans `/frontend` → `npm run dev`  
+
+🌐 Accès : http://localhost:5173
 
 ---
 
