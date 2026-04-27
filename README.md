@@ -357,7 +357,7 @@ FRONTEND_URL=http://localhost:5173
 
 ## 📝 Données de test
 
-Le fichier `database/schema.sql` contient :
+-- Le fichier `database/schema.sql` contient :
 - **20 objets IoT** (thermostats, caméras, éclairages, capteurs, compteurs, accès, Wi-Fi, projecteurs)
 - **10 salles** (amphi, TP, labo, bibliothèque, cafétéria…)
 - **8 catégories** d'objets
@@ -390,7 +390,6 @@ Le fichier `database/schema.sql` contient :
 
 - Tester sur Chrome, Firefox, Safari
 - Tester en responsive : mobile (375px), tablette (768px), desktop (1280px)
-- Vérifier la compatibilité des formulaires
 
 ---
 
