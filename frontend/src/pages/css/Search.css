@@ -1,10 +1,10 @@
 /* ============================================================
-   SEARCH PAGE CSS
+   SEARCH PAGE CSS - DEVICES STYLE (Image + Content) - FINAL
    ============================================================ */
 
 .search-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: #F8F9FA;
   padding: 0;
 }
 
@@ -12,7 +12,7 @@
 .search-header {
   text-align: center;
   padding: 3rem 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #b7c8de 0%, #b9c6d7 100%);
   color: white;
   margin-bottom: 2rem;
 }
@@ -43,7 +43,7 @@
 
 /* ── FILTERS SIDEBAR ── */
 .search-filters {
-  background: white;
+  background: #FFFFFF;
   padding: 1.5rem;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -56,8 +56,8 @@
   font-size: 1.3rem;
   font-weight: 600;
   margin: 0 0 1.5rem 0;
-  color: #2d3748;
-  border-bottom: 2px solid #667eea;
+  color: #111827;
+  border-bottom: 2px solid #2F80ED;
   padding-bottom: 0.75rem;
 }
 
@@ -70,32 +70,49 @@
   display: block;
   font-size: 0.95rem;
   font-weight: 600;
-  color: #2d3748;
+  color: #111827;
   margin-bottom: 0.5rem;
 }
 
+/* ── INPUT & SELECT ── */
 .search-input,
 .filter-select {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #D1D5DB;
   border-radius: 8px;
   font-size: 0.95rem;
+  font-weight: 500;
   transition: all 0.2s ease;
   font-family: inherit;
-  background-color: #f8fafc;
+  background-color: #F3F4F6;
+  color: #111827;
 }
 
 .search-input:focus,
 .filter-select:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-  background-color: white;
+  border-color: #2F80ED;
+  box-shadow: 0 0 0 3px rgba(47, 128, 237, 0.1);
+  background-color: #FFFFFF;
 }
 
 .search-input::placeholder {
-  color: #a0aec0;
+  color: #6B7280;
+  font-weight: 400;
+}
+
+/* ── SELECT OPTIONS ── */
+.filter-select option {
+  background-color: #FFFFFF;
+  color: #111827;
+  padding: 0.5rem;
+  font-weight: 500;
+}
+
+.filter-select option:checked {
+  background: linear-gradient(135deg, #2F80ED 0%, #1A65C6 100%);
+  color: #FFFFFF;
 }
 
 /* ── ACTION BUTTONS ── */
@@ -113,13 +130,13 @@
 }
 
 .btn-apply {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #2F80ED 0%, #1A65C6 100%);
   color: white;
 }
 
 .btn-apply:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 6px 16px rgba(47, 128, 237, 0.4);
 }
 
 .btn-apply:active {
@@ -127,12 +144,12 @@
 }
 
 .btn-reset {
-  background: #e2e8f0;
-  color: #2d3748;
+  background: #E5E7EB;
+  color: #111827;
 }
 
 .btn-reset:hover {
-  background: #cbd5e0;
+  background: #D1D5DB;
   transform: translateY(-2px);
 }
 
@@ -148,134 +165,125 @@
 .results-header h2 {
   font-size: 1.8rem;
   font-weight: 700;
-  color: #2d3748;
+  color: #111827;
   margin: 0 0 0.5rem 0;
 }
 
 .result-count {
   font-size: 1rem;
-  color: #718096;
+  color: #6B7280;
   margin: 0;
 }
 
-/* ── RESULTS GRID ── */
+/* ── RESULTS GRID (2 COLONNES) ── */
 .results-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.5rem;
+  margin-top: 28px;
 }
 
-/* ── DEVICE RESULT CARD ── */
+/* ── DEVICE RESULT CARD — DEVICES STYLE ── */
 .device-result-card {
-  background: white;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
   cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
-  height: 100%;
 }
 
 .device-result-card:hover {
-  transform: translateY(-8px);
+  transform: translateY(-4px);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
 }
 
-/* ── RESULT CARD IMAGE ── */
-.result-card-image-wrapper {
-  position: relative;
+/* ── IMAGE WRAPPER (blanc avec image centrée) ── */
+.device-result-card-image-wrapper {
   width: 100%;
-  height: 200px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  height: 180px;
+  background: #F8F9FA;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  border-bottom: 1px solid #EBF3FD;
 }
 
-.result-card-image {
-  width: 80%;
-  height: 80%;
+.device-result-card-image {
+  max-width: 90%;
+  max-height: 90%;
   object-fit: contain;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
 }
 
-.result-card-status {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  padding: 0.4rem 0.8rem;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  backdrop-filter: blur(4px);
-}
-
-.result-card-status.actif {
-  background: rgba(198, 246, 213, 0.95);
-  color: #22543d;
-}
-
-.result-card-status.inactif {
-  background: rgba(254, 215, 215, 0.95);
-  color: #742a2a;
-}
-
-.result-card-status.maintenance {
-  background: rgba(254, 235, 200, 0.95);
-  color: #7c2d12;
-}
-
-.result-card-status.erreur {
-  background: rgba(254, 215, 215, 0.95);
-  color: #742a2a;
-}
-
-/* ── RESULT CARD CONTENT ── */
-.result-card-content {
+/* ── CARD CONTENT (info en bas) ── */
+.device-result-card-content {
   padding: 1.25rem;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  gap: 8px;
 }
 
-.result-card-content h3 {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #2d3748;
-  margin: 0 0 0.5rem 0;
-  line-height: 1.4;
-}
-
-.result-card-uid {
-  font-size: 0.8rem;
-  color: #718096;
-  font-family: 'Courier New', monospace;
-  margin: 0 0 0.75rem 0;
-  word-break: break-all;
-}
-
-.result-card-category,
-.result-card-room,
-.result-card-battery,
-.result-card-signal {
-  font-size: 0.9rem;
-  color: #4a5568;
-  margin: 0.3rem 0;
-  font-weight: 500;
-}
-
-.result-card-category {
-  color: #667eea;
+.device-result-card-category-label {
+  font-size: 0.75rem;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6B7280;
+  margin-bottom: 0.25rem;
 }
 
-.result-card-room {
-  margin-top: 0.75rem;
+.device-result-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.device-result-card-room {
+  font-size: 0.85rem;
+  color: #6B7280;
+  margin: 0;
+}
+
+.device-result-card-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 50px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  width: fit-content;
+  margin-top: 0.5rem;
+}
+
+.device-result-card-status.actif {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+}
+
+.device-result-card-status.inactif {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.device-result-card-status.maintenance {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+}
+
+.device-result-card-status.erreur {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
 }
 
 /* ── NO RESULTS ── */
@@ -283,20 +291,20 @@
   grid-column: 1 / -1;
   text-align: center;
   padding: 3rem 2rem;
-  background: white;
+  background: #FFFFFF;
   border-radius: 12px;
-  border: 2px dashed #cbd5e0;
+  border: 2px dashed #D1D5DB;
 }
 
 .no-results p {
   font-size: 1.1rem;
-  color: #718096;
+  color: #6B7280;
   margin: 0.5rem 0;
 }
 
 .no-results-hint {
   font-size: 0.95rem;
-  color: #a0aec0 !important;
+  color: #9CA3AF !important;
 }
 
 /* ── RESPONSIVE ── */
@@ -309,10 +317,6 @@
   .search-filters {
     position: relative;
     top: 0;
-  }
-
-  .results-grid {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   }
 }
 
@@ -343,11 +347,11 @@
   }
 
   .results-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 1rem;
   }
 
-  .result-card-image-wrapper {
+  .device-result-card-image-wrapper {
     height: 160px;
   }
 }
@@ -371,15 +375,15 @@
     grid-template-columns: 1fr;
   }
 
-  .result-card-content {
+  .device-result-card-content {
     padding: 1rem;
   }
 
-  .result-card-content h3 {
-    font-size: 1rem;
+  .device-result-card-title {
+    font-size: 0.95rem;
   }
 
-  .result-card-image-wrapper {
+  .device-result-card-image-wrapper {
     height: 140px;
   }
 }

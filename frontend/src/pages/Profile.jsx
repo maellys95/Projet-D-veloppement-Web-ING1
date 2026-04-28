@@ -15,10 +15,9 @@ const Profile = () => {
     gender: 'Non précisé',
     birthDate: '',
     age: '',
-    photo: null,
-    newLevel: ''
+    photo: null
   });
-  const [levelChangeMsg, setLevelChangeMsg] = useState('');
+  const [updateMsg, setUpdateMsg] = useState('');
 
   const handleEditChange = (e) => {
     const { name, value, files } = e.target;
@@ -80,50 +79,18 @@ const Profile = () => {
 
         setUser(updatedUser);
         localStorage.setItem('user', JSON.stringify(updatedUser));
-
-        // ── CHANGE LEVEL IF SELECTED ──
-        if (editData.newLevel && editData.newLevel !== user.level) {
-          console.log('🎯 Changing level from', user.level, 'to', editData.newLevel);
-          
-          try {
-            const levelRes = await fetch('http://localhost:5000/change-level', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ userId: user.id, newLevel: editData.newLevel })
-            });
-
-            const levelData = await levelRes.json();
-            console.log('✅ Level response:', levelRes.status, levelData);
-
-            if (levelRes.ok) {
-              setLevelChangeMsg(`✅ Vous avez choisi le niveau : ${editData.newLevel.charAt(0).toUpperCase() + editData.newLevel.slice(1)}!`);
-              
-              // Attendre et rafraîchir
-              setTimeout(() => {
-                fetchUserData(user.id);
-                setEditMode(false);
-                setLevelChangeMsg('');
-              }, 1500);
-            } else {
-              console.error('❌ Level change error:', levelData.message);
-              setLevelChangeMsg(`❌ ${levelData.message}`);
-            }
-          } catch (err) {
-            console.error('❌ Error changing level:', err);
-            setLevelChangeMsg('❌ Erreur lors du changement de niveau');
-          }
-        } else {
-          console.log('ℹ️ No level change - closing edit mode');
+        setUpdateMsg('✅ Profil mis à jour avec succès!');
+        
+        setTimeout(() => {
           setEditMode(false);
-          fetchUserData(user.id);
-        }
+          setUpdateMsg('');
+        }, 1500);
       } else {
-        console.error('❌ Profile update error:', result.message);
-        alert(result.message || 'Erreur lors de la mise à jour.');
+        setUpdateMsg('❌ Erreur lors de la mise à jour');
       }
     } catch (err) {
       console.error('❌ Fetch error:', err);
-      alert('Erreur lors de la mise à jour du profil');
+      setUpdateMsg('❌ Erreur lors de la mise à jour du profil');
     }
   };
 
@@ -158,8 +125,7 @@ const Profile = () => {
         gender: parsedUser.gender || 'Non précisé',
         birthDate: parsedUser.birth_date ? parsedUser.birth_date.slice(0, 10) : '',
         age: parsedUser.age || '',
-        photo: null,
-        newLevel: parsedUser.level || ''
+        photo: null
       });
 
       // ── Rafraîchir les données toutes les 2 secondes
@@ -194,18 +160,48 @@ const Profile = () => {
     return emojis[level?.toLowerCase()] || '📊';
   };
 
-  // Les niveaux disponibles selon les points
-  const getAvailableLevels = () => {
-    const levels = ['débutant'];
-    if (user.points >= 10) levels.push('intermédiaire');
-    if (user.points >= 25) levels.push('avancé');
-    if (user.points >= 50) levels.push('expert');
-    return levels;
+  // ── CALCUL LEVEL BASÉ SUR POINTS ──
+  // Débutant: 1-4 pts
+  // Intermédiaire: 5-9 pts
+  // Avancé: 10-19 pts
+  // Expert: 20+ pts
+  const getLevelFromPoints = (points) => {
+    if (points >= 20) return 'expert';
+    if (points >= 10) return 'avancé';
+    if (points >= 5) return 'intermédiaire';
+    return 'débutant';
   };
 
-  // Récupérer le niveau atteint de la progression (basé sur points actuels)
-  const attainedLevel = progression?.current_level || 'débutant';
-  const chosenLevel = user.level;
+  const currentLevel = getLevelFromPoints(user.points);
+  const totalActions = progression?.total_actions || 0;
+
+  // ── CALCUL PROGRESSION ──
+  const levelThresholds = {
+    'débutant': { min: 1, max: 5 },
+    'intermédiaire': { min: 5, max: 10 },
+    'avancé': { min: 10, max: 20 },
+    'expert': { min: 20, max: Infinity }
+  };
+
+  const currentThreshold = levelThresholds[currentLevel];
+  const nextLevelKey = currentLevel === 'expert' ? 'expert' : 
+                       currentLevel === 'avancé' ? 'expert' : 
+                       currentLevel === 'intermédiaire' ? 'avancé' : 'intermédiaire';
+  
+  const nextThreshold = levelThresholds[nextLevelKey];
+  const pointsNeeded = Math.max(0, nextThreshold.min - user.points);
+  
+  // Progression pour la barre (0-100%)
+  let progressPercentage = 0;
+  if (currentLevel === 'expert') {
+    progressPercentage = 100;
+  } else {
+    progressPercentage = Math.min(100, 
+      ((user.points - currentThreshold.min) / (currentThreshold.max - currentThreshold.min)) * 100
+    );
+  }
+
+  const isMaxLevel = currentLevel === 'expert';
 
   return (
     <div 
@@ -237,86 +233,119 @@ const Profile = () => {
                   width: '120px',
                   height: '120px',
                   borderRadius: '50%',
-                  objectFit: 'cover',
-                  border: '3px solid rgba(96, 165, 250, 0.4)'
+                  border: '3px solid rgba(96, 165, 250, 0.4)',
+                  objectFit: 'cover'
                 }}
               />
             </div>
             )}
 
-            {/* ── PROGRESSION SECTION ── */}
-            {!loading && progression && user && (
-              <div className="input-group" style={{ marginTop: '20px' }}>
-                <label>📊 Progression & Niveau</label>
-                <div style={{ padding: '16px', background: 'rgba(15, 23, 42, 0.5)', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.1)', color: '#cbd5e1' }}>
-                  
-                  {/* SECTION 1: NIVEAU ATTEINT (basé sur points) */}
-                  <div style={{ marginBottom: '16px', paddingBottom: '16px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
-                    <p style={{ margin: '0 0 8px 0', fontSize: '0.9rem', color: '#a0aec0' }}>
-                      📍 Niveau atteint (basé sur vos points)
-                    </p>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ fontSize: '1.8rem' }}>{getLevelEmoji(attainedLevel)}</span>
-                      <p style={{ margin: 0, color: getLevelColor(attainedLevel), fontWeight: 'bold', fontSize: '1.1rem', textTransform: 'capitalize' }}>
-                        {attainedLevel.charAt(0).toUpperCase() + attainedLevel.slice(1)}
+            {/* PROGRESSION SECTION */}
+            {user.points !== undefined && (
+              <div className="input-group" style={{ marginTop: '25px', padding: '20px', background: 'rgba(30, 41, 59, 0.8)', borderRadius: '16px', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                <div style={{ marginBottom: '16px' }}>
+                  <h3 style={{ margin: '0 0 8px 0', color: '#fff', fontSize: '1rem', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    📊 PROGRESSION & NIVEAU
+                  </h3>
+                </div>
+
+                <div style={{ marginBottom: '14px', paddingBottom: '12px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                  <p style={{ color: '#cbd5e1', margin: '0 0 8px 0', fontSize: '0.9rem' }}>
+                    💎 Niveau actuel (auto-calculé)
+                  </p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <span style={{ fontSize: '2rem' }}>
+                      {getLevelEmoji(currentLevel)}
+                    </span>
+                    <span style={{ 
+                      fontSize: '1.6rem', 
+                      fontWeight: 'bold', 
+                      color: getLevelColor(currentLevel),
+                      textTransform: 'capitalize'
+                    }}>
+                      {currentLevel}
+                    </span>
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: '14px' }}>
+                  <h4 style={{ color: '#cbd5e1', margin: '0 0 8px 0', fontSize: '0.9rem', fontWeight: '600' }}>📈 Vos statistiques</h4>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                    <div style={{ padding: '10px', background: 'rgba(96, 165, 250, 0.1)', borderRadius: '8px', border: '1px solid rgba(96, 165, 250, 0.2)' }}>
+                      <p style={{ color: '#93c5fd', margin: '0', fontSize: '0.85rem', fontWeight: '600' }}>Score</p>
+                      <p style={{ color: '#fff', margin: '4px 0 0 0', fontSize: '1.3rem', fontWeight: 'bold' }}>
+                        {parseFloat(user.points).toFixed(2)} pts
+                      </p>
+                    </div>
+                    <div style={{ padding: '10px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '8px', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+                      <p style={{ color: '#94a3b8', margin: '0', fontSize: '0.85rem', fontWeight: '600' }}>Actions</p>
+                      <p style={{ color: '#fff', margin: '4px 0 0 0', fontSize: '1.3rem', fontWeight: 'bold' }}>
+                        {totalActions} complétées
                       </p>
                     </div>
                   </div>
+                </div>
 
-                  {/* SECTION 2: NIVEAU CHOISI */}
-                  <div style={{ marginBottom: '16px', paddingBottom: '16px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)' }}>
-                    <p style={{ margin: '0 0 8px 0', fontSize: '0.9rem', color: '#a0aec0' }}>
-                      ✅ Vous avez choisi le niveau
+                {/* MAX LEVEL MESSAGE */}
+                {isMaxLevel && (
+                  <div style={{ 
+                    padding: '12px', 
+                    background: 'rgba(239, 68, 68, 0.1)', 
+                    borderRadius: '8px', 
+                    border: '1px solid rgba(239, 68, 68, 0.3)',
+                    marginBottom: '12px'
+                  }}>
+                    <p style={{ 
+                      color: '#4ade80', 
+                      margin: '0', 
+                      fontSize: '0.95rem',
+                      fontWeight: 'bold',
+                      textAlign: 'center'
+                    }}>
+                      Vous êtes au niveau maximum! 👑
                     </p>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ fontSize: '1.8rem' }}>{getLevelEmoji(chosenLevel)}</span>
-                      <p style={{ margin: 0, color: getLevelColor(chosenLevel), fontWeight: 'bold', fontSize: '1.1rem', textTransform: 'capitalize' }}>
-                        {chosenLevel.charAt(0).toUpperCase() + chosenLevel.slice(1)}
-                      </p>
-                    </div>
                   </div>
+                )}
 
-                  {/* SECTION 3: POINTS RESTANTS */}
-                  <div>
-                    <p style={{ margin: '0 0 8px 0', fontSize: '0.9rem', color: '#a0aec0' }}>
-                      💪 Vos statistiques
-                    </p>
-                    <div style={{ background: 'rgba(15, 23, 42, 0.7)', padding: '10px 12px', borderRadius: '8px' }}>
-                      <p style={{ margin: '4px 0', fontSize: '0.95rem' }}>
-                        <strong>{parseFloat(user.points).toFixed(2)} pts</strong> cumulés
-                      </p>
-                      {progression.points_needed > 0 && (
-                        <p style={{ margin: '4px 0', fontSize: '0.95rem', color: '#f59e0b' }}>
-                          <strong>Il vous reste {parseFloat(progression.points_needed).toFixed(2)} pts</strong> avant de débloquer <strong>{progression.next_level}</strong>
-                        </p>
-                      )}
-                      {progression.points_needed === 0 && (
-                        <p style={{ margin: '4px 0', fontSize: '0.95rem', color: '#4ade80' }}>
-                          <strong>Vous êtes au niveau maximum! 🎉</strong>
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* PROGRESSION BAR */}
+                {/* PROGRESSION BAR */}
+                {!isMaxLevel && (
                   <div style={{ marginTop: '12px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                      <p style={{ color: '#cbd5e1', margin: '0', fontSize: '0.85rem' }}>
+                        Progression vers {nextLevelKey} ({nextThreshold.min} pts)
+                      </p>
+                      <p style={{ color: '#4ade80', margin: '0', fontSize: '0.85rem', fontWeight: 'bold' }}>
+                        {Math.round(progressPercentage)}%
+                      </p>
+                    </div>
                     <div style={{ 
                       width: '100%', 
-                      height: '6px', 
+                      height: '8px', 
                       background: 'rgba(255, 255, 255, 0.1)', 
-                      borderRadius: '3px',
+                      borderRadius: '4px',
                       overflow: 'hidden'
                     }}>
                       <div style={{ 
-                        width: `${progression.progress_percentage}%`, 
+                        width: `${progressPercentage}%`, 
                         height: '100%', 
-                        background: getLevelColor(chosenLevel),
+                        background: `linear-gradient(90deg, ${getLevelColor(currentLevel)}, ${getLevelColor(nextLevelKey)})`,
                         transition: 'width 0.3s ease'
                       }}></div>
                     </div>
+                    
+                    {pointsNeeded > 0 && (
+                      <p style={{ 
+                        color: '#94a3b8', 
+                        margin: '8px 0 0 0', 
+                        fontSize: '0.8rem',
+                        textAlign: 'center'
+                      }}>
+                        +{parseFloat(pointsNeeded).toFixed(2)} pts pour atteindre {nextLevelKey}
+                      </p>
+                    )}
                   </div>
+                )}
 
-                </div>
               </div>
             )}
 
@@ -408,57 +437,29 @@ const Profile = () => {
                     <label>Photo de profil</label>
                     <input type="file" name="photo" onChange={handleEditChange} />
                   </div>
-
-                  {/* ── CHANGE LEVEL IN EDIT MODE ── */}
-                  <div className="input-group" style={{ marginTop: '20px' }}>
-                    <label>🎯 Mettre à jour votre niveau</label>
-                    <select 
-                      value={editData.newLevel}
-                      onChange={(e) => setEditData({...editData, newLevel: e.target.value})}
-                      style={{
-                        width: '100%',
-                        padding: '8px',
-                        background: 'rgba(15, 23, 42, 0.7)',
-                        color: '#fff',
-                        border: '1px solid rgba(255, 255, 255, 0.2)',
-                        borderRadius: '6px'
-                      }}
-                    >
-                      <option value="">Garder le niveau actuel</option>
-                      {getAvailableLevels().map(level => (
-                        <option key={level} value={level}>
-                          {level.charAt(0).toUpperCase() + level.slice(1)}
-                        </option>
-                      ))}
-                    </select>
-                    {levelChangeMsg && (
-                      <p style={{ margin: '8px 0 0 0', fontSize: '0.9rem', textAlign: 'center', color: levelChangeMsg.includes('❌') ? '#ef4444' : '#4ade80' }}>
-                        {levelChangeMsg}
-                      </p>
-                    )}
-                  </div>
                 </>
               )}
             </div>
 
-            {/* Section STATS */}
-            <div className="user-stats" style={{ display: 'flex', gap: '15px', margin: '25px 0' }}>
-              <div className="stat-card" style={{ flex: 1, textAlign: 'center', padding: '15px', background: 'rgba(96, 165, 250, 0.1)', borderRadius: '16px', border: '1px solid rgba(96, 165, 250, 0.2)' }}>
-                <span style={{ display: 'block', fontSize: '1.6rem', fontWeight: 'bold', color: '#60a5fa' }}>
-                  {parseFloat(user.points).toFixed(2)}
-                </span>
-                <small style={{ color: '#93c5fd', fontWeight: '600', textTransform: 'uppercase', fontSize: '0.75rem' }}>Points</small>
+            {updateMsg && (
+              <div
+                style={{
+                  padding: '10px 15px',
+                  background: updateMsg.includes('✅') ? 'rgba(74, 222, 128, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                  border: `1px solid ${updateMsg.includes('✅') ? '#4ade80' : '#ef4444'}`,
+                  borderRadius: '8px',
+                  color: updateMsg.includes('✅') ? '#4ade80' : '#ef4444',
+                  marginBottom: '20px',
+                  marginTop: '20px',
+                  textAlign: 'center',
+                  fontSize: '0.9rem'
+                }}
+              >
+                {updateMsg}
               </div>
-              
-              <div className="stat-card" style={{ flex: 1, textAlign: 'center', padding: '15px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '16px', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
-                <span style={{ display: 'block', fontSize: '1.6rem', fontWeight: 'bold', color: '#fff' }}>
-                  {user.total_actions || 0}
-                </span>
-                <small style={{ color: '#94a3b8', fontWeight: '600', textTransform: 'uppercase', fontSize: '0.75rem' }}>Actions</small>
-              </div>
-            </div>
+            )}
 
-            <div className="input-group">
+            <div className="input-group" style={{ marginTop: '20px' }}>
               <label>Historique des actions</label>
               <div className="info-box" style={{ padding: '15px', background: 'rgba(255, 255, 255, 0.03)', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.1)', fontSize: '0.9rem' }}>
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
@@ -476,7 +477,7 @@ const Profile = () => {
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '12px', marginTop: '35px' }}>
+          <div style={{ display: 'flex', gap: '12px', marginTop: '35px', flexWrap: 'wrap' }}>
             {!editMode ? (
                 <button className="btn-login" onClick={() => setEditMode(true)}>
                   Modifier mon profil

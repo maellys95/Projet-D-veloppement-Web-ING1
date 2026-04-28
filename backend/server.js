@@ -136,7 +136,10 @@ res.json({
     photo_url: user.photo_url,
     points: user.points,
     is_verified: user.is_verified,
-    is_approved: user.is_approved // Important pour savoir s'il peut agir
+    is_approved: user.is_approved, // Important pour savoir s'il peut agir
+  user_level: user.user_level,        // simple/complexe
+    level: user.experience_level,            // débutant/intermédiaire/avancé/expert
+    experience_level: user.experience_level  // basé sur points
   }
 });
     }
@@ -273,21 +276,33 @@ app.get('/devices', (req, res) => {
       d.id,
       d.uid,
       d.name,
-      d.status,
+      d.description,
+      d.category_id,
+      c.name AS category_name,
+      d.room_id,
       r.name AS room_name,
-      c.name AS category_name
+      d.brand,
+      d.model,
+      d.status,
+      d.connectivity,
+      d.ip_address,
+      d.last_seen,
+      d.created_at,
+      d.updated_at
     FROM devices d
-    LEFT JOIN rooms r ON d.room_id = r.id
     LEFT JOIN device_categories c ON d.category_id = c.id
+    LEFT JOIN rooms r ON d.room_id = r.id
+    ORDER BY d.name
   `;
 
   db.query(sql, (err, results) => {
     if (err) {
-      console.error('Erreur devices :', err);
-      return res.status(500).json({ message: 'Erreur devices' });
+      console.error('❌ Error fetching devices:', err);
+      return res.status(500).json({ error: err.message });
     }
 
-    res.json(results); // Retourne les résultats des objets connectés et les salles associées
+    console.log(`✅ Fetched ${results.length} devices`);
+    res.json(results);
   });
 });
 
@@ -519,9 +534,13 @@ app.post('/reset-password', async (req, res) => {
   );
 });
 
+// ============================================================
+// PROFILE ROUTES
+// ============================================================
+
 // ── UPDATE PROFILE
-app.put('/users/:id/profile', upload.single('photo'), (req, res) => {
-  const { id } = req.params;
+app.put('/users/:email/profile', upload.single('photo'), (req, res) => {
+  const { email } = req.params;
   const { gender, birth_date, age } = req.body;
 
   const photo_url = req.file ? `/uploads/${req.file.filename}` : req.body.photo_url || null;
@@ -529,7 +548,7 @@ app.put('/users/:id/profile', upload.single('photo'), (req, res) => {
   const query = `
     UPDATE users
     SET gender = ?, birth_date = ?, age = ?, photo_url = ?
-    WHERE id = ?
+    WHERE email = ?
   `;
 
   db.query(
@@ -539,15 +558,18 @@ app.put('/users/:id/profile', upload.single('photo'), (req, res) => {
       birth_date || null,
       age || null,
       photo_url,
-      id
+      email
     ],
     (err) => {
-      if (err) return res.status(500).json({ error: err.message });
+      if (err) {
+        console.error('❌ Error updating profile:', err);
+        return res.status(500).json({ error: err.message });
+      }
 
       res.json({
         message: 'Profil mis à jour avec succès.',
         user: {
-          id,
+          email,
           gender,
           birth_date,
           age,
@@ -558,13 +580,8 @@ app.put('/users/:id/profile', upload.single('photo'), (req, res) => {
   );
 });
 
-
-
 // ============================================================
 // PROGRESSION SYSTEM ROUTES
-// ============================================================
-// ============================================================
-// PROGRESSION SYSTEM ROUTES - UPDATED
 // ============================================================
 
 // ── LOG USER CONNECTION (add 1 pt per login)
@@ -575,28 +592,33 @@ app.post('/log-connection', (req, res) => {
     return res.status(400).json({ message: 'User ID required' });
   }
 
-  // Add 1 point for each connection
-  const sql = 'UPDATE users SET points = points + 1 WHERE id = ?';
+  // Add 1 point for each connection ✅
+  const pointsToAdd = 1;
+  const sql = 'UPDATE users SET points = points + ? WHERE id = ?';
 
-  db.query(sql, [userId], (err, result) => {
+  db.query(sql, [pointsToAdd, userId], (err, result) => {
     if (err) {
       console.error('❌ Error logging connection:', err);
       return res.status(500).json({ error: err.message });
     }
 
-    const logSql = 'INSERT INTO user_actions (user_id, action_type, description, points_earned, created_at) VALUES (?, ?, ?, ?, NOW())';
-    db.query(logSql, [userId, 'connection', 'User logged in', 1], (logErr) => {
+    // Log the action
+    const logSql = `
+      INSERT INTO user_actions (user_id, action_type, description, points_earned, created_at) 
+      VALUES (?, ?, ?, ?, NOW())
+    `;
+    db.query(logSql, [userId, 'connection', 'User logged in', pointsToAdd], (logErr) => {
       if (logErr) console.error('❌ Error logging action:', logErr);
     });
 
     res.json({ 
       message: 'Connection logged',
-      points_added: 1 
+      points_added: pointsToAdd 
     });
   });
 });
 
-// ── LOG DEVICE CONSULTATION (add 1 pt per device view)
+// ── LOG DEVICE CONSULTATION (add 0.5 pt per device view)
 app.post('/log-device-view', (req, res) => {
   const { userId, deviceId, deviceName } = req.body;
 
@@ -604,290 +626,141 @@ app.post('/log-device-view', (req, res) => {
     return res.status(400).json({ message: 'User ID and Device ID required' });
   }
 
-  // Add 1 point for device consultation
-  const sql = 'UPDATE users SET points = points + 1 WHERE id = ?';
+  // Add 0.5 points for device consultation ✅
+  const pointsToAdd = 0.5;
+  const sql = 'UPDATE users SET points = points + ? WHERE id = ?';
 
-  db.query(sql, [userId], (err, result) => {
+  db.query(sql, [pointsToAdd, userId], (err, result) => {
     if (err) {
       console.error('❌ Error logging device view:', err);
       return res.status(500).json({ error: err.message });
     }
 
-    const logSql = 'INSERT INTO user_actions (user_id, action_type, description, points_earned, created_at) VALUES (?, ?, ?, ?, NOW())';
-    db.query(logSql, [userId, 'device_view', `Consulted device: ${deviceName || deviceId}`, 1], (logErr) => {
+    // Log the action
+    const logSql = `
+      INSERT INTO user_actions (user_id, action_type, description, points_earned, created_at) 
+      VALUES (?, ?, ?, ?, NOW())
+    `;
+    db.query(logSql, [userId, 'device_view', `Consulted device: ${deviceName || deviceId}`, pointsToAdd], (logErr) => {
       if (logErr) console.error('❌ Error logging action:', logErr);
     });
 
     res.json({ 
       message: 'Device view logged',
-      points_added: 1 
+      points_added: pointsToAdd 
     });
   });
 });
 
 // ── GET CURRENT USER WITH PROGRESSION DATA
-// REMPLACE CETTE ROUTE DANS TON server.js (ligne 603)
+// ✅ THIS IS THE CORRECT ROUTE - USE THIS ONE!
+// ============================================================
+// FIXED: /user-current/:userId route
+// ============================================================
+// Remove is_active and email_verified (they don't exist in users table)
+
 app.get('/user-current/:userId', (req, res) => {
   const userId = req.params.userId;
 
-  const sql = `
+  // ── FETCH USER DATA ──
+  // ✅ FIXED: Removed is_active and email_verified (non-existent columns)
+  const userQuery = `
     SELECT 
-      u.id,
-      u.pseudo,
-      u.email,
-      u.first_name,
-      u.last_name,
-      u.points,
-      u.chosen_level,
-      u.experience_level,
-      u.member_type,
-      u.photo_url,
-      u.gender,
-      u.age,
-      u.birth_date,
-      COUNT(ua.id) as total_actions
-    FROM users u
-    LEFT JOIN user_actions ua ON u.id = ua.user_id
-    WHERE u.id = ?
-    GROUP BY u.id, u.pseudo, u.email, u.first_name, u.last_name, u.points, u.chosen_level, u.experience_level, u.member_type, u.photo_url, u.gender, u.age, u.birth_date
+      id, first_name, last_name, pseudo, email, member_type,
+      experience_level, user_level, points, age, gender, birth_date,
+      photo_url, created_at
+    FROM users 
+    WHERE id = ?
   `;
 
-  db.query(sql, [userId], (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
+  db.query(userQuery, [userId], (err, userResults) => {
+    if (err) {
+      console.error('❌ Error fetching user:', err);
+      return res.status(500).json({ error: err.message });
+    }
 
-    if (results.length === 0) {
+    if (userResults.length === 0) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const user = results[0];
+    const user = userResults[0];
 
-    // Calculate progression based on EXPERIENCE_LEVEL (points atteints)
-    let attainedLevel = user.experience_level;
-    let nextLevel, pointsNeeded;
+    // ── CALCULATE PROGRESSION BASED ON POINTS ──
+    // ✅ UPDATED THRESHOLDS: 1pt per login + 0.5pt per device view
+    const levelThresholds = {
+      'débutant': 1,      // 1 point (1 login)
+      'intermédiaire': 5, // 5 points
+      'avancé': 10,       // 10 points
+      'expert': 20        // 20 points
+    };
 
-    if (user.points < 10) {
-      attainedLevel = 'débutant';
-      nextLevel = 'intermédiaire';
-      pointsNeeded = 10 - user.points;
-    } else if (user.points < 25) {
-      attainedLevel = 'intermédiaire';
-      nextLevel = 'avancé';
-      pointsNeeded = 25 - user.points;
-    } else if (user.points < 50) {
-      attainedLevel = 'avancé';
-      nextLevel = 'expert';
-      pointsNeeded = 50 - user.points;
-    } else {
-      attainedLevel = 'expert';
-      nextLevel = null;
-      pointsNeeded = 0;
-    }
-
-    res.json({
-      user: {
-        id: user.id,
-        pseudo: user.pseudo,
-        email: user.email,
-        first_name: user.first_name,
-        last_name: user.last_name,
-        points: user.points,
-        level: user.chosen_level, // CHOSEN level for display
-        attained_level: attainedLevel, // ATTAINED level (based on points)
-        member_type: user.member_type,
-        photo_url: user.photo_url,
-        gender: user.gender,
-        age: user.age,
-        birth_date: user.birth_date,
-        total_actions: user.total_actions || 0
-      },
-      progression: {
-        current_level: attainedLevel,
-        next_level: nextLevel,
-        points_needed: pointsNeeded,
-        progress_percentage: attainedLevel === 'expert' 
-          ? 100 
-          : Math.round((user.points / (user.points + pointsNeeded)) * 100)
+    // Determine current level based on points
+    let currentLevel = 'débutant';
+    for (const [level, threshold] of Object.entries(levelThresholds)) {
+      if (user.points >= threshold) {
+        currentLevel = level;
       }
-    });
-  });
-});
-
-// ── CHANGE USER LEVEL (only if points requirement met)
-// REMPLACE CETTE ROUTE DANS TON server.js (ligne 687)
-app.post('/change-level', (req, res) => {
-  const { userId, newLevel } = req.body;
-
-  if (!userId || !newLevel) {
-    return res.status(400).json({ message: 'User ID and new level required' });
-  }
-
-  // Fetch current points
-  db.query('SELECT points FROM users WHERE id = ?', [userId], (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
-    
-    if (results.length === 0) {
-      return res.status(404).json({ message: 'User not found' });
     }
 
-    const points = results[0].points;
-    let canChangeLevel = false;
-    let errorMsg = '';
+    // Determine next level
+    const levelKeys = Object.keys(levelThresholds);
+    const currentLevelThreshold = levelThresholds[currentLevel];
+    const currentLevelIndex = levelKeys.findIndex(l => levelThresholds[l] === currentLevelThreshold);
+    const nextLevel = currentLevelIndex < levelKeys.length - 1 ? levelKeys[currentLevelIndex + 1] : null;
+    const nextLevelThreshold = nextLevel ? levelThresholds[nextLevel] : currentLevelThreshold;
+    const pointsNeeded = Math.max(0, nextLevelThreshold - user.points);
 
-    // Vérifier si l'utilisateur a assez de points pour ce niveau
-    if (newLevel === 'débutant') {
-      canChangeLevel = true;
-    } else if (newLevel === 'intermédiaire' && points >= 10) {
-      canChangeLevel = true;
-    } else if (newLevel === 'avancé' && points >= 25) {
-      canChangeLevel = true;
-    } else if (newLevel === 'expert' && points >= 50) {
-      canChangeLevel = true;
-    } else {
-      errorMsg = `Tu as besoin de plus de points pour débloquer ${newLevel}`;
-    }
+    // Calculate progress percentage
+    const progressPercentage = nextLevel 
+      ? ((user.points - currentLevelThreshold) / (nextLevelThreshold - currentLevelThreshold)) * 100
+      : 100;
 
-    if (!canChangeLevel) {
-      return res.status(403).json({ message: errorMsg });
-    }
+    // ── FETCH TOTAL ACTIONS ──
+    const actionsQuery = `
+      SELECT COUNT(*) as total_actions 
+      FROM user_actions 
+      WHERE user_id = ?
+    `;
 
-    // Update CHOSEN level (not experience_level)
-    db.query('UPDATE users SET chosen_level = ? WHERE id = ?', [newLevel, userId], (updateErr) => {
-      if (updateErr) {
-        console.error('❌ Error changing level:', updateErr);
-        return res.status(500).json({ error: updateErr.message });
+    db.query(actionsQuery, [userId], (err, actionResults) => {
+      if (err) {
+        console.error('❌ Error fetching actions:', err);
+        return res.status(500).json({ error: err.message });
       }
 
-      console.log(`✅ User ${userId} changed chosen_level to ${newLevel}`);
+      const totalActions = actionResults[0]?.total_actions || 0;
+
+      // ── RESPONSE ──
       res.json({
-        message: 'Level changed successfully!',
-        new_level: newLevel,
-        points: points
+        user: {
+          id: user.id,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          pseudo: user.pseudo,
+          email: user.email,
+          member_type: user.member_type,
+          level: currentLevel,
+          user_level: user.user_level,
+          points: parseFloat(user.points).toFixed(2),
+          age: user.age,
+          gender: user.gender,
+          birth_date: user.birth_date,
+          photo_url: user.photo_url,
+          created_at: user.created_at
+        },
+        progression: {
+          current_level: currentLevel,
+          next_level: nextLevel,
+          total_actions: totalActions,
+          points_needed: parseFloat(pointsNeeded).toFixed(2),
+          progress_percentage: Math.round(progressPercentage)
+        }
       });
     });
   });
 });
 
-// ── GET USER PROGRESSION STATS
-// REMPLACE CETTE ROUTE DANS TON server.js (ligne 740)
-app.get('/user-progression/:userId', (req, res) => {
-  const userId = req.params.userId;
-
-  const sql = `
-    SELECT 
-      u.id,
-      u.pseudo,
-      u.points,
-      u.chosen_level,
-      u.experience_level,
-      COUNT(ua.id) as total_actions,
-      SUM(ua.points_earned) as total_earned_points
-    FROM users u
-    LEFT JOIN user_actions ua ON u.id = ua.user_id
-    WHERE u.id = ?
-    GROUP BY u.id, u.pseudo, u.points, u.chosen_level, u.experience_level
-  `;
-
-  db.query(sql, [userId], (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
-
-    if (results.length === 0) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    const user = results[0];
-
-    // Calculate next level based on POINTS
-    let nextLevel, pointsNeeded;
-    if (user.points < 10) {
-      nextLevel = 'intermédiaire';
-      pointsNeeded = 10 - user.points;
-    } else if (user.points < 25) {
-      nextLevel = 'avancé';
-      pointsNeeded = 25 - user.points;
-    } else if (user.points < 50) {
-      nextLevel = 'expert';
-      pointsNeeded = 50 - user.points;
-    } else {
-      nextLevel = 'Already at max level!';
-      pointsNeeded = 0;
-    }
-
-    res.json({
-      user: {
-        id: user.id,
-        pseudo: user.pseudo,
-        current_level: user.chosen_level,
-        current_points: user.points,
-        total_actions: user.total_actions || 0,
-        total_earned: user.total_earned_points || 0
-      },
-      progression: {
-        next_level: nextLevel,
-        points_needed: pointsNeeded,
-        progress_to_next: Math.max(0, 100 - ((pointsNeeded / (user.points + pointsNeeded)) * 100))
-      }
-    });
-  });
-});
-
-// ── CHANGE USER LEVEL (only if points requirement met)
-// ── CHANGE USER LEVEL (only if points requirement met)
-// REMPLACE CETTE ROUTE DANS TON server.js (ligne 687)
-// FIX: Use experience_level instead of level
-
-app.post('/change-level', (req, res) => {
-  const { userId, newLevel } = req.body;
-
-  if (!userId || !newLevel) {
-    return res.status(400).json({ message: 'User ID and new level required' });
-  }
-
-  // Fetch current points
-  db.query('SELECT points FROM users WHERE id = ?', [userId], (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
-    
-    if (results.length === 0) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    const points = results[0].points;
-    let canChangeLevel = false;
-    let errorMsg = '';
-
-    // Vérifier si l'utilisateur a assez de points pour ce niveau
-    if (newLevel === 'débutant') {
-      canChangeLevel = true; // Tous les utilisateurs commencent en débutant
-    } else if (newLevel === 'intermédiaire' && points >= 10) {
-      canChangeLevel = true;
-    } else if (newLevel === 'avancé' && points >= 25) {
-      canChangeLevel = true;
-    } else if (newLevel === 'expert' && points >= 50) {
-      canChangeLevel = true;
-    } else {
-      errorMsg = `Tu as besoin de plus de points pour débloquer ${newLevel}`;
-    }
-
-    if (!canChangeLevel) {
-      return res.status(403).json({ message: errorMsg });
-    }
-
-    // Update level - use experience_level column
-    db.query('UPDATE users SET experience_level = ? WHERE id = ?', [newLevel, userId], (updateErr) => {
-      if (updateErr) {
-        console.error('❌ Error changing level:', updateErr);
-        return res.status(500).json({ error: updateErr.message });
-      }
-
-      res.json({
-        message: 'Level changed successfully!',
-        new_level: newLevel,
-        points: points
-      });
-    });
-  });
-});
-
-// ── GET USER PROGRESSION STATS
+// ── GET USER PROGRESSION STATS (OPTIONAL - detailed stats)
 app.get('/user-progression/:userId', (req, res) => {
   const userId = req.params.userId;
 
@@ -902,11 +775,14 @@ app.get('/user-progression/:userId', (req, res) => {
     FROM users u
     LEFT JOIN user_actions ua ON u.id = ua.user_id
     WHERE u.id = ?
-    GROUP BY u.id
+    GROUP BY u.id, u.pseudo, u.points, u.experience_level
   `;
 
   db.query(sql, [userId], (err, results) => {
-    if (err) return res.status(500).json({ error: err.message });
+    if (err) {
+      console.error('❌ Error fetching progression:', err);
+      return res.status(500).json({ error: err.message });
+    }
 
     if (results.length === 0) {
       return res.status(404).json({ message: 'User not found' });
@@ -914,35 +790,43 @@ app.get('/user-progression/:userId', (req, res) => {
 
     const user = results[0];
 
-    // Calculate next level
-    let nextLevel, pointsNeeded;
-    if (user.points < 10) {
-      nextLevel = 'intermédiaire';
-      pointsNeeded = 10 - user.points;
-    } else if (user.points < 25) {
-      nextLevel = 'avancé';
-      pointsNeeded = 25 - user.points;
-    } else if (user.points < 50) {
-      nextLevel = 'expert';
-      pointsNeeded = 50 - user.points;
-    } else {
-      nextLevel = 'Already at max level!';
-      pointsNeeded = 0;
+    // ✅ UPDATED THRESHOLDS
+    const levelThresholds = {
+      'débutant': 1,
+      'intermédiaire': 5,
+      'avancé': 10,
+      'expert': 20
+    };
+
+    let currentLevel = 'débutant';
+    for (const [level, threshold] of Object.entries(levelThresholds)) {
+      if (user.points >= threshold) {
+        currentLevel = level;
+      }
     }
+
+    const levelKeys = Object.keys(levelThresholds);
+    const currentLevelThreshold = levelThresholds[currentLevel];
+    const currentLevelIndex = levelKeys.findIndex(l => levelThresholds[l] === currentLevelThreshold);
+    const nextLevel = currentLevelIndex < levelKeys.length - 1 ? levelKeys[currentLevelIndex + 1] : null;
+    const nextLevelThreshold = nextLevel ? levelThresholds[nextLevel] : currentLevelThreshold;
+    const pointsNeeded = Math.max(0, nextLevelThreshold - user.points);
 
     res.json({
       user: {
         id: user.id,
         pseudo: user.pseudo,
-        current_level: user.experience_level,
-        current_points: user.points,
+        current_level: currentLevel,
+        current_points: parseFloat(user.points).toFixed(2),
         total_actions: user.total_actions || 0,
-        total_earned: user.total_earned_points || 0
+        total_earned: parseFloat(user.total_earned_points || 0).toFixed(2)
       },
       progression: {
         next_level: nextLevel,
-        points_needed: pointsNeeded,
-        progress_to_next: Math.max(0, 100 - ((pointsNeeded / (user.points + pointsNeeded)) * 100))
+        points_needed: parseFloat(pointsNeeded.toFixed(2)),
+        progress_percentage: nextLevel 
+          ? Math.round(((user.points - currentLevelThreshold) / (nextLevelThreshold - currentLevelThreshold)) * 100)
+          : 100
       }
     });
   });
@@ -1214,6 +1098,891 @@ app.get('/quiz/next/:userEmail', (req, res) => {
       nextLevel,
       pointsNeeded,
       canUnlock: pointsNeeded === 0
+    });
+  });
+});
+
+
+// ── GET ALL SERVICES ──
+app.get('/services', (req, res) => {
+  const sql = `
+    SELECT 
+      id,
+      name,
+      description,
+      category,
+      icon,
+      is_active
+    FROM services
+    WHERE is_active = 1
+    ORDER BY category, name
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('❌ Error fetching services:', err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    console.log(`✅ Fetched ${results.length} services`);
+    res.json(results);
+  });
+});
+
+// ============================================================
+// DEVICE MANAGEMENT ROUTES (for complexe users)
+// ============================================================
+
+// ── CREATE NEW DEVICE ──
+app.post('/devices', (req, res) => {
+  const { uid, name, description, category_id, room_id, brand, model, status, connectivity, ip_address } = req.body;
+
+  if (!uid || !name) {
+    return res.status(400).json({ message: 'UID et nom requis' });
+  }
+
+  const sql = `
+    INSERT INTO devices (uid, name, description, category_id, room_id, brand, model, status, connectivity, ip_address, last_seen, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), NOW())
+  `;
+
+  db.query(sql, [uid, name, description, category_id || null, room_id || null, brand || null, model || null, status || 'Actif', connectivity || 'Wi-Fi', ip_address || null], (err, result) => {
+    if (err) {
+      console.error('❌ Error creating device:', err);
+      if (err.code === 'ER_DUP_ENTRY') {
+        return res.status(400).json({ message: 'Ce UID existe déjà' });
+      }
+      return res.status(500).json({ error: err.message });
+    }
+
+    console.log(`✅ Device created: ${name} (ID: ${result.insertId})`);
+    res.status(201).json({
+      message: 'Objet créé avec succès',
+      device: {
+        id: result.insertId,
+        uid,
+        name,
+        description,
+        category_id,
+        room_id,
+        brand,
+        model,
+        status,
+        connectivity,
+        ip_address
+      }
+    });
+  });
+});
+
+// ── UPDATE DEVICE ──
+app.put('/devices/:id', (req, res) => {
+  const { id } = req.params;
+  const { name, description, category_id, room_id, brand, model, status, connectivity, ip_address } = req.body;
+
+  if (!name) {
+    return res.status(400).json({ message: 'Nom requis' });
+  }
+
+  const sql = `
+    UPDATE devices 
+    SET name = ?, description = ?, category_id = ?, room_id = ?, brand = ?, model = ?, status = ?, connectivity = ?, ip_address = ?, updated_at = NOW()
+    WHERE id = ?
+  `;
+
+  db.query(sql, [name, description || null, category_id || null, room_id || null, brand || null, model || null, status || 'Actif', connectivity || 'Wi-Fi', ip_address || null, id], (err, result) => {
+    if (err) {
+      console.error('❌ Error updating device:', err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Objet non trouvé' });
+    }
+
+    console.log(`✅ Device updated: ${name}`);
+    res.json({
+      message: 'Objet modifié avec succès',
+      device: { id, name, description, category_id, room_id, brand, model, status, connectivity, ip_address }
+    });
+  });
+});
+
+/// ── DELETE DEVICE (Direct deletion for complexe users) ──
+app.delete('/devices/:id', (req, res) => {
+  const { id } = req.params;
+
+  const sql = 'DELETE FROM devices WHERE id = ?';
+
+  db.query(sql, [id], (err, result) => {
+    if (err) {
+      console.error('❌ Error deleting device:', err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Objet non trouvé' });
+    }
+
+    console.log(`✅ Device ${id} deleted`);
+    res.json({ message: '✅ Objet supprimé avec succès' });
+  });
+});
+
+// ── TOGGLE DEVICE STATUS (Actif/Inactif) ──
+app.patch('/devices/:id/status', (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  if (!status || !['Actif', 'Inactif', 'Maintenance', 'Erreur'].includes(status)) {
+    return res.status(400).json({ message: 'Statut invalide' });
+  }
+
+  const sql = 'UPDATE devices SET status = ?, updated_at = NOW() WHERE id = ?';
+
+  db.query(sql, [status, id], (err, result) => {
+    if (err) {
+      console.error('❌ Error updating device status:', err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Objet non trouvé' });
+    }
+
+    console.log(`✅ Device ${id} status updated to: ${status}`);
+    res.json({
+      message: `Objet changé en ${status}`,
+      device: { id, status }
+    });
+  });
+});
+
+// ── GET DEVICE CATEGORIES ──
+app.get('/device-categories', (req, res) => {
+  const sql = 'SELECT id, name FROM device_categories ORDER BY name';
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('❌ Error fetching categories:', err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    res.json(results);
+  });
+});
+
+// ── GET ROOMS (for device assignment) ──
+app.get('/api/rooms', (req, res) => {
+  const sql = 'SELECT id, name FROM rooms ORDER BY name';
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('❌ Error fetching rooms:', err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    res.json(results);
+  });
+});
+
+
+// ============================================================
+// DEVICE ATTRIBUTES ROUTES (Configuration parameters)
+// ============================================================
+
+// ── GET DEVICE ATTRIBUTES ──
+app.get('/devices/:id/attributes', (req, res) => {
+  const { id } = req.params;
+
+  const sql = `
+    SELECT id, device_id, attr_key, attr_value, unit
+    FROM device_attributes
+    WHERE device_id = ?
+    ORDER BY attr_key
+  `;
+
+  db.query(sql, [id], (err, results) => {
+    if (err) {
+      console.error('❌ Error fetching attributes:', err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    res.json(results);
+  });
+});
+
+// ── CREATE/UPDATE ATTRIBUTE ──
+app.post('/devices/:id/attributes', (req, res) => {
+  const { id } = req.params;
+  const { attr_key, attr_value, unit } = req.body;
+
+  if (!attr_key || !attr_value) {
+    return res.status(400).json({ message: 'Clé et valeur requis' });
+  }
+
+  // Vérifier si l'attribut existe déjà
+  const checkSql = 'SELECT id FROM device_attributes WHERE device_id = ? AND attr_key = ?';
+
+  db.query(checkSql, [id, attr_key], (err, results) => {
+    if (err) {
+      console.error('❌ Error checking attribute:', err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    if (results.length > 0) {
+      // UPDATE
+      const updateSql = 'UPDATE device_attributes SET attr_value = ?, unit = ?, updated_at = NOW() WHERE device_id = ? AND attr_key = ?';
+      db.query(updateSql, [attr_value, unit || null, id, attr_key], (err) => {
+        if (err) {
+          console.error('❌ Error updating attribute:', err);
+          return res.status(500).json({ error: err.message });
+        }
+
+        console.log(`✅ Attribute updated: ${attr_key} = ${attr_value}`);
+        res.json({
+          message: 'Attribut modifié',
+          attribute: { device_id: id, attr_key, attr_value, unit }
+        });
+      });
+    } else {
+      // INSERT
+      const insertSql = 'INSERT INTO device_attributes (device_id, attr_key, attr_value, unit) VALUES (?, ?, ?, ?)';
+      db.query(insertSql, [id, attr_key, attr_value, unit || null], (err, result) => {
+        if (err) {
+          console.error('❌ Error creating attribute:', err);
+          return res.status(500).json({ error: err.message });
+        }
+
+        console.log(`✅ Attribute created: ${attr_key} = ${attr_value}`);
+        res.status(201).json({
+          message: 'Attribut créé',
+          attribute: { id: result.insertId, device_id: id, attr_key, attr_value, unit }
+        });
+      });
+    }
+  });
+});
+
+// ── DELETE ATTRIBUTE ──
+app.delete('/devices/:deviceId/attributes/:attrId', (req, res) => {
+  const { deviceId, attrId } = req.params;
+
+  const sql = 'DELETE FROM device_attributes WHERE id = ? AND device_id = ?';
+
+  db.query(sql, [attrId, deviceId], (err, result) => {
+    if (err) {
+      console.error('❌ Error deleting attribute:', err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Attribut non trouvé' });
+    }
+
+    console.log(`✅ Attribute ${attrId} deleted`);
+    res.json({ message: 'Attribut supprimé' });
+  });
+});
+
+// ============================================================
+// DEVICE ATTRIBUTE TEMPLATES ROUTES
+// ============================================================
+
+// ── GET ATTRIBUTE TEMPLATES FOR A CATEGORY ──
+app.get('/device-categories/:categoryId/templates', (req, res) => {
+  const { categoryId } = req.params;
+
+  const sql = `
+    SELECT id, attr_key, attr_label, attr_unit, attr_type, possible_values
+    FROM device_attribute_templates
+    WHERE category_id = ?
+    ORDER BY attr_label
+  `;
+
+  db.query(sql, [categoryId], (err, results) => {
+    if (err) {
+      console.error('❌ Error fetching templates:', err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    // Parse possible_values JSON if it exists
+    const parsedResults = results.map(r => ({
+      ...r,
+      possible_values: r.possible_values ? JSON.parse(r.possible_values) : null
+    }));
+
+    res.json(parsedResults);
+  });
+});
+
+// ── GET ALL TEMPLATES ──
+app.get('/attribute-templates', (req, res) => {
+  const sql = `
+    SELECT id, category_id, attr_key, attr_label, attr_unit, attr_type, possible_values
+    FROM device_attribute_templates
+    ORDER BY category_id, attr_label
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('❌ Error fetching all templates:', err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    const parsedResults = results.map(r => ({
+      ...r,
+      possible_values: r.possible_values ? JSON.parse(r.possible_values) : null
+    }));
+
+    res.json(parsedResults);
+  });
+});
+
+
+// ============================================================
+// REPORTS & ANALYTICS ROUTES
+// ============================================================
+
+// ── GET DEVICE CONSUMPTION DATA (Last 30 days) ──
+app.get('/reports/device-consumption', (req, res) => {
+  const sql = `
+    SELECT 
+      d.id,
+      d.name,
+      d.uid,
+      c.name as category_name,
+      dd.attr_key,
+      dd.value,
+      dd.recorded_at
+    FROM device_data dd
+    JOIN devices d ON dd.device_id = d.id
+    LEFT JOIN device_categories c ON d.category_id = c.id
+    WHERE dd.recorded_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+      AND dd.attr_key IN ('consommation_jour', 'consommation_mois', 'consommation', 'puissance_actuelle')
+    ORDER BY dd.recorded_at DESC
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('❌ Error fetching consumption data:', err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    res.json(results);
+  });
+});
+
+// ── GET DEVICE STATUS SUMMARY ──
+app.get('/reports/device-status', (req, res) => {
+  const sql = `
+    SELECT 
+      d.status,
+      COUNT(*) as count,
+      COUNT(CASE WHEN d.category_id IS NOT NULL THEN 1 END) as with_category
+    FROM devices d
+    GROUP BY d.status
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('❌ Error fetching device status:', err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    res.json(results);
+  });
+});
+
+// ── GET DEVICES NEEDING MAINTENANCE ──
+app.get('/reports/maintenance-needed', (req, res) => {
+  const sql = `
+    SELECT 
+      d.id,
+      d.name,
+      d.uid,
+      d.status,
+      c.name as category_name,
+      r.name as room_name,
+      d.brand,
+      d.model,
+      d.last_seen,
+      d.created_at,
+      DATEDIFF(NOW(), d.updated_at) as days_since_update
+    FROM devices d
+    LEFT JOIN device_categories c ON d.category_id = c.id
+    LEFT JOIN rooms r ON d.room_id = r.id
+    WHERE d.status IN ('Maintenance', 'Erreur')
+       OR d.last_seen < DATE_SUB(NOW(), INTERVAL 7 DAY)
+    ORDER BY d.status DESC, d.last_seen ASC
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('❌ Error fetching maintenance data:', err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    res.json(results);
+  });
+});
+
+// ── GET ROOM OCCUPANCY STATS ──
+app.get('/reports/room-occupancy', (req, res) => {
+  const sql = `
+    SELECT 
+      r.id,
+      r.name,
+      r.building,
+      r.capacity,
+      ro.current_count,
+      ro.is_occupied,
+      ro.occupancy_type,
+      CASE 
+        WHEN ro.current_count = 0 THEN 0
+        ELSE ROUND((ro.current_count / r.capacity) * 100, 2)
+      END as occupancy_percentage
+    FROM rooms r
+    LEFT JOIN room_occupancy ro ON r.id = ro.room_id
+    ORDER BY ro.is_occupied DESC, r.name
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('❌ Error fetching occupancy data:', err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    res.json(results);
+  });
+});
+
+// ── GET CONSUMPTION TREND (Daily average) ──
+app.get('/reports/consumption-trend', (req, res) => {
+  const days = req.query.days || 7;
+  
+  const sql = `
+    SELECT 
+      DATE(dd.recorded_at) as date,
+      d.name,
+      d.id,
+      AVG(CAST(dd.value AS DECIMAL(10,2))) as avg_value,
+      MAX(CAST(dd.value AS DECIMAL(10,2))) as max_value,
+      MIN(CAST(dd.value AS DECIMAL(10,2))) as min_value
+    FROM device_data dd
+    JOIN devices d ON dd.device_id = d.id
+    WHERE dd.recorded_at >= DATE_SUB(NOW(), INTERVAL ? DAY)
+      AND dd.attr_key IN ('consommation', 'consommation_jour', 'puissance_actuelle')
+    GROUP BY DATE(dd.recorded_at), d.id, d.name
+    ORDER BY DATE(dd.recorded_at) DESC
+  `;
+
+  db.query(sql, [days], (err, results) => {
+    if (err) {
+      console.error('❌ Error fetching trend data:', err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    res.json(results);
+  });
+});
+
+// ── GET DEVICE EFFICIENCY REPORT ──
+app.get('/reports/device-efficiency', (req, res) => {
+  const sql = `
+    SELECT 
+      d.id,
+      d.name,
+      d.uid,
+      c.name as category_name,
+      r.name as room_name,
+      d.status,
+      COUNT(dd.id) as data_points,
+      MAX(dd.recorded_at) as last_reading,
+      CASE 
+        WHEN d.status = 'Actif' THEN 'Opérationnel'
+        WHEN d.status = 'Inactif' THEN 'Inactif'
+        WHEN d.status = 'Maintenance' THEN 'À Maintenance'
+        ELSE 'Erreur'
+      END as health_status
+    FROM devices d
+    LEFT JOIN device_categories c ON d.category_id = c.id
+    LEFT JOIN rooms r ON d.room_id = r.id
+    LEFT JOIN device_data dd ON d.id = dd.device_id 
+      AND dd.recorded_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+    GROUP BY d.id
+    ORDER BY d.status, d.name
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('❌ Error fetching efficiency data:', err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    res.json(results);
+  });
+});
+
+// ── GET SUMMARY STATS ──
+app.get('/reports/summary', (req, res) => {
+  Promise.all([
+    new Promise((resolve, reject) => {
+      db.query('SELECT COUNT(*) as total FROM devices', (err, res) => {
+        if (err) reject(err);
+        resolve(res[0]);
+      });
+    }),
+    new Promise((resolve, reject) => {
+      db.query('SELECT COUNT(*) as count FROM devices WHERE status = "Actif"', (err, res) => {
+        if (err) reject(err);
+        resolve(res[0]);
+      });
+    }),
+    new Promise((resolve, reject) => {
+      db.query('SELECT COUNT(*) as count FROM devices WHERE status IN ("Maintenance", "Erreur")', (err, res) => {
+        if (err) reject(err);
+        resolve(res[0]);
+      });
+    }),
+    new Promise((resolve, reject) => {
+      db.query('SELECT COUNT(*) as count FROM room_occupancy WHERE is_occupied = 1', (err, res) => {
+        if (err) reject(err);
+        resolve(res[0]);
+      });
+    })
+  ])
+  .then(([total, actifs, problemes, occupied_rooms]) => {
+    res.json({
+      total_devices: total.total,
+      devices_actifs: actifs.count,
+      devices_problemes: problemes.count,
+      rooms_occupied: occupied_rooms.count
+    });
+  })
+  .catch(err => {
+    console.error('❌ Error fetching summary:', err);
+    res.status(500).json({ error: err.message });
+  });
+});
+
+
+// ============================================================
+// DEVICE HISTORY & EFFICIENCY ANALYSIS ROUTES
+// ============================================================
+
+// ── GET DEVICE DATA HISTORY (Last 30 days) ──
+app.get('/devices/:deviceId/history', (req, res) => {
+  const { deviceId } = req.params;
+  const days = req.query.days || 30;
+
+  const sql = `
+    SELECT 
+      dd.id,
+      dd.attr_key,
+      dd.value,
+      dd.recorded_at,
+      d.name as device_name,
+      d.uid
+    FROM device_data dd
+    JOIN devices d ON dd.device_id = d.id
+    WHERE dd.device_id = ?
+      AND dd.recorded_at >= DATE_SUB(NOW(), INTERVAL ? DAY)
+    ORDER BY dd.recorded_at DESC
+  `;
+
+  db.query(sql, [deviceId, days], (err, results) => {
+    if (err) {
+      console.error('❌ Error fetching device history:', err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    res.json(results);
+  });
+});
+
+// ── GET DEVICE EFFICIENCY SCORE ──
+app.get('/devices/:deviceId/efficiency', (req, res) => {
+  const { deviceId } = req.params;
+
+  const sql = `
+    SELECT 
+      d.id,
+      d.name,
+      d.uid,
+      d.status,
+      d.last_seen,
+      d.created_at,
+      d.updated_at,
+      c.name as category_name,
+      COUNT(dd.id) as data_points_30d,
+      MAX(dd.recorded_at) as last_data_point,
+      DATEDIFF(NOW(), d.updated_at) as days_since_update,
+      CASE 
+        WHEN d.status = 'Maintenance' THEN 'MAINTENANCE_REQUISE'
+        WHEN d.status = 'Erreur' THEN 'EN_ERREUR'
+        WHEN DATEDIFF(NOW(), d.last_seen) > 7 THEN 'INACTIF_LONGTEMPS'
+        WHEN COUNT(dd.id) = 0 THEN 'PAS_DE_DONNEES'
+        WHEN d.status = 'Inactif' THEN 'INACTIF'
+        ELSE 'OPERATIONNEL'
+      END as health_status
+    FROM devices d
+    LEFT JOIN device_categories c ON d.category_id = c.id
+    LEFT JOIN device_data dd ON d.id = dd.device_id 
+      AND dd.recorded_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+    WHERE d.id = ?
+    GROUP BY d.id
+  `;
+
+  db.query(sql, [deviceId], (err, results) => {
+    if (err) {
+      console.error('❌ Error fetching device efficiency:', err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'Device not found' });
+    }
+
+    res.json(results[0]);
+  });
+});
+
+// ── GET DEVICE CONSUMPTION STATS ──
+app.get('/devices/:deviceId/consumption-stats', (req, res) => {
+  const { deviceId } = req.params;
+
+  const sql = `
+    SELECT 
+      dd.attr_key,
+      AVG(CAST(dd.value AS DECIMAL(10,2))) as avg_value,
+      MAX(CAST(dd.value AS DECIMAL(10,2))) as max_value,
+      MIN(CAST(dd.value AS DECIMAL(10,2))) as min_value,
+      COUNT(*) as data_count,
+      DATE(dd.recorded_at) as measurement_date
+    FROM device_data dd
+    WHERE dd.device_id = ?
+      AND dd.recorded_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+      AND dd.attr_key IN ('consommation', 'consommation_jour', 'puissance_actuelle', 'temperature_actuelle', 'humidite')
+    GROUP BY DATE(dd.recorded_at), dd.attr_key
+    ORDER BY DATE(dd.recorded_at) DESC
+  `;
+
+  db.query(sql, [deviceId], (err, results) => {
+    if (err) {
+      console.error('❌ Error fetching consumption stats:', err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    res.json(results);
+  });
+});
+
+// ── GET INEFFICIENCY INDICATORS ──
+app.get('/devices/:deviceId/inefficiency-check', (req, res) => {
+  const { deviceId } = req.params;
+
+  const sql = `
+    SELECT 
+      d.id,
+      d.name,
+      d.uid,
+      d.status,
+      d.last_seen,
+      c.name as category_name,
+      COUNT(dd.id) as recent_readings,
+      DATEDIFF(NOW(), d.last_seen) as days_inactive,
+      DATEDIFF(NOW(), d.updated_at) as days_since_config,
+      CASE 
+        WHEN d.status = 'Maintenance' THEN 'Maintenance requise - Intervention necessaire'
+        WHEN d.status = 'Erreur' THEN 'Device en erreur - A verifier immediatement'
+        WHEN DATEDIFF(NOW(), d.last_seen) > 7 THEN CONCAT('Inactif depuis ', DATEDIFF(NOW(), d.last_seen), ' jours - A investiguer')
+        WHEN COUNT(dd.id) = 0 AND DATEDIFF(NOW(), d.created_at) > 3 THEN 'Pas de donnees depuis 30 jours - Verifier la connexion'
+        WHEN d.status = 'Inactif' THEN 'Device desactive - Reactiver si necessaire'
+        ELSE 'Operationnel'
+      END as recommendation,
+      CASE 
+        WHEN d.status = 'Maintenance' THEN 'CRITIQUE'
+        WHEN d.status = 'Erreur' THEN 'CRITIQUE'
+        WHEN DATEDIFF(NOW(), d.last_seen) > 7 THEN 'IMPORTANT'
+        WHEN COUNT(dd.id) = 0 THEN 'MOYEN'
+        ELSE 'BON'
+      END as priority
+    FROM devices d
+    LEFT JOIN device_categories c ON d.category_id = c.id
+    LEFT JOIN device_data dd ON d.id = dd.device_id 
+      AND dd.recorded_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+    WHERE d.id = ?
+    GROUP BY d.id
+  `;
+
+  db.query(sql, [deviceId], (err, results) => {
+    if (err) {
+      console.error('❌ Error checking inefficiency:', err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'Device not found' });
+    }
+
+    res.json(results[0]);
+  });
+});
+
+// ============================================================
+
+// ============================================================
+// ROOM RESERVATIONS ROUTES
+// ============================================================
+
+// ── GET ROOM RESERVATIONS (List all for a room) ──
+app.get('/rooms/:roomId/reservations', (req, res) => {
+  const { roomId } = req.params;
+
+  const sql = `
+    SELECT 
+      id, room_id, user_id, reservation_type, title, description,
+      start_time, end_time, status, created_at
+    FROM room_reservations
+    WHERE room_id = ? AND status = 'active'
+    ORDER BY start_time ASC
+  `;
+
+  db.query(sql, [roomId], (err, results) => {
+    if (err) {
+      console.error('❌ Error fetching reservations:', err.message);
+      return res.status(500).json({ error: err.message });
+    }
+    console.log(`✅ Fetched ${results?.length || 0} reservations for room ${roomId}`);
+    res.json(results || []);
+  });
+});
+
+// ── CREATE RESERVATION ──
+app.post('/reservations', (req, res) => {
+  const { roomId, userId, title, description, startTime, endTime, reservationType } = req.body;
+
+  if (!roomId || !userId || !title || !startTime || !endTime) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  const checkSql = `
+    SELECT COUNT(*) as count FROM room_reservations
+    WHERE room_id = ? AND status = 'active'
+    AND ((start_time < ? AND end_time > ?) OR (start_time < ? AND end_time > ?) OR (start_time >= ? AND end_time <= ?))
+  `;
+
+  db.query(checkSql, [roomId, endTime, startTime, endTime, startTime, startTime, endTime], (err, results) => {
+    if (err) {
+      console.error('❌ Error checking availability:', err.message);
+      return res.status(500).json({ error: err.message });
+    }
+
+    if (results[0].count > 0) {
+      return res.status(409).json({ error: 'Cet horaire n\'est pas disponible' });
+    }
+
+    const insertSql = `
+      INSERT INTO room_reservations (room_id, user_id, title, description, start_time, end_time, reservation_type, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, 'active')
+    `;
+
+    db.query(insertSql, [roomId, userId, title, description || '', startTime, endTime, reservationType || 'personnel'], (err, result) => {
+      if (err) {
+        console.error('❌ Error creating reservation:', err.message);
+        return res.status(500).json({ error: err.message });
+      }
+      console.log(`✅ Reservation created with ID: ${result.insertId}`);
+      res.status(201).json({ id: result.insertId, message: 'Reservation created successfully' });
+    });
+  });
+});
+
+// ============================================================
+// DELETE RESERVATION ROUTE (CANCEL)
+// ============================================================
+
+// ── DELETE / CANCEL A RESERVATION
+app.delete('/reservations/:reservationId', (req, res) => {
+  const { reservationId } = req.params;
+
+  if (!reservationId) {
+    return res.status(400).json({ error: 'Reservation ID required' });
+  }
+
+  // ✅ UPDATE status to 'annulee'
+  const sql = `
+    UPDATE room_reservations
+    SET status = 'annulee'
+    WHERE id = ?
+  `;
+
+  db.query(sql, [reservationId], (err, result) => {
+    if (err) {
+      console.error('❌ Error canceling reservation:', err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Reservation not found' });
+    }
+
+    res.json({
+      message: 'Réservation annulée avec succès',
+      reservationId: reservationId,
+      status: 'annulee'
+    });
+  });
+});
+
+// ============================================================
+// LOG ROOM VIEW ROUTE (for points system)
+// +0.5 pts per room view
+// ============================================================
+
+app.post('/log-room-view', (req, res) => {
+  const { userId, roomId, roomName } = req.body;
+
+  if (!userId || !roomId) {
+    return res.status(400).json({ error: 'userId and roomId required' });
+  }
+
+  // ── INSERT INTO user_actions ──
+  const sql = `
+    INSERT INTO user_actions (user_id, action_type, description, points_earned, created_at)
+    VALUES (?, ?, ?, ?, NOW())
+  `;
+
+  const actionType = 'room_viewed';
+  const description = `Viewed room: ${roomName || roomId}`;
+  const pointsEarned = 0.5; // +0.5 points per room view
+
+  db.query(sql, [userId, actionType, description, pointsEarned], (err, result) => {
+    if (err) {
+      console.error('❌ Error logging room view:', err);
+      return res.status(500).json({ error: err.message });
+    }
+
+    // ── UPDATE USER POINTS ──
+    const updateSql = `
+      UPDATE users 
+      SET points = points + ?
+      WHERE id = ?
+    `;
+
+    db.query(updateSql, [pointsEarned, userId], (err) => {
+      if (err) {
+        console.error('❌ Error updating points:', err);
+        return res.status(500).json({ error: err.message });
+      }
+
+      res.json({
+        message: 'Room view logged successfully',
+        points_earned: pointsEarned,
+        room_id: roomId,
+        room_name: roomName
+      });
     });
   });
 });

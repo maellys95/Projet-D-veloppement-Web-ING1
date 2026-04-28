@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { getDeviceImage } from "../utils/imageUtils";
 import "./css/Devices.css";
 
+
 function Devices() {
   const [devices, setDevices] = useState([]);
   const [search, setSearch] = useState("");

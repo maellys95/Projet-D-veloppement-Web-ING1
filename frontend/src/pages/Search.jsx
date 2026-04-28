@@ -7,13 +7,12 @@ const Search = () => {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
-  const [sortBy, setSortBy] = useState('name'); // Nouveau: tri par défaut
+  const [sortBy, setSortBy] = useState('name');
   const [devices, setDevices] = useState([]);
   const [filteredResults, setFilteredResults] = useState([]);
   const [applyFilters, setApplyFilters] = useState(false);
   const navigate = useNavigate();
 
-  // Les catégories extraites de la base
   const categories = ["Caméra", "Éclairage", "Point Accès wifi", "Capteur", "Multimédia", "Thermostat", "Projecteur", "Écran", "Capteur de qualité de l'air", "Compteur d'eau", "Compteur electrique", "Contrôle d'accès"];
 
   useEffect(() => {
@@ -26,20 +25,15 @@ const Search = () => {
       .catch(err => console.error("Erreur :", err));
   }, []);
 
-  /**
-   * Fonction de tri basée sur le champ sélectionné
-   */
   const sortDevices = (deviceList, sortOption) => {
     const sorted = [...deviceList];
 
     switch (sortOption) {
       case 'name':
-        // Tri alphabétique par nom
         sorted.sort((a, b) => (a.name || '').localeCompare(b.name || ''));
         break;
 
       case 'status-active':
-        // Les appareils actifs en premier
         sorted.sort((a, b) => {
           const aActive = a.status === 'Actif' ? 0 : 1;
           const bActive = b.status === 'Actif' ? 0 : 1;
@@ -48,7 +42,6 @@ const Search = () => {
         break;
 
       case 'status-inactive':
-        // Les appareils inactifs en premier
         sorted.sort((a, b) => {
           const aInactive = a.status === 'Inactif' ? 0 : 1;
           const bInactive = b.status === 'Inactif' ? 0 : 1;
@@ -57,28 +50,23 @@ const Search = () => {
         break;
 
       case 'battery':
-        // Par niveau de batterie (décroissant)
         sorted.sort((a, b) => (b.battery_level || 0) - (a.battery_level || 0));
         break;
 
       case 'signal':
-        // Par force du signal (Fort > Moyen > Faible)
         const signalOrder = { 'Fort': 0, 'Moyen': 1, 'Faible': 2 };
         sorted.sort((a, b) => (signalOrder[a.signal_strength] || 999) - (signalOrder[b.signal_strength] || 999));
         break;
 
       case 'room':
-        // Par salle (alphabétique)
         sorted.sort((a, b) => (a.room_name || 'ZZZ').localeCompare(b.room_name || 'ZZZ'));
         break;
 
       case 'category':
-        // Par catégorie (alphabétique)
         sorted.sort((a, b) => (a.category_name || '').localeCompare(b.category_name || ''));
         break;
 
       case 'recent':
-        // Les plus récemment mis à jour
         sorted.sort((a, b) => new Date(b.last_seen) - new Date(a.last_seen));
         break;
 
@@ -92,7 +80,6 @@ const Search = () => {
   const filterAndSort = () => {
     let results = [...devices];
 
-    // Appliquer les filtres
     if (search) {
       results = results.filter(d => 
         d.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -109,7 +96,6 @@ const Search = () => {
       results = results.filter(d => d.category_name === categoryFilter);
     }
 
-    // Appliquer le tri
     results = sortDevices(results, sortBy);
 
     setFilteredResults(results);
@@ -137,7 +123,6 @@ const Search = () => {
         <aside className="search-filters">
           <h2>Filtres & Tri</h2>
 
-          {/* Recherche texte */}
           <div className="filter-item">
             <label>🔍 Recherche</label>
             <input
@@ -149,7 +134,6 @@ const Search = () => {
             />
           </div>
 
-          {/* Catégorie */}
           <div className="filter-item">
             <label>📦 Catégorie</label>
             <select 
@@ -164,7 +148,6 @@ const Search = () => {
             </select>
           </div>
 
-          {/* Statut */}
           <div className="filter-item">
             <label>⚡ Statut</label>
             <select 
@@ -180,7 +163,6 @@ const Search = () => {
             </select>
           </div>
 
-          {/* Tri */}
           <div className="filter-item">
             <label>↕️ Trier par</label>
             <select 
@@ -199,7 +181,6 @@ const Search = () => {
             </select>
           </div>
 
-          {/* Boutons d'action */}
           <button className="btn-apply" onClick={filterAndSort}>
             ✓ Appliquer filtres
           </button>
@@ -228,38 +209,25 @@ const Search = () => {
                   className="device-result-card"
                   onClick={() => navigate(`/device/${device.id}`)}
                 >
-                  <div className="result-card-image-wrapper">
+                  {/* ── IMAGE WRAPPER (blanc, centré comme Devices) ── */}
+                  <div className="device-result-card-image-wrapper">
                     <img
                       src={getDeviceImage(device.category_name)}
                       alt={device.name}
-                      className="result-card-image"
+                      className="device-result-card-image"
                     />
-                    <span className={`result-card-status ${device.status.toLowerCase()}`}>
-                      {device.status}
-                    </span>
                   </div>
 
-                  <div className="result-card-content">
-                    <h3>{device.name}</h3>
-                    <p className="result-card-uid">{device.uid}</p>
-                    <p className="result-card-category">
-                      📦 {device.category_name}
-                    </p>
-                    <p className="result-card-room">
-                      🏠 {device.room_name || 'Non assignée'}
-                    </p>
-
-                    {device.battery_level !== undefined && device.battery_level !== null && (
-                      <p className="result-card-battery">
-                        🔋 {device.battery_level}%
-                      </p>
-                    )}
-
-                    {device.signal_strength && (
-                      <p className="result-card-signal">
-                        📡 Signal: {device.signal_strength}
-                      </p>
-                    )}
+                  {/* ── CONTENT (comme Devices) ── */}
+                  <div className="device-result-card-content">
+                    <div className="device-result-card-category-label">
+                      {device.category_name}
+                    </div>
+                    <h3 className="device-result-card-title">{device.name}</h3>
+                    <p className="device-result-card-room">{device.room_name || 'Non assignée'}</p>
+                    <span className={`device-result-card-status ${device.status.toLowerCase()}`}>
+                      {device.status}
+                    </span>
                   </div>
                 </article>
               ))

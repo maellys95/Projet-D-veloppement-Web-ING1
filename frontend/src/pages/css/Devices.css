@@ -1,10 +1,10 @@
 /* ============================================================
-   DEVICES PAGE CSS
+   DEVICES PAGE CSS - HARMONIZED (BLUE THEME)
    ============================================================ */
 
 .devices-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: #F8F9FA;
   padding: 2rem 0;
 }
 
@@ -12,7 +12,7 @@
 .devices-header {
   text-align: center;
   padding: 3rem 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #b7c8de 0%, #b9c6d7 100%);
   color: white;
   margin-bottom: 2rem;
 }
@@ -43,7 +43,7 @@
 
 /* ── FILTERS SIDEBAR ── */
 .devices-filters {
-  background: white;
+  background: #FFFFFF;
   padding: 1.5rem;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -56,8 +56,8 @@
   font-size: 1.3rem;
   font-weight: 600;
   margin: 0 0 1.5rem 0;
-  color: #2d3748;
-  border-bottom: 2px solid #667eea;
+  color: #111827;
+  border-bottom: 2px solid #2F80ED;
   padding-bottom: 0.75rem;
 }
 
@@ -66,23 +66,26 @@
   width: 100%;
   padding: 0.75rem;
   margin-bottom: 1.2rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #D1D5DB;
   border-radius: 8px;
   font-size: 0.95rem;
+  font-weight: 500;
   transition: all 0.2s ease;
   font-family: inherit;
+  background-color: #F3F4F6;
+  color: #111827;
 }
 
 .devices-filters input:focus,
 .devices-filters select:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-  background-color: #f8fafc;
+  border-color: #2F80ED;
+  box-shadow: 0 0 0 3px rgba(47, 128, 237, 0.1);
+  background-color: #FFFFFF;
 }
 
 .devices-filters input::placeholder {
-  color: #a0aec0;
+  color: #6B7280;
 }
 
 /* ── DEVICES GRID ── */
@@ -94,7 +97,7 @@
 
 /* ── DEVICE CARD ── */
 .device-card {
-  background: white;
+  background: #FFFFFF;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -103,6 +106,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
+  border: 1px solid #E5E7EB;
 }
 
 .device-card:hover {
@@ -113,7 +117,7 @@
 .device-card-image {
   width: 100%;
   height: 200px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #f6f6f6 0%, #e6ecf4 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -134,13 +138,13 @@
   align-items: center;
   gap: 0.5rem;
   flex-wrap: wrap;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid #E5E7EB;
   flex-grow: 0;
 }
 
 .device-category {
-  background: #edf2f7;
-  color: #667eea;
+  background: rgba(47, 128, 237, 0.1);
+  color: #2F80ED;
   padding: 0.35rem 0.75rem;
   border-radius: 20px;
   font-size: 0.8rem;
@@ -159,30 +163,30 @@
 }
 
 .device-status.actif {
-  background: #c6f6d5;
-  color: #22543d;
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
 }
 
 .device-status.inactif {
-  background: #fed7d7;
-  color: #742a2a;
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
 }
 
 .device-status.maintenance {
-  background: #feebc8;
-  color: #7c2d12;
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
 }
 
 .device-status.erreur {
-  background: #fed7d7;
-  color: #742a2a;
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
 }
 
 /* ── DEVICE CARD CONTENT ── */
 .device-card h2 {
   font-size: 1.1rem;
   font-weight: 600;
-  color: #2d3748;
+  color: #111827;
   margin: 1rem;
   margin-bottom: 0.5rem;
   line-height: 1.4;
@@ -191,7 +195,7 @@
 .device-uid {
   margin: 0 1rem 0.25rem 1rem;
   font-size: 0.85rem;
-  color: #718096;
+  color: #6B7280;
   font-family: 'Courier New', monospace;
   word-break: break-all;
 }
@@ -208,11 +212,11 @@
   grid-column: 1 / -1;
   text-align: center;
   padding: 3rem 2rem;
-  color: #718096;
+  color: #6B7280;
   font-size: 1.1rem;
-  background: white;
+  background: #FFFFFF;
   border-radius: 12px;
-  border: 2px dashed #cbd5e0;
+  border: 2px dashed #D1D5DB;
 }
 
 /* ── RESPONSIVE ── */

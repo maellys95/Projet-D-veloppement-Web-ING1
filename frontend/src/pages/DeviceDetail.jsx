@@ -8,12 +8,11 @@ function DeviceDetail() {
   const [device, setDevice] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  
   // ── PROTECTION: Vérifier si l'utilisateur est connecté ──
   useEffect(() => {
     const user = localStorage.getItem('user');
     if (!user) {
-      navigate('/login'); // Redirect to login if not authenticated
+      navigate('/login');
     }
   }, [navigate]);
 
@@ -24,7 +23,7 @@ function DeviceDetail() {
         const foundDevice = data.find((item) => String(item.id) === String(id));
         setDevice(foundDevice || null);
 
-        // ── LOG DEVICE VIEW (0.50 pts) ──
+        // ── LOG DEVICE VIEW (+0.5 pts) ──
         if (foundDevice) {
           const user = JSON.parse(localStorage.getItem('user'));
           if (user) {
@@ -47,7 +46,7 @@ function DeviceDetail() {
           }
         }
       })
-      .catch((err) => console.error("Erreur chargement device :", err))
+      .catch((err) => console.error("Erreur chargement device:", err))
       .finally(() => setLoading(false));
   }, [id]);
 
@@ -100,26 +99,6 @@ function DeviceDetail() {
             <p>{device.uid}</p>
           </div>
         </div>
-
-        <section className="device-actions">
-          <h2>Actions disponibles</h2>
-          <p>
-            Cette zone servira plus tard à modifier l'état de l'objet selon le
-            niveau de l'utilisateur.
-          </p>
-
-          <button disabled={device.status === "Actif"}>
-            Activer
-          </button>
-
-          <button disabled={device.status === "Inactif"}>
-            Désactiver
-          </button>
-
-          <button disabled={device.status === "Maintenance"}>
-            Mettre en maintenance
-          </button>
-        </section>
       </section>
     </main>
   );

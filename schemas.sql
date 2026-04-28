@@ -2,9 +2,13 @@
 -- SMART CAMPUS IOT PLATFORM — DATABASE SCHEMA
 -- Version finale sans administration, avec authentification
 -- ============================================================
--- select * from users ; 
+-- select * from users ;
+
 -- delete from users where pseudo='prof_test_jean' or pseudo='prof_test_marie' ;
 -- $2b$10$XrZK01yiqUNTMUl5CztTkuyk9mdqPIzmrwqTWm3ofrsljyOtuN4Cu Test_123
+
+-- update users set points=2 where email='samia.barhili@etu.cyu.fr';
+-- update users set user_level='complexe' where email='samia.barhili@etu.cyu.fr';
 
 DROP DATABASE IF EXISTS smart_campus;
 -- DROP TABLE IF EXISTS notifications;
@@ -106,17 +110,17 @@ created_at        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 );
 
 -- ============================================================
--- MIGRATION: Add chosen_level column to users table
+-- MIGRATION: 
 -- ============================================================
 
 -- Ajoute une colonne pour le niveau choisi par l'utilisateur
-ALTER TABLE users ADD COLUMN chosen_level ENUM('débutant','intermédiaire','avancé','expert') DEFAULT 'débutant' AFTER experience_level;
+-- ALTER TABLE users ADD COLUMN chosen_level ENUM('débutant','intermédiaire','avancé','expert') DEFAULT 'débutant' AFTER experience_level;
 
 -- Met à jour chosen_level avec la valeur actuelle d'experience_level pour tous les utilisateurs existants
-UPDATE users SET chosen_level = experience_level WHERE chosen_level IS NULL OR chosen_level = 'débutant';
+-- UPDATE users SET chosen_level = experience_level WHERE chosen_level IS NULL OR chosen_level = 'débutant';
 
 -- Vérifie que la migration s'est bien passée
-SELECT id, pseudo, experience_level, chosen_level, points FROM users;
+-- SELECT id, pseudo, experience_level, chosen_level, points FROM users;
 
 -- ============================================================
 -- CONNECTION LOGS
@@ -436,7 +440,6 @@ CREATE TABLE room_presence_logs (
   -- Clé étrangère vers devices
   FOREIGN KEY (detected_by_device_id) REFERENCES devices(id) ON DELETE SET NULL
 );
-
 -- ============================================================
 -- NEWS
 -- ============================================================
@@ -595,29 +598,28 @@ CREATE INDEX idx_notifications_user_id ON notifications(user_id);
 -- ============================================================
 -- INSERT COMPLETE USERS WITH TEST PROFESSORS
 -- ============================================================
-
 INSERT INTO users 
-(pseudo, email, password_hash, first_name, last_name, age, gender, birth_date, member_type, user_level, photo_url, experience_level, chosen_level, points, is_verified, is_approved) 
+(pseudo, email, password_hash, first_name, last_name, age, gender, birth_date, member_type, user_level, photo_url, experience_level, points, is_verified, is_approved) 
 VALUES 
 -- ÉTUDIANTS (Niveau Simple)
-('alice_m', 'alice.martin@etu.cyu.fr', '$2a$10$rY3O.8G1/YvT2Z.E1B.oUeXpW9vR', 'Alice', 'Martin', 20, 'Femme', '2005-03-14', 'Étudiant', 'simple', '/uploads/pp_oiseau.png', 'débutant', 'débutant', 2.00, 1, 1),
-('yasmine_b', 'yasmine.benali@etu.cyu.fr', '$2a$10$rY3O.8G1/YvT2Z.E1B.oUeXpW9vR', 'Yasmine', 'Benali', 21, 'Femme', '2004-08-09', 'Étudiant', 'simple', '/uploads/pp_lavande.png', 'intermédiaire', 'intermédiaire', 4.50, 1, 1),
-('samir_a', 'samir.ait@etu.cyu.fr', '$2a$10$rY3O.8G1/YvT2Z.E1B.oUeXpW9vR', 'Samir', 'Ait', 22, 'Homme', '2003-11-02', 'Étudiant', 'simple', '/uploads/pp_chat.png', 'débutant', 'débutant', 1.50, 1, 1),
+('alice_m', 'alice.martin@etu.cyu.fr', '$2a$10$rY3O.8G1/YvT2Z.E1B.oUeXpW9vR', 'Alice', 'Martin', 20, 'Femme', '2005-03-14', 'Étudiant', 'simple', '/uploads/pp_oiseau.png', 'débutant', 2.00, 1, 1),
+('yasmine_b', 'yasmine.benali@etu.cyu.fr', '$2a$10$rY3O.8G1/YvT2Z.E1B.oUeXpW9vR', 'Yasmine', 'Benali', 21, 'Femme', '2004-08-09', 'Étudiant', 'simple', '/uploads/pp_lavande.png', 'intermédiaire',10, 1, 1),
+('samir_a', 'samir.ait@etu.cyu.fr', '$2a$10$rY3O.8G1/YvT2Z.E1B.oUeXpW9vR', 'Samir', 'Ait', 22, 'Homme', '2003-11-02', 'Étudiant', 'simple', '/uploads/pp_chat.png', 'débutant', 1.50, 1, 1),
 
 -- ENSEIGNANTS (Niveau Complexe / Expert) - Existing
-('pauldurand', 'paul.durand@cyu.fr', '$2a$10$rY3O.8G1/YvT2Z.E1B.oUeXpW9vR', 'Paul', 'Durand', 42, 'Homme', '1983-01-20', 'Enseignant', 'complexe', NULL, 'avancé', 'avancé', 8.00, 1, 1),
-('nadialeroy', 'nadia.leroy@cyu.fr', '$2a$10$rY3O.8G1/YvT2Z.E1B.oUeXpW9vR', 'Nadia', 'Leroy', 35, 'Femme', '1990-06-12', 'Enseignant', 'complexe', NULL, 'expert', 'expert', 15.75, 1, 1),
+('pauldurand', 'paul.durand@cyu.fr', '$2a$10$rY3O.8G1/YvT2Z.E1B.oUeXpW9vR', 'Paul', 'Durand', 42, 'Homme', '1983-01-20', 'Enseignant', 'complexe', NULL, 'avancé', 8.00, 1, 1),
+('nadialeroy', 'nadia.leroy@cyu.fr', '$2a$10$rY3O.8G1/YvT2Z.E1B.oUeXpW9vR', 'Nadia', 'Leroy', 35, 'Femme', '1990-06-12', 'Enseignant', 'complexe', NULL, 'expert', 90,1, 1),
 
 -- TEST PROFESSORS (NEW) - Pour tester
 -- $2b$10$XrZK01yiqUNTMUl5CztTkuyk9mdqPIzmrwqTWm3ofrsljyOtuN4Cu Test_123
-('prof_test_jean', 'jean.test@cyu.fr', '$2b$10$XrZK01yiqUNTMUl5CztTkuyk9mdqPIzmrwqTWm3ofrsljyOtuN4Cu', 'Jean', 'Test', 45, 'Homme', '1980-05-15', 'Enseignant', 'complexe', '/uploads/pp_lavande.png', 'débutant', 'débutant', 10.00, 1, 1),
-('prof_test_marie', 'marie.test@cyu.fr', '$2b$10$XrZK01yiqUNTMUl5CztTkuyk9mdqPIzmrwqTWm3ofrsljyOtuN4Cu', 'Marie', 'Test', 38, 'Femme', '1987-08-22', 'Enseignant', 'complexe', '/uploads/pp_oiseau.png', 'débutant', 'débutant', 10.00, 1, 1);
+('prof_test_jean', 'jean.test@cyu.fr', '$2b$10$XrZK01yiqUNTMUl5CztTkuyk9mdqPIzmrwqTWm3ofrsljyOtuN4Cu', 'Jean', 'Test', 45, 'Homme', '1980-05-15', 'Enseignant', 'complexe', '/uploads/pp_lavande.png', 'débutant', 10.00, 1, 1),
+('prof_test_marie', 'marie.test@cyu.fr', '$2b$10$XrZK01yiqUNTMUl5CztTkuyk9mdqPIzmrwqTWm3ofrsljyOtuN4Cu', 'Marie', 'Test', 38, 'Femme', '1987-08-22', 'Enseignant', 'complexe', '/uploads/pp_oiseau.png', 'débutant', 10.00, 1, 1);
 
 -- ============================================================
 -- VERIFY INSERTION
 -- ============================================================
 
-SELECT id, pseudo, email, member_type, experience_level, chosen_level, points 
+SELECT id, pseudo, email, member_type, experience_level, points 
 FROM users 
 ORDER BY id;
 
@@ -820,6 +822,100 @@ INSERT INTO notifications (user_id, message, is_read) VALUES
 (4, 'Nouvelle statistique disponible sur les salles les plus utilisées.', 0),
 (5, 'Pensez à compléter votre profil utilisateur.', 0);
 
+
+
+-- ============================================================
+-- DEVICE ATTRIBUTE TEMPLATES TABLE
+-- ============================================================
+
+CREATE TABLE device_attribute_templates (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  category_id INT NOT NULL,
+  attr_key VARCHAR(100) NOT NULL,
+  attr_label VARCHAR(150),
+  attr_unit VARCHAR(20),
+  attr_type ENUM('text', 'number', 'select', 'boolean') DEFAULT 'text',
+  possible_values VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (category_id) REFERENCES device_categories(id),
+  UNIQUE KEY unique_template (category_id, attr_key)
+);
+
+-- ============================================================
+-- POPULATE TEMPLATES WITH PREDEFINED ATTRIBUTES
+-- ============================================================
+
+-- CATEGORY 1: THERMOSTAT
+INSERT INTO device_attribute_templates (category_id, attr_key, attr_label, attr_unit, attr_type, possible_values)
+VALUES
+  (1, 'temperature_actuelle', 'Température actuelle', '°C', 'number', NULL),
+  (1, 'temperature_cible', 'Température cible', '°C', 'number', NULL),
+  (1, 'mode', 'Mode de fonctionnement', NULL, 'select', '["Automatique", "Manuel", "Programmé"]'),
+  (1, 'humidite_cible', 'Humidité cible', '%', 'number', NULL);
+
+-- CATEGORY 2: CAMÉRA
+INSERT INTO device_attribute_templates (category_id, attr_key, attr_label, attr_unit, attr_type, possible_values)
+VALUES
+  (2, 'sensibilite', 'Sensibilité', '%', 'number', NULL),
+  (2, 'resolution', 'Résolution', NULL, 'select', '["720p", "1080p", "2K", "4K"]'),
+  (2, 'mode_nuit', 'Mode nuit', NULL, 'select', '["Activé", "Désactivé"]'),
+  (2, 'fps', 'Images par seconde', 'fps', 'number', NULL);
+
+-- CATEGORY 3: ÉCLAIRAGE
+INSERT INTO device_attribute_templates (category_id, attr_key, attr_label, attr_unit, attr_type, possible_values)
+VALUES
+  (3, 'luminosite', 'Luminosité', '%', 'number', NULL),
+  (3, 'couleur', 'Température couleur', 'K', 'number', NULL),
+  (3, 'horaire_allumage', 'Horaire d\'allumage', NULL, 'text', NULL),
+  (3, 'horaire_extinction', 'Horaire d\'extinction', NULL, 'text', NULL),
+  (3, 'etat', 'État', NULL, 'select', '["Allumé", "Éteint"]');
+
+-- CATEGORY 4: CAPTEUR QUALITÉ (Environnement)
+INSERT INTO device_attribute_templates (category_id, attr_key, attr_label, attr_unit, attr_type, possible_values)
+VALUES
+  (4, 'temperature', 'Température', '°C', 'number', NULL),
+  (4, 'humidite', 'Humidité', '%', 'number', NULL),
+  (4, 'co2', 'CO2', 'ppm', 'number', NULL),
+  (4, 'pression', 'Pression', 'hPa', 'number', NULL);
+
+-- CATEGORY 5: CONSOMMATION (Compteurs)
+INSERT INTO device_attribute_templates (category_id, attr_key, attr_label, attr_unit, attr_type, possible_values)
+VALUES
+  (5, 'consommation_jour', 'Consommation du jour', 'kWh/m³', 'number', NULL),
+  (5, 'consommation_mois', 'Consommation du mois', 'kWh/m³', 'number', NULL),
+  (5, 'consommation_annuelle', 'Consommation annuelle', 'kWh/m³', 'number', NULL),
+  (5, 'puissance_actuelle', 'Puissance/Débit actuel', 'W/l/min', 'number', NULL);
+
+-- CATEGORY 6: ACCÈS (Serrures intelligentes)
+INSERT INTO device_attribute_templates (category_id, attr_key, attr_label, attr_unit, attr_type, possible_values)
+VALUES
+  (6, 'etat', 'État', NULL, 'select', '["Verrouillé", "Déverrouillé", "Erreur"]'),
+  (6, 'batterie', 'Batterie', '%', 'number', NULL),
+  (6, 'dernier_acces', 'Dernier accès', NULL, 'text', NULL);
+
+-- CATEGORY 7: RÉSEAU (Wi-Fi)
+INSERT INTO device_attribute_templates (category_id, attr_key, attr_label, attr_unit, attr_type, possible_values)
+VALUES
+  (7, 'clients_connectes', 'Clients connectés', 'utilisateurs', 'number', NULL),
+  (7, 'debit_montant', 'Débit montant', 'Mbps', 'number', NULL),
+  (7, 'debit_descendant', 'Débit descendant', 'Mbps', 'number', NULL),
+  (7, 'canaux', 'Canal Wi-Fi', NULL, 'select', '["1", "6", "11", "36", "40", "44", "48"]');
+
+-- CATEGORY 8: MULTIMÉDIA (Projecteurs, Écrans)
+INSERT INTO device_attribute_templates (category_id, attr_key, attr_label, attr_unit, attr_type, possible_values)
+VALUES
+  (8, 'etat', 'État', NULL, 'select', '["Allumé", "Éteint", "Veille"]'),
+  (8, 'luminosite', 'Luminosité', '%', 'number', NULL),
+  (8, 'resolution', 'Résolution', NULL, 'select', '["1920x1080", "3840x2160", "4096x2160"]'),
+  (8, 'heures_utilisation', 'Heures d\'utilisation', 'h', 'number', NULL);
+
+-- CATEGORY 9: PRÉSENCE (Capteurs de mouvement/comptage)
+INSERT INTO device_attribute_templates (category_id, attr_key, attr_label, attr_unit, attr_type, possible_values)
+VALUES
+  (9, 'personnes_detectees', 'Personnes détectées', 'personnes', 'number', NULL),
+  (9, 'sensibilite', 'Sensibilité', '%', 'number', NULL),
+  (9, 'zone_couverture', 'Zone de couverture', 'm²', 'number', NULL),
+  (9, 'seuil_alerte', 'Seuil d\'alerte', 'personnes', 'number', NULL);
 
 -- ================================================================
 -- QUIZ SYSTEM TABLES
@@ -1129,3 +1225,15 @@ SELECT COUNT(*) as total_questions FROM quiz_questions;
 SELECT COUNT(*) as total_answers FROM quiz_answers;
  
 SELECT id, title, difficulty_level, points_reward FROM quizzes ORDER BY difficulty_level;
+
+
+CREATE TABLE device_deletion_requests (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  device_id INT NOT NULL,
+  requested_by_user_id INT NOT NULL,
+  reason TEXT,
+  status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (device_id) REFERENCES devices(id),
+  FOREIGN KEY (requested_by_user_id) REFERENCES users(id)
+);

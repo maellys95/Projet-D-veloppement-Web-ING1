@@ -23,6 +23,13 @@ try {
   console.error('Error parsing user:', err);
   localStorage.removeItem('user');
 }
+
+  // ── VÉRIFIER PERMISSIONS GESTION ──
+  const canAccessGestion = user && (
+    user.user_level === 'complexe' || 
+    (user.experience_level && ['avancé', 'expert'].includes(user.experience_level.toLowerCase()))
+  );
+
   const getActiveClass = (path) => location.pathname === path ? "active-link" : "";
 
   // --- FONCTION DE CLIC INTELLIGENTE POUR LE PROFIL ---
@@ -91,6 +98,14 @@ try {
             <li><Link to="/news" className={getActiveClass("/news")}>Actualités</Link></li>
             <li><Link to="/events" className={getActiveClass("/events")}>Événements</Link></li>
             <li><Link to="/prevention" className={getActiveClass("/prevention")}>Sensibilisation</Link></li>
+            
+            {/* ── GESTION MODULE (Avancé+) ── */}
+            {canAccessGestion && (
+              <>
+                <li><Link to="/admin-devices" className={getActiveClass("/admin-devices")}>Appareils</Link></li>
+                <li><Link to="/reports" className={getActiveClass("/reports")}>Rapports</Link></li>
+              </>
+            )}
           </ul>
         </div>
 
@@ -173,6 +188,15 @@ try {
           <li><Link to="/news" onClick={() => setIsOpen(false)}>📰 Actualités</Link></li>
           <li><Link to="/events" onClick={() => setIsOpen(false)}>🎉 Événements</Link></li>
           <li><Link to="/prevention" onClick={() => setIsOpen(false)}>🛡️ Sensibilisation</Link></li>
+          
+          {/* ── GESTION MODULE ── */}
+          {canAccessGestion && (
+            <>
+              <hr style={{ border: '0.5px solid rgba(255,255,255,0.1)', margin: '10px 0' }} />
+              <li><Link to="/admin-devices" onClick={() => setIsOpen(false)}>⚙️ Gestion Appareils</Link></li>
+              <li><Link to="/reports" onClick={() => setIsOpen(false)}>📊 Rapports & Historiques</Link></li>
+            </>
+          )}
           
           {/* --- LIEN PROFIL/CO DANS LA SIDEBAR --- */}
           <hr style={{ border: '0.5px solid rgba(255,255,255,0.1)', margin: '10px 0' }} />

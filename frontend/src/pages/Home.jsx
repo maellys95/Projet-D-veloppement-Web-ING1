@@ -10,7 +10,16 @@ import imgTemperature from '../assets/temp.png';
 const Home = () => {
   const [rooms, setRooms] = useState([]);
   const [devices, setDevices] = useState([]);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
+
+  // ── GET LOGGED IN USER ──
+  useEffect(() => {
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
+  }, []);
 
   useEffect(() => {
     fetch('http://localhost:5000/rooms')
@@ -32,6 +41,12 @@ const Home = () => {
     document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, []);
+
+  // ── CHECK IF USER CAN VIEW DEVICES ──
+  const canViewDevices = user && (
+    user.user_level === 'complexe' || 
+    (user.experience_level && ['avancé', 'expert'].includes(user.experience_level.toLowerCase()))
+  );
 
   return (
     <div className="home-wrapper">
@@ -93,12 +108,22 @@ const Home = () => {
             <p>La technologie IoT au service de la sécurité.</p>
           </div>
 
-          <div className="cards-grid mt-4">
+          {/* ✅ BLUR CONTAINER IF USER CAN'T VIEW DEVICES */}
+          <div className={`cards-grid ${!canViewDevices ? 'devices-restricted' : ''}`}>
+            {!canViewDevices && (
+              <div className="restricted-overlay">
+                <div className="restricted-content">
+                  <p>🔒 Seuls les professeurs peuvent consulter les équipements</p>
+                </div>
+              </div>
+            )}
+
             {devices.map((device) => (
               <article
                 key={device.id}
                 className="smart-card device-preview-card"
-                onClick={() => navigate(`/device/${device.id}`)}
+                onClick={() => canViewDevices && navigate(`/device/${device.id}`)}
+                style={{ cursor: canViewDevices ? 'pointer' : 'not-allowed' }}
               >
                 <div className="smart-card-img-wrap">
                   <img
@@ -117,11 +142,21 @@ const Home = () => {
             ))}
           </div>
 
-          <div className="more-info-container">
-            <button className="link-more" onClick={() => navigate('/devices')}>
-              Voir tous les objets →
-            </button>
-          </div>
+          {!canViewDevices && (
+            <div className="more-info-container">
+              <p className="access-denied-message">
+                Accédez aux équipements en étant professeur
+              </p>
+            </div>
+          )}
+
+          {canViewDevices && (
+            <div className="more-info-container">
+              <button className="link-more" onClick={() => navigate('/devices')}>
+                Voir tous les objets →
+              </button>
+            </div>
+          )}
         </div>
       </section>
 

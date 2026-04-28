@@ -23,6 +23,8 @@ import Quizzes from "./pages/Quizzes";
 import Rooms from "./pages/Rooms";
 import RoomDetail from "./pages/RoomDetail";
 
+import ProtectedRoute from "./components/ProtectedRoute";
+
 import Devices from "./pages/Devices";
 import DeviceDetail from "./pages/DeviceDetail";
 
@@ -32,6 +34,13 @@ import Events from "./pages/Events";
 
 import Member from "./pages/Member";
 import Members from "./pages/Members";
+
+import Services from "./pages/Services";
+
+import AdminDevices from "./pages/AdminDevices";
+import Reports from "./pages/Reports";
+
+import Contact from "./pages/Contact";
 
 function App() {
   return (
@@ -67,6 +76,15 @@ function App() {
 
             <Route path="/member/:id" element={<Member />} />
             <Route path="/members" element={<Members />} />
+            
+            <Route path="/services" element={<Services />} />
+
+            {/* ── GESTION MODULE (Avancé+) ── */}
+            <Route path="/admin-devices" element={<ProtectedRoute><AdminDevices /></ProtectedRoute>} />
+<Route path="/admin/devices" element={<ProtectedRoute><AdminDevices /></ProtectedRoute>} />
+<Route path="/reports" element={<ProtectedRoute><Reports /></ProtectedRoute>} />
+
+            <Route path='/contact' element={<Contact />} />
           </Routes>
         </main>
 

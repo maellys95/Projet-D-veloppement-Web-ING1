@@ -26,7 +26,7 @@ const Login = () => {
       if (response.ok) {
         localStorage.setItem('user', JSON.stringify(data.user));
         
-        // ── LOG CONNECTION (+0.25 pts) ──
+        // ── LOG CONNECTION (+1 pt) ──
         try {
           await fetch('http://localhost:5000/log-connection', {
             method: 'POST',
@@ -37,19 +37,11 @@ const Login = () => {
           console.error('Error logging connection:', err);
         }
 
-        // ── UPDATE USER LEVEL ──
-        try {
-          await fetch('http://localhost:5000/update-user-level', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: data.user.id })
-          });
-        } catch (err) {
-          console.error('Error updating level:', err);
-        }
-
-        if (email.endsWith('@cyu.fr')) {
-          navigate('/dashboard-admin');
+        // ── REDIRECT BASED ON USER TYPE ──
+        // Si c'est un prof/enseignant ou admin → /admin-devices
+        // Sinon → /profile
+        if (data.user.member_type === 'Enseignant' || data.user.member_type === 'Admin' || data.user.member_type === 'Personnel') {
+          navigate('/admin-devices');
         } else {
           navigate('/profile');
         }

@@ -345,3 +345,70 @@
     flex-direction: column;
   }
 }
+
+/* ============================================================
+   HOME - DEVICE RESTRICTIONS CSS
+   ============================================================ */
+
+/* ── RESTRICTED DEVICES SECTION ── */
+.cards-grid.devices-restricted {
+  position: relative;
+  opacity: 0.5;
+  filter: blur(8px);
+  pointer-events: none;
+}
+
+.restricted-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+.restricted-content {
+  background: #FFFFFF;
+  border: 2px solid #2F80ED;
+  border-radius: 16px;
+  padding: 32px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  max-width: 400px;
+}
+
+.restricted-content p {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #111827;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+/* ── ACCESS DENIED MESSAGE ── */
+.access-denied-message {
+  text-align: center;
+  color: #6B7280;
+  font-size: 0.95rem;
+  padding: 20px;
+  background: #EBF3FD;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .restricted-content {
+    padding: 24px;
+    max-width: 300px;
+  }
+
+  .restricted-content p {
+    font-size: 1rem;
+  }
+}
