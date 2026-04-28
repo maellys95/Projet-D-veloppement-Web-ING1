@@ -4,14 +4,14 @@
 > Projet Développement Web — Groupe C — ING1 2025-2026 | CY Tech  
 > Thème : **Université/École Intelligente**
 
-## 📋 Description
+## Description
 
 Smart Campus est une plateforme numérique intelligente pour la gestion d'une université connectée. Elle centralise la surveillance des objets IoT (thermostats, caméras, éclairages, capteurs…), les actualités du campus, et les outils de gestion des ressources.
 
 --- 
 
-# ⚡ GUIDE DE LANCEMENT Smart Campus
-## ⚡ LANCEMENT RAPIDE
+# GUIDE DE LANCEMENT Smart Campus
+## LANCEMENT RAPIDE
 
 1️⃣ Installation (une seule fois)  
 - Terminal dans `/backend` → `npm install`  
@@ -28,7 +28,7 @@ Smart Campus est une plateforme numérique intelligente pour la gestion d'une un
 4️⃣ Frontend  
 - Terminal dans `/frontend` → `npm run dev`  
 
-🌐 Accès : http://localhost:5173
+ Accès : http://localhost:5173
 
 ---
 
@@ -43,7 +43,7 @@ Avant de lancer le projet, assurez-vous d’avoir installé les outils suivants 
 
 ---
 
-### ⚙️ Configuration requise
+### Configuration requise
 
 - Activer **Apache** et **MySQL** via WampServer (icône verte)
 - Avoir un serveur MySQL accessible en local 
@@ -53,14 +53,14 @@ Avant de lancer le projet, assurez-vous d’avoir installé les outils suivants 
 
 ## 1️⃣ SQL (La Base de données)
 
-### 📌 Action
+### Action
 
 * Ouvrir **WampServer**
 * Vérifier que MySQL est actif (icône verte)
 
 ---
 
-### 📌 Base
+### Base
 
 La base de données utilisée dans le projet est :
 
@@ -72,11 +72,11 @@ Elle doit être créée avant de lancer le backend.
 
 ---
 
-### 📂 Fichiers SQL
+### Fichiers SQL
 
 La base de données est composée de **deux fichiers principaux** :
 
-#### 🔹 `schemas.sql`
+#### `schemas.sql`
 
 Ce fichier permet :
 
@@ -88,7 +88,7 @@ Il sert à **initialiser complètement la base de données**
 
 ---
 
-#### 🔹 `requetes.sql`
+#### `requetes.sql`
 
 Ce fichier contient :
 
@@ -100,7 +100,7 @@ Il sert à **tester et manipuler la base de données**
 
 ---
 
-### ⚙️ Installation avec MySQL Workbench
+### Installation avec MySQL Workbench
 
 #### 1. Ouvrir MySQL Workbench
 
@@ -123,9 +123,9 @@ Cela crée :
 #### 3. Tester la base
 
 1. Ouvrir le fichier `requetes.sql`
-2. Cliquer sur **⚡ Execute**
+2. Cliquer sur ** Execute**
 
-👉 Cela permet de :
+ Cela permet de :
 
 * vérifier que les tables fonctionnent
 * afficher des données
@@ -133,7 +133,7 @@ Cela crée :
 
 ---
 
-### ✅ Résultat attendu
+### Résultat attendu
 
 * La base `smart_campus` est créée
 * Toutes les tables sont présentes
@@ -152,7 +152,7 @@ Cela crée :
 
 ---
 
-## 🛠️ DÉPANNAGE RAPIDE
+## DÉPANNAGE RAPIDE
 
 * **Le backend crash ?** Vérifie le fichier `.env` (MDP : `cytech0001`).
 * **Erreur de Login ?** Va en SQL -> Table `users` -> Mets `is_approved = 1` pour ton compte.
@@ -161,7 +161,7 @@ Cela crée :
 
 ---
 
-## 🏗️ Stack Technique
+## Stack Technique
 
 | Couche     | Technologie             |
 |------------|-------------------------|
@@ -175,7 +175,7 @@ Cela crée :
 
 ---
 
-## 🔑 Compte de démonstration
+##  Compte de démonstration
 
 | Email                | Mot de passe | Niveau  | Accès               |
 |----------------------|--------------|---------|---------------------|
@@ -214,7 +214,7 @@ Cela crée :
 
 ---
 
-## 🔐 Système de niveaux & points
+## Système de niveaux & points
 
 | Niveau        | Points requis | Accès                    |
 |---------------|---------------|--------------------------|
@@ -231,7 +231,7 @@ Cela crée :
 
 ---
 
-## 👥 Répartition des tâches 
+## Répartition des tâches 
 
 | Membre         | Tâches            |
 |----------------|-------------------|
@@ -243,7 +243,7 @@ Cela crée :
 
 ---
 
-## 📝 Données de test
+## Données de test
 
 -- Le fichier `database/schema.sql` contient :
 - **20 objets IoT** (thermostats, caméras, éclairages, capteurs, compteurs, accès, Wi-Fi, projecteurs)
@@ -256,7 +256,7 @@ Cela crée :
 
 ---
 
-## 🧪 Tests
+## Tests
 
 - Tester sur Chrome, Firefox, Safari
 - Tester en responsive : mobile (375px), tablette (768px), desktop (1280px)
