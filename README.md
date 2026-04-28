@@ -111,7 +111,7 @@ Il sert à **tester et manipuler la base de données**
 #### 2. Importer la base
 
 1. Ouvrir le fichier `schemas.sql`
-2. Cliquer sur le bouton **⚡ Execute**
+2. Cliquer sur le bouton **Execute**
 
 Cela crée :
 
@@ -226,7 +226,8 @@ Cela crée :
 **Gain de points :**
 - Première connexion : +10 pts que pour les professeurs
 - Connexion : 1 pt
-- Consultation d'un objet : +2 pts
+- Consultation d'un objet : +0.5 pts
+- Consultation de salle : +0.5 pts
 - Quiz : 5 pts
 
 ---
