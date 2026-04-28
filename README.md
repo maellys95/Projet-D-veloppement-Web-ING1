@@ -318,6 +318,7 @@ smart-campus/
 
 **Gain de points :**
 - Première connexion : +10 pts pour les professeurs
+- Connexion : 1 pt
 - Consultation d'un objet : +2 pts
 
 ---
