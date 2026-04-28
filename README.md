@@ -317,7 +317,7 @@ smart-campus/
 | Expert        | 50 pts        | + Module Administration   |
 
 **Gain de points :**
-- Connexion : +10 pts pour les professeurs
+- Première connexion : +10 pts pour les professeurs
 - Consultation d'un objet : +2 pts
 
 ---
