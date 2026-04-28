@@ -312,13 +312,13 @@ smart-campus/
 | Niveau        | Points requis | Accès                    |
 |---------------|---------------|--------------------------|
 | Débutant      | 0 pts         | Information + Visualisation |
-| Intermédiaire | 3 pts         | Information + Visualisation |
-| Avancé        | 5 pts         | + Module Gestion          |
-| Expert        | 7 pts         | + Module Administration   |
+| Intermédiaire | 10 pts        | Information + Visualisation |
+| Avancé        | 25 pts        | + Module Gestion          |
+| Expert        | 50 pts        | + Module Administration   |
 
 **Gain de points :**
-- Connexion : +0.25 pts
-- Consultation d'un objet : +0.50 pts
+- Connexion : +10 pts pour les professeurs
+- Consultation d'un objet : +2 pts
 
 ---
 
