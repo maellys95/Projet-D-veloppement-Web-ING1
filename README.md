@@ -84,7 +84,7 @@ Ce fichier permet :
 * de créer toutes les tables du projet (`users`, `rooms`, `devices`, etc.)
 * de définir les relations entre les tables (clés étrangères)
 
-👉 Il sert à **initialiser complètement la base de données**
+Il sert à **initialiser complètement la base de données**
 
 ---
 
@@ -96,7 +96,7 @@ Ce fichier contient :
 * des données de test
 * des exemples de requêtes pour vérifier le bon fonctionnement
 
-👉 Il sert à **tester et manipuler la base de données**
+Il sert à **tester et manipuler la base de données**
 
 ---
 
@@ -113,7 +113,7 @@ Ce fichier contient :
 1. Ouvrir le fichier `schemas.sql`
 2. Cliquer sur le bouton **⚡ Execute**
 
-👉 Cela crée :
+Cela crée :
 
 * la base `smart_campus`
 * toutes les tables nécessaires
@@ -141,18 +141,13 @@ Ce fichier contient :
 
 ---
 
-
----
-
 ## 2️⃣ BACKEND (Le Serveur)
 * **Emplacement :** `/backend`
 * **Commande :** ```npm start ```
 
 ## 3️⃣ FRONTEND (L'Interface)
 * **Emplacement :** `/frontend`
-* **Commande :** ```
-   npm run dev ```
-
+* **Commande :** ```   npm run dev ```
 * **Lien :** Cliquez sur [http://localhost:5173](http://localhost:5173)
 
 ---
@@ -180,103 +175,15 @@ Ce fichier contient :
 
 ---
 
-
-## 🚀 Installation & Lancement
-
-### Prérequis
-- Node.js ≥ 18
-- MySQL ≥ 8
-- npm
-
-
-
-### 2. Backend
-
-```bash
-cd backend
-npm install
-
-# Copier et configurer les variables d'environnement
-cp .env.example .env
-# Éditer .env avec vos paramètres MySQL et SMTP
-
-npm run dev   # Démarre sur http://localhost:5000
-```
-
-### 3. Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev   # Démarre sur http://localhost:5173
-```
-
----
-
 ## 🔑 Compte de démonstration
 
-| Email             | Mot de passe | Niveau  | Accès               |
-|-------------------|--------------|---------|---------------------|
-| admin@campus.fr   | Admin1234!   | Expert  | Tous les modules    |
+| Email                | Mot de passe | Niveau  | Accès               |
+|----------------------|--------------|---------|---------------------|
+| jean.test@cyu.fr     | Test_123     | Avancé  | Tous les modules    |
 
-> **Note :** Le mot de passe dans la BDD est hashé avec bcrypt. Pour tester, utilisez le hash fourni dans le schéma SQL, ou créez un nouveau compte admin via le script `scripts/create-admin.js` (à créer si besoin).
-
----
-
-## 📦 Structure du projet
-
-```
-smart-campus/
-├── backend/
-│   ├── config/
-│   │   └── db.js               # Pool de connexion MySQL
-│   ├── controllers/
-│   │   ├── authController.js   # Auth, profil, utilisateurs
-│   │   ├── deviceController.js # Objets IoT, stats
-│   │   └── contentController.js# News, events, services
-│   ├── middleware/
-│   │   └── auth.js             # JWT + contrôle de niveau
-│   ├── routes/
-│   │   └── index.js            # Toutes les routes API
-│   ├── .env.example
-│   ├── package.json
-│   └── server.js
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   └── Navbar.jsx
-│   │   ├── context/
-│   │   │   └── AuthContext.jsx
-│   │   ├── pages/
-│   │   │   ├── Home.jsx         # Module Information (visiteur)
-│   │   │   ├── Actualites.jsx   # Actualités & événements
-│   │   │   ├── Login.jsx
-│   │   │   ├── Register.jsx
-│   │   │   ├── VerifyEmail.jsx
-│   │   │   ├── Devices.jsx      # Module Visualisation
-│   │   │   ├── DeviceDetail.jsx
-│   │   │   ├── DeviceNew.jsx
-│   │   │   ├── Profile.jsx
-│   │   │   ├── Members.jsx
-│   │   │   ├── Dashboard.jsx    # Module Gestion (avancé+)
-│   │   │   └── Admin.jsx        # Module Administration (expert)
-│   │   ├── utils/
-│   │   │   └── api.js           # Instance Axios
-│   │   ├── App.jsx
-│   │   ├── index.css
-│   │   └── main.jsx
-│   ├── index.html
-│   ├── package.json
-│   └── vite.config.js
-├── database/
-│   └── schema.sql              # Schéma + données initiales
-├── .gitignore
-└── README.md
-```
+> **Note :** Le mot de passe dans la BDD est hashé avec bcrypt. Pour tester, utilisez le compte fourni, ou créez un nouveau compte directement sur le site (si besoin).
 
 ---
-
-## 🎯 Modules & Fonctionnalités
 
 ### Module Information (Visiteur — sans connexion)
 - Page d'accueil avec statistiques du campus
@@ -295,12 +202,12 @@ smart-campus/
 - Consultation des détails d'un objet
 - Système de points et progression de niveau
 
-### Module Gestion (Utilisateur Complexe — avancé/expert)
+### Module Gestion (Utilisateur Complexe (que pour les professeurs ) — avancé/expert)
 - Tableau de bord avancé avec graphiques
 - Ajout d'objets connectés
 - Modification des objets (attributs, statut)
 - Activation/désactivation des objets
-- Demande de suppression (→ admin)
+- Demande de uppression (→ admin)
 - Suivi consommation énergétique
 - Identification des objets défaillants
 
@@ -312,47 +219,27 @@ smart-campus/
 | Niveau        | Points requis | Accès                    |
 |---------------|---------------|--------------------------|
 | Débutant      | 0 pts         | Information + Visualisation |
-| Intermédiaire | 10 pts        | Information + Visualisation |
+| Intermédiaire | 10 pts        | + Quiz |
 | Avancé        | 25 pts        | + Module Gestion          |
 | Expert        | 50 pts        | + Module Administration   |
 
 **Gain de points :**
-- Première connexion : +10 pts pour les professeurs
+- Première connexion : +10 pts que pour les professeurs
 - Connexion : 1 pt
 - Consultation d'un objet : +2 pts
-
----
-
-## 🗄️ Variables d'environnement (backend/.env)
-
-```env
-PORT=5000
-DB_HOST=localhost
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=votre_mdp
-DB_NAME=smart_campus
-JWT_SECRET=votre_secret_jwt
-JWT_EXPIRES_IN=7d
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=votre@gmail.com
-SMTP_PASS=votre_app_password
-EMAIL_FROM=Smart Campus <votre@gmail.com>
-FRONTEND_URL=http://localhost:5173
-```
+- Quiz : 5 pts
 
 ---
 
 ## 👥 Répartition des tâches 
 
-| Membre | Tâches |
-|--------|--------|
-| Maellys| Base de données |
-| Malak | Backend  |
-| Samia | Backend  |
-| Mohamed Lemine | Frontend  |
-| Bayane| Frontend |
+| Membre         | Tâches            |
+|----------------|-------------------|
+| Maellys        | Base de données   |
+| Malak          | Backend           |
+| Samia          | Backend           |
+| Mohamed Lemine | Frontend          |
+| Bayane         | Frontend          |
 
 ---
 
@@ -369,24 +256,6 @@ FRONTEND_URL=http://localhost:5173
 
 ---
 
-## 🔗 Routes API principales
-
-| Méthode | Route | Accès |
-|---------|-------|-------|
-| POST | `/api/auth/register` | Public |
-| POST | `/api/auth/login` | Public |
-| GET | `/api/news` | Public |
-| GET | `/api/events` | Public |
-| GET | `/api/devices` | Public (points si connecté) |
-| GET | `/api/profile` | Connecté |
-| PUT | `/api/profile` | Connecté |
-| POST | `/api/devices` | Avancé+ |
-| PUT | `/api/devices/:id` | Avancé+ |
-| GET | `/api/admin/users` | Expert |
-| DELETE | `/api/admin/devices/:id` | Expert |
-
----
-
 ## 🧪 Tests
 
 - Tester sur Chrome, Firefox, Safari
@@ -395,4 +264,3 @@ FRONTEND_URL=http://localhost:5173
 ---
 
 *Projet réalisé dans le cadre du cours de Développement Web — CY Tech ING1 2025-2026*
->>>>>>> 8d696fec33917a25553435002e33938ac98a7b81
